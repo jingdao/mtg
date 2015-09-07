@@ -7,10 +7,10 @@
 //
 
 #include <stdio.h>
-#include "List.h"
+#include "CardData.h"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    printf("Hello, World!\n");
+	CardData cd = loadCardData();
+    printf("%s: %d %d\n",cd.BoonweaverGiant->name,cd.BoonweaverGiant->power,cd.BoonweaverGiant->toughness);
     return 0;
 }

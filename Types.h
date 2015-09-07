@@ -3,7 +3,9 @@ typedef enum {
 } Color;
 
 typedef struct {
-	Color color;
+	Color color1;
+	Color color2;
 	int num;
 	bool isVariable;
+	bool hasOption;
 } Manacost;
