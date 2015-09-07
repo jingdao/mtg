@@ -1,1 +1,8 @@
 *.swp
+images/*
+CardData.h
+CardData.c
+Subtypes.h
+MTGmain
+.DS_Store
+MTGmain.dSYM/*

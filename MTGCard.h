@@ -4,7 +4,7 @@
 #include "Subtypes.h"
 
 typedef struct  {
-	char* name;
+	const char* name;
 	List* manaCost;
 	int cmc;
 	bool is_land;
@@ -20,10 +20,10 @@ typedef struct  {
 	bool is_tribal;
 	bool is_vanguard;
 	SUBTYPE_PLACEHOLDER
-	char* text;
+	const char* text;
 	int power;
 	int toughness;
 	int loyalty;
 } MTGCard;
 
-MTGCard* NewMTGCard(char* s);
+MTGCard* NewMTGCard(const char* s);

@@ -1,0 +1,1543 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		535C2FBD1B9E1B73006D3888 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 535C2FBC1B9E1B73006D3888 /* main.m */; };
+		535C2FC01B9E1B73006D3888 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 535C2FBF1B9E1B73006D3888 /* AppDelegate.m */; };
+		535C2FC31B9E1B73006D3888 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 535C2FC21B9E1B73006D3888 /* ViewController.m */; };
+		535C2FC61B9E1B73006D3888 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FC41B9E1B73006D3888 /* Main.storyboard */; };
+		535C2FC81B9E1B73006D3888 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FC71B9E1B73006D3888 /* Images.xcassets */; };
+		535C2FCB1B9E1B73006D3888 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FC91B9E1B73006D3888 /* LaunchScreen.xib */; };
+		535C2FD71B9E1B73006D3888 /* MTG_iOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 535C2FD61B9E1B73006D3888 /* MTG_iOSTests.m */; };
+		535C2FE31B9E1CB1006D3888 /* cover.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FE21B9E1CB1006D3888 /* cover.jpg */; };
+		535C2FE91B9E1D4A006D3888 /* CardData.c in Sources */ = {isa = PBXBuildFile; fileRef = 535C2FE41B9E1D4A006D3888 /* CardData.c */; };
+		535C2FEA1B9E1D4A006D3888 /* List.c in Sources */ = {isa = PBXBuildFile; fileRef = 535C2FE61B9E1D4A006D3888 /* List.c */; };
+		535C2FEB1B9E1D4A006D3888 /* MTGCard.c in Sources */ = {isa = PBXBuildFile; fileRef = 535C2FE81B9E1D4A006D3888 /* MTGCard.c */; };
+		535C30FC1B9E27F1006D3888 /* AccursedSpirit.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FEF1B9E27F0006D3888 /* AccursedSpirit.jpg */; };
+		535C30FD1B9E27F1006D3888 /* ActonImpulse.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FF01B9E27F0006D3888 /* ActonImpulse.jpg */; };
+		535C30FE1B9E27F1006D3888 /* AegisAngel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FF11B9E27F0006D3888 /* AegisAngel.jpg */; };
+		535C30FF1B9E27F1006D3888 /* AeronautTinkerer.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FF21B9E27F0006D3888 /* AeronautTinkerer.jpg */; };
+		535C31001B9E27F1006D3888 /* Aetherspouts.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FF31B9E27F0006D3888 /* Aetherspouts.jpg */; };
+		535C31011B9E27F1006D3888 /* AggressiveMining.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FF41B9E27F0006D3888 /* AggressiveMining.jpg */; };
+		535C31021B9E27F1006D3888 /* AjanisPridemate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FF51B9E27F0006D3888 /* AjanisPridemate.jpg */; };
+		535C31031B9E27F1006D3888 /* AjaniSteadfast.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FF61B9E27F0006D3888 /* AjaniSteadfast.jpg */; };
+		535C31041B9E27F1006D3888 /* AltacBloodseeker.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FF71B9E27F0006D3888 /* AltacBloodseeker.jpg */; };
+		535C31051B9E27F1006D3888 /* AmphinPathmage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FF81B9E27F0006D3888 /* AmphinPathmage.jpg */; };
+		535C31061B9E27F1006D3888 /* AncientSilverback.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FF91B9E27F0006D3888 /* AncientSilverback.jpg */; };
+		535C31071B9E27F1006D3888 /* AvacynGuardianAngel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FFA1B9E27F0006D3888 /* AvacynGuardianAngel.jpg */; };
+		535C31081B9E27F1006D3888 /* AvariceAmulet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FFB1B9E27F0006D3888 /* AvariceAmulet.jpg */; };
+		535C31091B9E27F1006D3888 /* BacktoNature.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FFC1B9E27F0006D3888 /* BacktoNature.jpg */; };
+		535C310A1B9E27F1006D3888 /* BattlefieldForge.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FFD1B9E27F0006D3888 /* BattlefieldForge.jpg */; };
+		535C310B1B9E27F1006D3888 /* BattleMastery.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FFE1B9E27F0006D3888 /* BattleMastery.jpg */; };
+		535C310C1B9E27F1006D3888 /* BelligerentSliver.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FFF1B9E27F0006D3888 /* BelligerentSliver.jpg */; };
+		535C310D1B9E27F1006D3888 /* BlackCat.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30001B9E27F0006D3888 /* BlackCat.jpg */; };
+		535C310E1B9E27F1006D3888 /* BlastfireBolt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30011B9E27F0006D3888 /* BlastfireBolt.jpg */; };
+		535C310F1B9E27F1006D3888 /* BloodHost.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30021B9E27F0006D3888 /* BloodHost.jpg */; };
+		535C31101B9E27F1006D3888 /* BoonweaverGiant.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30031B9E27F0006D3888 /* BoonweaverGiant.jpg */; };
+		535C31111B9E27F1006D3888 /* BorderlandMarauder.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30041B9E27F0006D3888 /* BorderlandMarauder.jpg */; };
+		535C31121B9E27F1006D3888 /* BrawlersPlate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30051B9E27F0006D3888 /* BrawlersPlate.jpg */; };
+		535C31131B9E27F1006D3888 /* BronzeSable.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30061B9E27F0006D3888 /* BronzeSable.jpg */; };
+		535C31141B9E27F1006D3888 /* BroodKeeper.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30071B9E27F0006D3888 /* BroodKeeper.jpg */; };
+		535C31151B9E27F1006D3888 /* BurningAnger.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30081B9E27F0006D3888 /* BurningAnger.jpg */; };
+		535C31161B9E27F1006D3888 /* Cancel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30091B9E27F0006D3888 /* Cancel.jpg */; };
+		535C31171B9E27F1006D3888 /* CarnivorousMossBeast.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C300A1B9E27F0006D3888 /* CarnivorousMossBeast.jpg */; };
+		535C31181B9E27F1006D3888 /* CarrionCrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C300B1B9E27F0006D3888 /* CarrionCrow.jpg */; };
+		535C31191B9E27F1006D3888 /* CausticTar.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C300C1B9E27F0006D3888 /* CausticTar.jpg */; };
+		535C311A1B9E27F1006D3888 /* CavesofKoilos.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C300D1B9E27F0006D3888 /* CavesofKoilos.jpg */; };
+		535C311B1B9E27F1006D3888 /* CentaurCourser.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C300E1B9E27F0006D3888 /* CentaurCourser.jpg */; };
+		535C311C1B9E27F1006D3888 /* ChandraPyromaster.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C300F1B9E27F0006D3888 /* ChandraPyromaster.jpg */; };
+		535C311D1B9E27F1006D3888 /* ChargingRhino.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30101B9E27F0006D3888 /* ChargingRhino.jpg */; };
+		535C311E1B9E27F1006D3888 /* ChasmSkulker.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30111B9E27F0006D3888 /* ChasmSkulker.jpg */; };
+		535C311F1B9E27F1006D3888 /* ChiefEngineer.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30121B9E27F0006D3888 /* ChiefEngineer.jpg */; };
+		535C31201B9E27F1006D3888 /* ChildofNight.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30131B9E27F0006D3888 /* ChildofNight.jpg */; };
+		535C31211B9E27F1006D3888 /* ChordofCalling.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30141B9E27F0006D3888 /* ChordofCalling.jpg */; };
+		535C31221B9E27F1006D3888 /* Chronostutter.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30151B9E27F0006D3888 /* Chronostutter.jpg */; };
+		535C31231B9E27F1006D3888 /* CircleofFlame.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30161B9E27F0006D3888 /* CircleofFlame.jpg */; };
+		535C31241B9E27F1006D3888 /* ClearaPath.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30171B9E27F0006D3888 /* ClearaPath.jpg */; };
+		535C31251B9E27F1006D3888 /* ConeofFlame.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30181B9E27F0006D3888 /* ConeofFlame.jpg */; };
+		535C31261B9E27F1006D3888 /* Congregate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30191B9E27F0006D3888 /* Congregate.jpg */; };
+		535C31271B9E27F1006D3888 /* ConstrictingSliver.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C301A1B9E27F0006D3888 /* ConstrictingSliver.jpg */; };
+		535C31281B9E27F1006D3888 /* CoralBarrier.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C301B1B9E27F0006D3888 /* CoralBarrier.jpg */; };
+		535C31291B9E27F1006D3888 /* CovenantofBlood.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C301C1B9E27F0006D3888 /* CovenantofBlood.jpg */; };
+		535C312A1B9E27F1006D3888 /* CripplingBlight.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C301D1B9E27F0006D3888 /* CripplingBlight.jpg */; };
+		535C312B1B9E27F1006D3888 /* CrowdsFavor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C301E1B9E27F0006D3888 /* CrowdsFavor.jpg */; };
+		535C312C1B9E27F1006D3888 /* CrucibleofFire.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C301F1B9E27F1006D3888 /* CrucibleofFire.jpg */; };
+		535C312D1B9E27F1006D3888 /* CruelSadist.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30201B9E27F1006D3888 /* CruelSadist.jpg */; };
+		535C312E1B9E27F1006D3888 /* DarksteelCitadel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30211B9E27F1006D3888 /* DarksteelCitadel.jpg */; };
+		535C312F1B9E27F1006D3888 /* DauntlessRiverMarshal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30221B9E27F1006D3888 /* DauntlessRiverMarshal.jpg */; };
+		535C31301B9E27F1006D3888 /* DevouringLight.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30231B9E27F1006D3888 /* DevouringLight.jpg */; };
+		535C31311B9E27F1006D3888 /* DiffusionSliver.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30241B9E27F1006D3888 /* DiffusionSliver.jpg */; };
+		535C31321B9E27F1006D3888 /* Dissipate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30251B9E27F1006D3888 /* Dissipate.jpg */; };
+		535C31331B9E27F1006D3888 /* Divination.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30261B9E27F1006D3888 /* Divination.jpg */; };
+		535C31341B9E27F1006D3888 /* DivineFavor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30271B9E27F1006D3888 /* DivineFavor.jpg */; };
+		535C31351B9E27F1006D3888 /* DivineVerdict.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30281B9E27F1006D3888 /* DivineVerdict.jpg */; };
+		535C31361B9E27F1006D3888 /* ElvishMystic.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30291B9E27F1006D3888 /* ElvishMystic.jpg */; };
+		535C31371B9E27F1006D3888 /* Encrust.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C302A1B9E27F1006D3888 /* Encrust.jpg */; };
+		535C31381B9E27F1006D3888 /* EndlessObedience.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C302B1B9E27F1006D3888 /* EndlessObedience.jpg */; };
+		535C31391B9E27F1006D3888 /* EnsoulArtifact.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C302C1B9E27F1006D3888 /* EnsoulArtifact.jpg */; };
+		535C313A1B9E27F1006D3888 /* EphemeralShields.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C302D1B9E27F1006D3888 /* EphemeralShields.jpg */; };
+		535C313B1B9E27F1006D3888 /* EternalThirst.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C302E1B9E27F1006D3888 /* EternalThirst.jpg */; };
+		535C313C1B9E27F1006D3888 /* EvolvingWilds.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C302F1B9E27F1006D3888 /* EvolvingWilds.jpg */; };
+		535C313D1B9E27F1006D3888 /* FeastontheFallen.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30301B9E27F1006D3888 /* FeastontheFallen.jpg */; };
+		535C313E1B9E27F1006D3888 /* FeralIncarnation.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30311B9E27F1006D3888 /* FeralIncarnation.jpg */; };
+		535C313F1B9E27F1006D3888 /* Festergloom.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30321B9E27F1006D3888 /* Festergloom.jpg */; };
+		535C31401B9E27F1006D3888 /* FirstResponse.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30331B9E27F1006D3888 /* FirstResponse.jpg */; };
+		535C31411B9E27F1006D3888 /* FleshtoDust.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30341B9E27F1006D3888 /* FleshtoDust.jpg */; };
+		535C31421B9E27F1006D3888 /* Forest.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30351B9E27F1006D3888 /* Forest.jpg */; };
+		535C31431B9E27F1006D3888 /* ForgeDevil.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30361B9E27F1006D3888 /* ForgeDevil.jpg */; };
+		535C31441B9E27F1006D3888 /* FoundryStreetDenizen.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30371B9E27F1006D3888 /* FoundryStreetDenizen.jpg */; };
+		535C31451B9E27F1006D3888 /* FrenziedGoblin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30381B9E27F1006D3888 /* FrenziedGoblin.jpg */; };
+		535C31461B9E27F1006D3888 /* FrostLynx.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30391B9E27F1006D3888 /* FrostLynx.jpg */; };
+		535C31471B9E27F1006D3888 /* FugitiveWizard.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C303A1B9E27F1006D3888 /* FugitiveWizard.jpg */; };
+		535C31481B9E27F1006D3888 /* FurnaceWhelp.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C303B1B9E27F1006D3888 /* FurnaceWhelp.jpg */; };
+		535C31491B9E27F1006D3888 /* GargoyleSentinel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C303C1B9E27F1006D3888 /* GargoyleSentinel.jpg */; };
+		535C314A1B9E27F1006D3888 /* GarrukApexPredator.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C303D1B9E27F1006D3888 /* GarrukApexPredator.jpg */; };
+		535C314B1B9E27F1006D3888 /* GarruksPackleader.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C303E1B9E27F1006D3888 /* GarruksPackleader.jpg */; };
+		535C314C1B9E27F1006D3888 /* GatherCourage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C303F1B9E27F1006D3888 /* GatherCourage.jpg */; };
+		535C314D1B9E27F1006D3888 /* GeistoftheMoors.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30401B9E27F1006D3888 /* GeistoftheMoors.jpg */; };
+		535C314E1B9E27F1006D3888 /* GeneratorServant.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30411B9E27F1006D3888 /* GeneratorServant.jpg */; };
+		535C314F1B9E27F1006D3888 /* GenesisHydra.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30421B9E27F1006D3888 /* GenesisHydra.jpg */; };
+		535C31501B9E27F1006D3888 /* GlacialCrasher.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30431B9E27F1006D3888 /* GlacialCrasher.jpg */; };
+		535C31511B9E27F1006D3888 /* GoblinKaboomist.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30441B9E27F1006D3888 /* GoblinKaboomist.jpg */; };
+		535C31521B9E27F1006D3888 /* GoblinRabblemaster.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30451B9E27F1006D3888 /* GoblinRabblemaster.jpg */; };
+		535C31531B9E27F1006D3888 /* GoblinRoughrider.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30461B9E27F1006D3888 /* GoblinRoughrider.jpg */; };
+		535C31541B9E27F1006D3888 /* Gravedigger.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30471B9E27F1006D3888 /* Gravedigger.jpg */; };
+		535C31551B9E27F1006D3888 /* Grindclock.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30481B9E27F1006D3888 /* Grindclock.jpg */; };
+		535C31561B9E27F1006D3888 /* Hammerhand.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30491B9E27F1006D3888 /* Hammerhand.jpg */; };
+		535C31571B9E27F1006D3888 /* HauntedPlateMail.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C304A1B9E27F1006D3888 /* HauntedPlateMail.jpg */; };
+		535C31581B9E27F1006D3888 /* HeatRay.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C304B1B9E27F1006D3888 /* HeatRay.jpg */; };
+		535C31591B9E27F1006D3888 /* HeliodsPilgrim.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C304C1B9E27F1006D3888 /* HeliodsPilgrim.jpg */; };
+		535C315A1B9E27F1006D3888 /* HoardingDragon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C304D1B9E27F1006D3888 /* HoardingDragon.jpg */; };
+		535C315B1B9E27F1006D3888 /* HornetNest.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C304E1B9E27F1006D3888 /* HornetNest.jpg */; };
+		535C315C1B9E27F1006D3888 /* HornetQueen.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C304F1B9E27F1006D3888 /* HornetQueen.jpg */; };
+		535C315D1B9E27F1006D3888 /* HotSoup.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30501B9E27F1006D3888 /* HotSoup.jpg */; };
+		535C315E1B9E27F1006D3888 /* HuntersAmbush.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30511B9E27F1006D3888 /* HuntersAmbush.jpg */; };
+		535C315F1B9E27F1006D3888 /* HunttheWeak.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30521B9E27F1006D3888 /* HunttheWeak.jpg */; };
+		535C31601B9E27F1006D3888 /* HushwingGryff.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30531B9E27F1006D3888 /* HushwingGryff.jpg */; };
+		535C31611B9E27F1006D3888 /* Hydrosurge.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30541B9E27F1006D3888 /* Hydrosurge.jpg */; };
+		535C31621B9E27F1006D3888 /* IllusoryAngel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30551B9E27F1006D3888 /* IllusoryAngel.jpg */; };
+		535C31631B9E27F1006D3888 /* IndulgentTormentor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30561B9E27F1006D3888 /* IndulgentTormentor.jpg */; };
+		535C31641B9E27F1006D3888 /* InfernoFist.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30571B9E27F1006D3888 /* InfernoFist.jpg */; };
+		535C31651B9E27F1006D3888 /* InGarruksWake.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30581B9E27F1006D3888 /* InGarruksWake.jpg */; };
+		535C31661B9E27F1006D3888 /* InspiredCharge.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30591B9E27F1006D3888 /* InspiredCharge.jpg */; };
+		535C31671B9E27F1006D3888 /* IntotheVoid.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C305A1B9E27F1006D3888 /* IntotheVoid.jpg */; };
+		535C31681B9E27F1006D3888 /* InvasiveSpecies.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C305B1B9E27F1006D3888 /* InvasiveSpecies.jpg */; };
+		535C31691B9E27F1006D3888 /* Invisibility.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C305C1B9E27F1006D3888 /* Invisibility.jpg */; };
+		535C316A1B9E27F1006D3888 /* Island.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C305D1B9E27F1006D3888 /* Island.jpg */; };
+		535C316B1B9E27F1006D3888 /* JacesIngenuity.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C305E1B9E27F1006D3888 /* JacesIngenuity.jpg */; };
+		535C316C1B9E27F1006D3888 /* JacetheLivingGuildpact.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C305F1B9E27F1006D3888 /* JacetheLivingGuildpact.jpg */; };
+		535C316D1B9E27F1006D3888 /* JaliraMasterPolymorphist.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30601B9E27F1006D3888 /* JaliraMasterPolymorphist.jpg */; };
+		535C316E1B9E27F1006D3888 /* JorubaiMurkLurker.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30611B9E27F1006D3888 /* JorubaiMurkLurker.jpg */; };
+		535C316F1B9E27F1006D3888 /* Juggernaut.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30621B9E27F1006D3888 /* Juggernaut.jpg */; };
+		535C31701B9E27F1006D3888 /* KalonianTwingrove.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30631B9E27F1006D3888 /* KalonianTwingrove.jpg */; };
+		535C31711B9E27F1006D3888 /* KapshoKitefins.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30641B9E27F1006D3888 /* KapshoKitefins.jpg */; };
+		535C31721B9E27F1006D3888 /* KinsbaileSkirmisher.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30651B9E27F1006D3888 /* KinsbaileSkirmisher.jpg */; };
+		535C31731B9E27F1006D3888 /* KirdChieftain.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30661B9E27F1006D3888 /* KirdChieftain.jpg */; };
+		535C31741B9E27F1006D3888 /* KrenkosEnforcer.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30671B9E27F1006D3888 /* KrenkosEnforcer.jpg */; };
+		535C31751B9E27F1006D3888 /* KurkeshOnakkeAncient.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30681B9E27F1006D3888 /* KurkeshOnakkeAncient.jpg */; };
+		535C31761B9E27F1006D3888 /* LavaAxe.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30691B9E27F1006D3888 /* LavaAxe.jpg */; };
+		535C31771B9E27F1006D3888 /* LeechingSliver.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C306A1B9E27F1006D3888 /* LeechingSliver.jpg */; };
+		535C31781B9E27F1006D3888 /* LifesLegacy.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C306B1B9E27F1006D3888 /* LifesLegacy.jpg */; };
+		535C31791B9E27F1006D3888 /* LightningStrike.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C306C1B9E27F1006D3888 /* LightningStrike.jpg */; };
+		535C317A1B9E27F1006D3888 /* LilianaVess.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C306D1B9E27F1006D3888 /* LilianaVess.jpg */; };
+		535C317B1B9E27F1006D3888 /* LivingTotem.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C306E1B9E27F1006D3888 /* LivingTotem.jpg */; };
+		535C317C1B9E27F1006D3888 /* LlanowarWastes.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C306F1B9E27F1006D3888 /* LlanowarWastes.jpg */; };
+		535C317D1B9E27F1006D3888 /* MahamotiDjinn.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30701B9E27F1006D3888 /* MahamotiDjinn.jpg */; };
+		535C317E1B9E27F1006D3888 /* MarkedbyHonor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30711B9E27F1006D3888 /* MarkedbyHonor.jpg */; };
+		535C317F1B9E27F1006D3888 /* MassCalcify.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30721B9E27F1006D3888 /* MassCalcify.jpg */; };
+		535C31801B9E27F1006D3888 /* MasterofPredicaments.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30731B9E27F1006D3888 /* MasterofPredicaments.jpg */; };
+		535C31811B9E27F1006D3888 /* MeditationPuzzle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30741B9E27F1006D3888 /* MeditationPuzzle.jpg */; };
+		535C31821B9E27F1006D3888 /* MercurialPretender.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30751B9E27F1006D3888 /* MercurialPretender.jpg */; };
+		535C31831B9E27F1006D3888 /* Meteorite.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30761B9E27F1006D3888 /* Meteorite.jpg */; };
+		535C31841B9E27F1006D3888 /* MidnightGuard.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30771B9E27F1006D3888 /* MidnightGuard.jpg */; };
+		535C31851B9E27F1006D3888 /* MightMakesRight.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30781B9E27F1006D3888 /* MightMakesRight.jpg */; };
+		535C31861B9E27F1006D3888 /* MilitaryIntelligence.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30791B9E27F1006D3888 /* MilitaryIntelligence.jpg */; };
+		535C31871B9E27F1006D3888 /* MindRot.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C307A1B9E27F1006D3888 /* MindRot.jpg */; };
+		535C31881B9E27F1006D3888 /* MindSculpt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C307B1B9E27F1006D3888 /* MindSculpt.jpg */; };
+		535C31891B9E27F1006D3888 /* MinersBane.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C307C1B9E27F1006D3888 /* MinersBane.jpg */; };
+		535C318A1B9E27F1006D3888 /* Mountain.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C307D1B9E27F1006D3888 /* Mountain.jpg */; };
+		535C318B1B9E27F1006D3888 /* Naturalize.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C307E1B9E27F1006D3888 /* Naturalize.jpg */; };
+		535C318C1B9E27F1006D3888 /* Necrobite.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C307F1B9E27F1006D3888 /* Necrobite.jpg */; };
+		535C318D1B9E27F1006D3888 /* NecrogenScudder.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30801B9E27F1006D3888 /* NecrogenScudder.jpg */; };
+		535C318E1B9E27F1006D3888 /* NecromancersAssistant.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30811B9E27F1006D3888 /* NecromancersAssistant.jpg */; };
+		535C318F1B9E27F1006D3888 /* NecromancersStockpile.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30821B9E27F1006D3888 /* NecromancersStockpile.jpg */; };
+		535C31901B9E27F1006D3888 /* Negate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30831B9E27F1006D3888 /* Negate.jpg */; };
+		535C31911B9E27F1006D3888 /* NetcasterSpider.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30841B9E27F1006D3888 /* NetcasterSpider.jpg */; };
+		535C31921B9E27F1006D3888 /* NightfireGiant.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30851B9E27F1006D3888 /* NightfireGiant.jpg */; };
+		535C31931B9E27F1006D3888 /* Nightmare.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30861B9E27F1006D3888 /* Nightmare.jpg */; };
+		535C31941B9E27F1006D3888 /* NimbusoftheIsles.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30871B9E27F1006D3888 /* NimbusoftheIsles.jpg */; };
+		535C31951B9E27F1006D3888 /* NissasExpedition.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30881B9E27F1006D3888 /* NissasExpedition.jpg */; };
+		535C31961B9E27F1006D3888 /* NissaWorldwaker.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30891B9E27F1006D3888 /* NissaWorldwaker.jpg */; };
+		535C31971B9E27F1006D3888 /* ObeliskofUrd.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C308A1B9E27F1006D3888 /* ObeliskofUrd.jpg */; };
+		535C31981B9E27F1006D3888 /* ObNixilisUnshackled.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C308B1B9E27F1006D3888 /* ObNixilisUnshackled.jpg */; };
+		535C31991B9E27F1006D3888 /* OppressiveRays.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C308C1B9E27F1006D3888 /* OppressiveRays.jpg */; };
+		535C319A1B9E27F1006D3888 /* OreskosSwiftclaw.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C308D1B9E27F1006D3888 /* OreskosSwiftclaw.jpg */; };
+		535C319B1B9E27F1006D3888 /* Ornithopter.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C308E1B9E27F1006D3888 /* Ornithopter.jpg */; };
+		535C319C1B9E27F1006D3888 /* Overwhelm.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C308F1B9E27F1006D3888 /* Overwhelm.jpg */; };
+		535C319D1B9E27F1006D3888 /* ParagonofEternalWilds.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30901B9E27F1006D3888 /* ParagonofEternalWilds.jpg */; };
+		535C319E1B9E27F1006D3888 /* ParagonofFierceDefiance.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30911B9E27F1006D3888 /* ParagonofFierceDefiance.jpg */; };
+		535C319F1B9E27F1006D3888 /* ParagonofGatheringMists.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30921B9E27F1006D3888 /* ParagonofGatheringMists.jpg */; };
+		535C31A01B9E27F1006D3888 /* ParagonofNewDawns.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30931B9E27F1006D3888 /* ParagonofNewDawns.jpg */; };
+		535C31A11B9E27F1006D3888 /* ParagonofOpenGraves.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30941B9E27F1006D3888 /* ParagonofOpenGraves.jpg */; };
+		535C31A21B9E27F1006D3888 /* PeelfromReality.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30951B9E27F1006D3888 /* PeelfromReality.jpg */; };
+		535C31A31B9E27F1006D3888 /* PerilousVault.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30961B9E27F1006D3888 /* PerilousVault.jpg */; };
+		535C31A41B9E27F1006D3888 /* PhyrexianRevoker.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30971B9E27F1006D3888 /* PhyrexianRevoker.jpg */; };
+		535C31A51B9E27F1006D3888 /* Phytotitan.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30981B9E27F1006D3888 /* Phytotitan.jpg */; };
+		535C31A61B9E27F1006D3888 /* PillarofLight.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30991B9E27F1006D3888 /* PillarofLight.jpg */; };
+		535C31A71B9E27F1006D3888 /* Plains.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C309A1B9E27F1006D3888 /* Plains.jpg */; };
+		535C31A81B9E27F1006D3888 /* Plummet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C309B1B9E27F1006D3888 /* Plummet.jpg */; };
+		535C31A91B9E27F1006D3888 /* PolymorphistsJest.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C309C1B9E27F1006D3888 /* PolymorphistsJest.jpg */; };
+		535C31AA1B9E27F1006D3888 /* PreeminentCaptain.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C309D1B9E27F1006D3888 /* PreeminentCaptain.jpg */; };
+		535C31AB1B9E27F1006D3888 /* ProfaneMemento.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C309E1B9E27F1006D3888 /* ProfaneMemento.jpg */; };
+		535C31AC1B9E27F1006D3888 /* Quickling.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C309F1B9E27F1006D3888 /* Quickling.jpg */; };
+		535C31AD1B9E27F1006D3888 /* RadiantFountain.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30A01B9E27F1006D3888 /* RadiantFountain.jpg */; };
+		535C31AE1B9E27F1006D3888 /* RaisetheAlarm.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30A11B9E27F1006D3888 /* RaisetheAlarm.jpg */; };
+		535C31AF1B9E27F1006D3888 /* RangersGuile.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30A21B9E27F1006D3888 /* RangersGuile.jpg */; };
+		535C31B01B9E27F1006D3888 /* RazorfootGriffin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30A31B9E27F1006D3888 /* RazorfootGriffin.jpg */; };
+		535C31B11B9E27F1006D3888 /* ReclamationSage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30A41B9E27F1006D3888 /* ReclamationSage.jpg */; };
+		535C31B21B9E27F1006D3888 /* ResearchAssistant.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30A51B9E27F1006D3888 /* ResearchAssistant.jpg */; };
+		535C31B31B9E27F1006D3888 /* ResoluteArchangel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30A61B9E27F1006D3888 /* ResoluteArchangel.jpg */; };
+		535C31B41B9E27F1006D3888 /* Restock.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30A71B9E27F1006D3888 /* Restock.jpg */; };
+		535C31B51B9E27F1006D3888 /* ReturntotheRanks.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30A81B9E27F1006D3888 /* ReturntotheRanks.jpg */; };
+		535C31B61B9E27F1006D3888 /* RoaringPrimadox.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30A91B9E27F1006D3888 /* RoaringPrimadox.jpg */; };
+		535C31B71B9E27F1006D3888 /* RoguesGloves.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30AA1B9E27F1006D3888 /* RoguesGloves.jpg */; };
+		535C31B81B9E27F1006D3888 /* RotfeasterMaggot.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30AB1B9E27F1006D3888 /* RotfeasterMaggot.jpg */; };
+		535C31B91B9E27F1006D3888 /* RummagingGoblin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30AC1B9E27F1006D3888 /* RummagingGoblin.jpg */; };
+		535C31BA1B9E27F1006D3888 /* RuneclawBear.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30AD1B9E27F1006D3888 /* RuneclawBear.jpg */; };
+		535C31BB1B9E27F1006D3888 /* SacredArmory.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30AE1B9E27F1006D3888 /* SacredArmory.jpg */; };
+		535C31BC1B9E27F1006D3888 /* SanctifiedCharge.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30AF1B9E27F1006D3888 /* SanctifiedCharge.jpg */; };
+		535C31BD1B9E27F1006D3888 /* SatyrWayfinder.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30B01B9E27F1006D3888 /* SatyrWayfinder.jpg */; };
+		535C31BE1B9E27F1006D3888 /* ScrapyardMongrel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30B11B9E27F1006D3888 /* ScrapyardMongrel.jpg */; };
+		535C31BF1B9E27F1006D3888 /* ScuttlingDoomEngine.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30B21B9E27F1006D3888 /* ScuttlingDoomEngine.jpg */; };
+		535C31C01B9E27F1006D3888 /* SeismicStrike.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30B31B9E27F1006D3888 /* SeismicStrike.jpg */; };
+		535C31C11B9E27F1006D3888 /* SelflessCathar.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30B41B9E27F1006D3888 /* SelflessCathar.jpg */; };
+		535C31C21B9E27F1006D3888 /* SengirVampire.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30B51B9E27F1006D3888 /* SengirVampire.jpg */; };
+		535C31C31B9E27F1006D3888 /* SeraphoftheMasses.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30B61B9E27F1006D3888 /* SeraphoftheMasses.jpg */; };
+		535C31C41B9E27F1006D3888 /* SerraAngel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30B71B9E27F1006D3888 /* SerraAngel.jpg */; };
+		535C31C51B9E27F1006D3888 /* ShadowcloakVampire.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30B81B9E27F1006D3888 /* ShadowcloakVampire.jpg */; };
+		535C31C61B9E27F1006D3888 /* ShamanofSpring.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30B91B9E27F1006D3888 /* ShamanofSpring.jpg */; };
+		535C31C71B9E27F1006D3888 /* ShieldoftheAvatar.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30BA1B9E27F1006D3888 /* ShieldoftheAvatar.jpg */; };
+		535C31C81B9E27F1006D3888 /* ShivanDragon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30BB1B9E27F1006D3888 /* ShivanDragon.jpg */; };
+		535C31C91B9E27F1006D3888 /* ShivanReef.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30BC1B9E27F1006D3888 /* ShivanReef.jpg */; };
+		535C31CA1B9E27F1006D3888 /* ShrapnelBlast.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30BD1B9E27F1006D3888 /* ShrapnelBlast.jpg */; };
+		535C31CB1B9E27F1006D3888 /* SiegeDragon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30BE1B9E27F1006D3888 /* SiegeDragon.jpg */; };
+		535C31CC1B9E27F1006D3888 /* SiegeWurm.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30BF1B9E27F1006D3888 /* SiegeWurm.jpg */; };
+		535C31CD1B9E27F1006D3888 /* SigninBlood.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30C01B9E27F1006D3888 /* SigninBlood.jpg */; };
+		535C31CE1B9E27F1006D3888 /* SliverHive.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30C11B9E27F1006D3888 /* SliverHive.jpg */; };
+		535C31CF1B9E27F1006D3888 /* SliverHivelord.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30C21B9E27F1006D3888 /* SliverHivelord.jpg */; };
+		535C31D01B9E27F1006D3888 /* SolemnOffering.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30C31B9E27F1006D3888 /* SolemnOffering.jpg */; };
+		535C31D11B9E27F1006D3888 /* Soulmender.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30C41B9E27F1006D3888 /* Soulmender.jpg */; };
+		535C31D21B9E27F1006D3888 /* SoulofInnistrad.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30C51B9E27F1006D3888 /* SoulofInnistrad.jpg */; };
+		535C31D31B9E27F1006D3888 /* SoulofNewPhyrexia.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30C61B9E27F1006D3888 /* SoulofNewPhyrexia.jpg */; };
+		535C31D41B9E27F1006D3888 /* SoulofRavnica.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30C71B9E27F1006D3888 /* SoulofRavnica.jpg */; };
+		535C31D51B9E27F1006D3888 /* SoulofShandalar.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30C81B9E27F1006D3888 /* SoulofShandalar.jpg */; };
+		535C31D61B9E27F1006D3888 /* SoulofTheros.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30C91B9E27F1006D3888 /* SoulofTheros.jpg */; };
+		535C31D71B9E27F1006D3888 /* SoulofZendikar.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30CA1B9E27F1006D3888 /* SoulofZendikar.jpg */; };
+		535C31D81B9E27F1006D3888 /* SpectraWard.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30CB1B9E27F1006D3888 /* SpectraWard.jpg */; };
+		535C31D91B9E27F1006D3888 /* SpiritBonds.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30CC1B9E27F1006D3888 /* SpiritBonds.jpg */; };
+		535C31DA1B9E27F1006D3888 /* StabWound.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30CD1B9E27F1006D3888 /* StabWound.jpg */; };
+		535C31DB1B9E27F1006D3888 /* StaffoftheDeathMagus.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30CE1B9E27F1006D3888 /* StaffoftheDeathMagus.jpg */; };
+		535C31DC1B9E27F1006D3888 /* StaffoftheFlameMagus.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30CF1B9E27F1006D3888 /* StaffoftheFlameMagus.jpg */; };
+		535C31DD1B9E27F1006D3888 /* StaffoftheMindMagus.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30D01B9E27F1006D3888 /* StaffoftheMindMagus.jpg */; };
+		535C31DE1B9E27F1006D3888 /* StaffoftheSunMagus.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30D11B9E27F1006D3888 /* StaffoftheSunMagus.jpg */; };
+		535C31DF1B9E27F1006D3888 /* StaffoftheWildMagus.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30D21B9E27F1006D3888 /* StaffoftheWildMagus.jpg */; };
+		535C31E01B9E27F1006D3888 /* StaintheMind.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30D31B9E27F1006D3888 /* StaintheMind.jpg */; };
+		535C31E11B9E27F1006D3888 /* StatuteofDenial.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30D41B9E27F1006D3888 /* StatuteofDenial.jpg */; };
+		535C31E21B9E27F1006D3888 /* StoketheFlames.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30D51B9E27F1006D3888 /* StoketheFlames.jpg */; };
+		535C31E31B9E27F1006D3888 /* StormtideLeviathan.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30D61B9E27F1006D3888 /* StormtideLeviathan.jpg */; };
+		535C31E41B9E27F1006D3888 /* SunbladeElf.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30D71B9E27F1006D3888 /* SunbladeElf.jpg */; };
+		535C31E51B9E27F1006D3888 /* SungracePegasus.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30D81B9E27F1006D3888 /* SungracePegasus.jpg */; };
+		535C31E61B9E27F1006D3888 /* Swamp.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30D91B9E27F1006D3888 /* Swamp.jpg */; };
+		535C31E71B9E27F1006D3888 /* TerraStomper.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30DA1B9E27F1006D3888 /* TerraStomper.jpg */; };
+		535C31E81B9E27F1006D3888 /* TheChainVeil.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30DB1B9E27F1006D3888 /* TheChainVeil.jpg */; };
+		535C31E91B9E27F1006D3888 /* ThunderingGiant.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30DC1B9E27F1006D3888 /* ThunderingGiant.jpg */; };
+		535C31EA1B9E27F1006D3888 /* TirelessMissionaries.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30DD1B9E27F1006D3888 /* TirelessMissionaries.jpg */; };
+		535C31EB1B9E27F1006D3888 /* TitanicGrowth.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30DE1B9E27F1006D3888 /* TitanicGrowth.jpg */; };
+		535C31EC1B9E27F1006D3888 /* TorchFiend.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30DF1B9E27F1006D3888 /* TorchFiend.jpg */; };
+		535C31ED1B9E27F1006D3888 /* TormodsCrypt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30E01B9E27F1006D3888 /* TormodsCrypt.jpg */; };
+		535C31EE1B9E27F1006D3888 /* TriplicateSpirits.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30E11B9E27F1006D3888 /* TriplicateSpirits.jpg */; };
+		535C31EF1B9E27F1006D3888 /* TurntoFrog.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30E21B9E27F1006D3888 /* TurntoFrog.jpg */; };
+		535C31F01B9E27F1006D3888 /* TyphoidRats.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30E31B9E27F1006D3888 /* TyphoidRats.jpg */; };
+		535C31F11B9E27F1006D3888 /* TyrantsMachine.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30E41B9E27F1006D3888 /* TyrantsMachine.jpg */; };
+		535C31F21B9E27F1006D3888 /* Ulcerate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30E51B9E27F1006D3888 /* Ulcerate.jpg */; };
+		535C31F31B9E27F1006D3888 /* UndergrowthScavenger.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30E61B9E27F1006D3888 /* UndergrowthScavenger.jpg */; };
+		535C31F41B9E27F1006D3888 /* UnmaketheGraves.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30E71B9E27F1006D3888 /* UnmaketheGraves.jpg */; };
+		535C31F51B9E27F1006D3888 /* UrborgTombofYawgmoth.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30E81B9E27F1006D3888 /* UrborgTombofYawgmoth.jpg */; };
+		535C31F61B9E27F1006D3888 /* VenomSliver.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30E91B9E27F1006D3888 /* VenomSliver.jpg */; };
+		535C31F71B9E27F1006D3888 /* VerdantHaven.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30EA1B9E27F1006D3888 /* VerdantHaven.jpg */; };
+		535C31F81B9E27F1006D3888 /* Vineweft.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30EB1B9E27F1006D3888 /* Vineweft.jpg */; };
+		535C31F91B9E27F1006D3888 /* VoidSnare.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30EC1B9E27F1006D3888 /* VoidSnare.jpg */; };
+		535C31FA1B9E27F1006D3888 /* WalkingCorpse.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30ED1B9E27F1006D3888 /* WalkingCorpse.jpg */; };
+		535C31FB1B9E27F1006D3888 /* WallofEssence.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30EE1B9E27F1006D3888 /* WallofEssence.jpg */; };
+		535C31FC1B9E27F1006D3888 /* WallofFire.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30EF1B9E27F1006D3888 /* WallofFire.jpg */; };
+		535C31FD1B9E27F1006D3888 /* WallofFrost.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30F01B9E27F1006D3888 /* WallofFrost.jpg */; };
+		535C31FE1B9E27F1006D3888 /* WallofLimbs.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30F11B9E27F1006D3888 /* WallofLimbs.jpg */; };
+		535C31FF1B9E27F1006D3888 /* WallofMulch.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30F21B9E27F1006D3888 /* WallofMulch.jpg */; };
+		535C32001B9E27F1006D3888 /* WardenoftheBeyond.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30F31B9E27F1006D3888 /* WardenoftheBeyond.jpg */; };
+		535C32011B9E27F1006D3888 /* WasteNot.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30F41B9E27F1006D3888 /* WasteNot.jpg */; };
+		535C32021B9E27F1006D3888 /* WelkinTern.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30F51B9E27F1006D3888 /* WelkinTern.jpg */; };
+		535C32031B9E27F1006D3888 /* WillForgedGolem.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30F61B9E27F1006D3888 /* WillForgedGolem.jpg */; };
+		535C32041B9E27F1006D3888 /* WitchsFamiliar.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30F71B9E27F1006D3888 /* WitchsFamiliar.jpg */; };
+		535C32051B9E27F1006D3888 /* XathridSlyblade.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30F81B9E27F1006D3888 /* XathridSlyblade.jpg */; };
+		535C32061B9E27F1006D3888 /* YavimayaCoast.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30F91B9E27F1006D3888 /* YavimayaCoast.jpg */; };
+		535C32071B9E27F1006D3888 /* YisantheWandererBard.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30FA1B9E27F1006D3888 /* YisantheWandererBard.jpg */; };
+		535C32081B9E27F1006D3888 /* ZofShade.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30FB1B9E27F1006D3888 /* ZofShade.jpg */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		535C2FD11B9E1B73006D3888 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 535C2FAF1B9E1B73006D3888 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 535C2FB61B9E1B73006D3888;
+			remoteInfo = MTG_iOS;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		535C2FB71B9E1B73006D3888 /* MTG_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MTG_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		535C2FBB1B9E1B73006D3888 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		535C2FBC1B9E1B73006D3888 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		535C2FBE1B9E1B73006D3888 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		535C2FBF1B9E1B73006D3888 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		535C2FC11B9E1B73006D3888 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		535C2FC21B9E1B73006D3888 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		535C2FC51B9E1B73006D3888 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		535C2FC71B9E1B73006D3888 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		535C2FCA1B9E1B73006D3888 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		535C2FD01B9E1B73006D3888 /* MTG_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MTG_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		535C2FD51B9E1B73006D3888 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		535C2FD61B9E1B73006D3888 /* MTG_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MTG_iOSTests.m; sourceTree = "<group>"; };
+		535C2FE21B9E1CB1006D3888 /* cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = cover.jpg; path = ../../images/cover.jpg; sourceTree = "<group>"; };
+		535C2FE41B9E1D4A006D3888 /* CardData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = CardData.c; path = ../../CardData.c; sourceTree = "<group>"; };
+		535C2FE51B9E1D4A006D3888 /* CardData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CardData.h; path = ../../CardData.h; sourceTree = "<group>"; };
+		535C2FE61B9E1D4A006D3888 /* List.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = List.c; path = ../../List.c; sourceTree = "<group>"; };
+		535C2FE71B9E1D4A006D3888 /* List.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = List.h; path = ../../List.h; sourceTree = "<group>"; };
+		535C2FE81B9E1D4A006D3888 /* MTGCard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MTGCard.c; path = ../../MTGCard.c; sourceTree = "<group>"; };
+		535C2FEC1B9E1D7B006D3888 /* MTGCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTGCard.h; path = ../../MTGCard.h; sourceTree = "<group>"; };
+		535C2FED1B9E1D7B006D3888 /* Subtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Subtypes.h; path = ../../Subtypes.h; sourceTree = "<group>"; };
+		535C2FEE1B9E1D7B006D3888 /* Types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Types.h; path = ../../Types.h; sourceTree = "<group>"; };
+		535C2FEF1B9E27F0006D3888 /* AccursedSpirit.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AccursedSpirit.jpg; path = ../../images/AccursedSpirit.jpg; sourceTree = "<group>"; };
+		535C2FF01B9E27F0006D3888 /* ActonImpulse.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ActonImpulse.jpg; path = ../../images/ActonImpulse.jpg; sourceTree = "<group>"; };
+		535C2FF11B9E27F0006D3888 /* AegisAngel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AegisAngel.jpg; path = ../../images/AegisAngel.jpg; sourceTree = "<group>"; };
+		535C2FF21B9E27F0006D3888 /* AeronautTinkerer.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AeronautTinkerer.jpg; path = ../../images/AeronautTinkerer.jpg; sourceTree = "<group>"; };
+		535C2FF31B9E27F0006D3888 /* Aetherspouts.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Aetherspouts.jpg; path = ../../images/Aetherspouts.jpg; sourceTree = "<group>"; };
+		535C2FF41B9E27F0006D3888 /* AggressiveMining.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AggressiveMining.jpg; path = ../../images/AggressiveMining.jpg; sourceTree = "<group>"; };
+		535C2FF51B9E27F0006D3888 /* AjanisPridemate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AjanisPridemate.jpg; path = ../../images/AjanisPridemate.jpg; sourceTree = "<group>"; };
+		535C2FF61B9E27F0006D3888 /* AjaniSteadfast.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AjaniSteadfast.jpg; path = ../../images/AjaniSteadfast.jpg; sourceTree = "<group>"; };
+		535C2FF71B9E27F0006D3888 /* AltacBloodseeker.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AltacBloodseeker.jpg; path = ../../images/AltacBloodseeker.jpg; sourceTree = "<group>"; };
+		535C2FF81B9E27F0006D3888 /* AmphinPathmage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AmphinPathmage.jpg; path = ../../images/AmphinPathmage.jpg; sourceTree = "<group>"; };
+		535C2FF91B9E27F0006D3888 /* AncientSilverback.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AncientSilverback.jpg; path = ../../images/AncientSilverback.jpg; sourceTree = "<group>"; };
+		535C2FFA1B9E27F0006D3888 /* AvacynGuardianAngel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AvacynGuardianAngel.jpg; path = ../../images/AvacynGuardianAngel.jpg; sourceTree = "<group>"; };
+		535C2FFB1B9E27F0006D3888 /* AvariceAmulet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AvariceAmulet.jpg; path = ../../images/AvariceAmulet.jpg; sourceTree = "<group>"; };
+		535C2FFC1B9E27F0006D3888 /* BacktoNature.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BacktoNature.jpg; path = ../../images/BacktoNature.jpg; sourceTree = "<group>"; };
+		535C2FFD1B9E27F0006D3888 /* BattlefieldForge.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BattlefieldForge.jpg; path = ../../images/BattlefieldForge.jpg; sourceTree = "<group>"; };
+		535C2FFE1B9E27F0006D3888 /* BattleMastery.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BattleMastery.jpg; path = ../../images/BattleMastery.jpg; sourceTree = "<group>"; };
+		535C2FFF1B9E27F0006D3888 /* BelligerentSliver.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BelligerentSliver.jpg; path = ../../images/BelligerentSliver.jpg; sourceTree = "<group>"; };
+		535C30001B9E27F0006D3888 /* BlackCat.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BlackCat.jpg; path = ../../images/BlackCat.jpg; sourceTree = "<group>"; };
+		535C30011B9E27F0006D3888 /* BlastfireBolt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BlastfireBolt.jpg; path = ../../images/BlastfireBolt.jpg; sourceTree = "<group>"; };
+		535C30021B9E27F0006D3888 /* BloodHost.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BloodHost.jpg; path = ../../images/BloodHost.jpg; sourceTree = "<group>"; };
+		535C30031B9E27F0006D3888 /* BoonweaverGiant.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BoonweaverGiant.jpg; path = ../../images/BoonweaverGiant.jpg; sourceTree = "<group>"; };
+		535C30041B9E27F0006D3888 /* BorderlandMarauder.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BorderlandMarauder.jpg; path = ../../images/BorderlandMarauder.jpg; sourceTree = "<group>"; };
+		535C30051B9E27F0006D3888 /* BrawlersPlate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BrawlersPlate.jpg; path = ../../images/BrawlersPlate.jpg; sourceTree = "<group>"; };
+		535C30061B9E27F0006D3888 /* BronzeSable.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BronzeSable.jpg; path = ../../images/BronzeSable.jpg; sourceTree = "<group>"; };
+		535C30071B9E27F0006D3888 /* BroodKeeper.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BroodKeeper.jpg; path = ../../images/BroodKeeper.jpg; sourceTree = "<group>"; };
+		535C30081B9E27F0006D3888 /* BurningAnger.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = BurningAnger.jpg; path = ../../images/BurningAnger.jpg; sourceTree = "<group>"; };
+		535C30091B9E27F0006D3888 /* Cancel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Cancel.jpg; path = ../../images/Cancel.jpg; sourceTree = "<group>"; };
+		535C300A1B9E27F0006D3888 /* CarnivorousMossBeast.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CarnivorousMossBeast.jpg; path = ../../images/CarnivorousMossBeast.jpg; sourceTree = "<group>"; };
+		535C300B1B9E27F0006D3888 /* CarrionCrow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CarrionCrow.jpg; path = ../../images/CarrionCrow.jpg; sourceTree = "<group>"; };
+		535C300C1B9E27F0006D3888 /* CausticTar.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CausticTar.jpg; path = ../../images/CausticTar.jpg; sourceTree = "<group>"; };
+		535C300D1B9E27F0006D3888 /* CavesofKoilos.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CavesofKoilos.jpg; path = ../../images/CavesofKoilos.jpg; sourceTree = "<group>"; };
+		535C300E1B9E27F0006D3888 /* CentaurCourser.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CentaurCourser.jpg; path = ../../images/CentaurCourser.jpg; sourceTree = "<group>"; };
+		535C300F1B9E27F0006D3888 /* ChandraPyromaster.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ChandraPyromaster.jpg; path = ../../images/ChandraPyromaster.jpg; sourceTree = "<group>"; };
+		535C30101B9E27F0006D3888 /* ChargingRhino.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ChargingRhino.jpg; path = ../../images/ChargingRhino.jpg; sourceTree = "<group>"; };
+		535C30111B9E27F0006D3888 /* ChasmSkulker.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ChasmSkulker.jpg; path = ../../images/ChasmSkulker.jpg; sourceTree = "<group>"; };
+		535C30121B9E27F0006D3888 /* ChiefEngineer.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ChiefEngineer.jpg; path = ../../images/ChiefEngineer.jpg; sourceTree = "<group>"; };
+		535C30131B9E27F0006D3888 /* ChildofNight.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ChildofNight.jpg; path = ../../images/ChildofNight.jpg; sourceTree = "<group>"; };
+		535C30141B9E27F0006D3888 /* ChordofCalling.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ChordofCalling.jpg; path = ../../images/ChordofCalling.jpg; sourceTree = "<group>"; };
+		535C30151B9E27F0006D3888 /* Chronostutter.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Chronostutter.jpg; path = ../../images/Chronostutter.jpg; sourceTree = "<group>"; };
+		535C30161B9E27F0006D3888 /* CircleofFlame.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CircleofFlame.jpg; path = ../../images/CircleofFlame.jpg; sourceTree = "<group>"; };
+		535C30171B9E27F0006D3888 /* ClearaPath.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ClearaPath.jpg; path = ../../images/ClearaPath.jpg; sourceTree = "<group>"; };
+		535C30181B9E27F0006D3888 /* ConeofFlame.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ConeofFlame.jpg; path = ../../images/ConeofFlame.jpg; sourceTree = "<group>"; };
+		535C30191B9E27F0006D3888 /* Congregate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Congregate.jpg; path = ../../images/Congregate.jpg; sourceTree = "<group>"; };
+		535C301A1B9E27F0006D3888 /* ConstrictingSliver.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ConstrictingSliver.jpg; path = ../../images/ConstrictingSliver.jpg; sourceTree = "<group>"; };
+		535C301B1B9E27F0006D3888 /* CoralBarrier.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CoralBarrier.jpg; path = ../../images/CoralBarrier.jpg; sourceTree = "<group>"; };
+		535C301C1B9E27F0006D3888 /* CovenantofBlood.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CovenantofBlood.jpg; path = ../../images/CovenantofBlood.jpg; sourceTree = "<group>"; };
+		535C301D1B9E27F0006D3888 /* CripplingBlight.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CripplingBlight.jpg; path = ../../images/CripplingBlight.jpg; sourceTree = "<group>"; };
+		535C301E1B9E27F0006D3888 /* CrowdsFavor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CrowdsFavor.jpg; path = ../../images/CrowdsFavor.jpg; sourceTree = "<group>"; };
+		535C301F1B9E27F1006D3888 /* CrucibleofFire.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CrucibleofFire.jpg; path = ../../images/CrucibleofFire.jpg; sourceTree = "<group>"; };
+		535C30201B9E27F1006D3888 /* CruelSadist.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = CruelSadist.jpg; path = ../../images/CruelSadist.jpg; sourceTree = "<group>"; };
+		535C30211B9E27F1006D3888 /* DarksteelCitadel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = DarksteelCitadel.jpg; path = ../../images/DarksteelCitadel.jpg; sourceTree = "<group>"; };
+		535C30221B9E27F1006D3888 /* DauntlessRiverMarshal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = DauntlessRiverMarshal.jpg; path = ../../images/DauntlessRiverMarshal.jpg; sourceTree = "<group>"; };
+		535C30231B9E27F1006D3888 /* DevouringLight.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = DevouringLight.jpg; path = ../../images/DevouringLight.jpg; sourceTree = "<group>"; };
+		535C30241B9E27F1006D3888 /* DiffusionSliver.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = DiffusionSliver.jpg; path = ../../images/DiffusionSliver.jpg; sourceTree = "<group>"; };
+		535C30251B9E27F1006D3888 /* Dissipate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Dissipate.jpg; path = ../../images/Dissipate.jpg; sourceTree = "<group>"; };
+		535C30261B9E27F1006D3888 /* Divination.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Divination.jpg; path = ../../images/Divination.jpg; sourceTree = "<group>"; };
+		535C30271B9E27F1006D3888 /* DivineFavor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = DivineFavor.jpg; path = ../../images/DivineFavor.jpg; sourceTree = "<group>"; };
+		535C30281B9E27F1006D3888 /* DivineVerdict.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = DivineVerdict.jpg; path = ../../images/DivineVerdict.jpg; sourceTree = "<group>"; };
+		535C30291B9E27F1006D3888 /* ElvishMystic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ElvishMystic.jpg; path = ../../images/ElvishMystic.jpg; sourceTree = "<group>"; };
+		535C302A1B9E27F1006D3888 /* Encrust.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Encrust.jpg; path = ../../images/Encrust.jpg; sourceTree = "<group>"; };
+		535C302B1B9E27F1006D3888 /* EndlessObedience.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = EndlessObedience.jpg; path = ../../images/EndlessObedience.jpg; sourceTree = "<group>"; };
+		535C302C1B9E27F1006D3888 /* EnsoulArtifact.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = EnsoulArtifact.jpg; path = ../../images/EnsoulArtifact.jpg; sourceTree = "<group>"; };
+		535C302D1B9E27F1006D3888 /* EphemeralShields.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = EphemeralShields.jpg; path = ../../images/EphemeralShields.jpg; sourceTree = "<group>"; };
+		535C302E1B9E27F1006D3888 /* EternalThirst.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = EternalThirst.jpg; path = ../../images/EternalThirst.jpg; sourceTree = "<group>"; };
+		535C302F1B9E27F1006D3888 /* EvolvingWilds.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = EvolvingWilds.jpg; path = ../../images/EvolvingWilds.jpg; sourceTree = "<group>"; };
+		535C30301B9E27F1006D3888 /* FeastontheFallen.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = FeastontheFallen.jpg; path = ../../images/FeastontheFallen.jpg; sourceTree = "<group>"; };
+		535C30311B9E27F1006D3888 /* FeralIncarnation.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = FeralIncarnation.jpg; path = ../../images/FeralIncarnation.jpg; sourceTree = "<group>"; };
+		535C30321B9E27F1006D3888 /* Festergloom.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Festergloom.jpg; path = ../../images/Festergloom.jpg; sourceTree = "<group>"; };
+		535C30331B9E27F1006D3888 /* FirstResponse.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = FirstResponse.jpg; path = ../../images/FirstResponse.jpg; sourceTree = "<group>"; };
+		535C30341B9E27F1006D3888 /* FleshtoDust.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = FleshtoDust.jpg; path = ../../images/FleshtoDust.jpg; sourceTree = "<group>"; };
+		535C30351B9E27F1006D3888 /* Forest.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Forest.jpg; path = ../../images/Forest.jpg; sourceTree = "<group>"; };
+		535C30361B9E27F1006D3888 /* ForgeDevil.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ForgeDevil.jpg; path = ../../images/ForgeDevil.jpg; sourceTree = "<group>"; };
+		535C30371B9E27F1006D3888 /* FoundryStreetDenizen.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = FoundryStreetDenizen.jpg; path = ../../images/FoundryStreetDenizen.jpg; sourceTree = "<group>"; };
+		535C30381B9E27F1006D3888 /* FrenziedGoblin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = FrenziedGoblin.jpg; path = ../../images/FrenziedGoblin.jpg; sourceTree = "<group>"; };
+		535C30391B9E27F1006D3888 /* FrostLynx.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = FrostLynx.jpg; path = ../../images/FrostLynx.jpg; sourceTree = "<group>"; };
+		535C303A1B9E27F1006D3888 /* FugitiveWizard.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = FugitiveWizard.jpg; path = ../../images/FugitiveWizard.jpg; sourceTree = "<group>"; };
+		535C303B1B9E27F1006D3888 /* FurnaceWhelp.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = FurnaceWhelp.jpg; path = ../../images/FurnaceWhelp.jpg; sourceTree = "<group>"; };
+		535C303C1B9E27F1006D3888 /* GargoyleSentinel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GargoyleSentinel.jpg; path = ../../images/GargoyleSentinel.jpg; sourceTree = "<group>"; };
+		535C303D1B9E27F1006D3888 /* GarrukApexPredator.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GarrukApexPredator.jpg; path = ../../images/GarrukApexPredator.jpg; sourceTree = "<group>"; };
+		535C303E1B9E27F1006D3888 /* GarruksPackleader.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GarruksPackleader.jpg; path = ../../images/GarruksPackleader.jpg; sourceTree = "<group>"; };
+		535C303F1B9E27F1006D3888 /* GatherCourage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GatherCourage.jpg; path = ../../images/GatherCourage.jpg; sourceTree = "<group>"; };
+		535C30401B9E27F1006D3888 /* GeistoftheMoors.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GeistoftheMoors.jpg; path = ../../images/GeistoftheMoors.jpg; sourceTree = "<group>"; };
+		535C30411B9E27F1006D3888 /* GeneratorServant.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GeneratorServant.jpg; path = ../../images/GeneratorServant.jpg; sourceTree = "<group>"; };
+		535C30421B9E27F1006D3888 /* GenesisHydra.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GenesisHydra.jpg; path = ../../images/GenesisHydra.jpg; sourceTree = "<group>"; };
+		535C30431B9E27F1006D3888 /* GlacialCrasher.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GlacialCrasher.jpg; path = ../../images/GlacialCrasher.jpg; sourceTree = "<group>"; };
+		535C30441B9E27F1006D3888 /* GoblinKaboomist.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GoblinKaboomist.jpg; path = ../../images/GoblinKaboomist.jpg; sourceTree = "<group>"; };
+		535C30451B9E27F1006D3888 /* GoblinRabblemaster.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GoblinRabblemaster.jpg; path = ../../images/GoblinRabblemaster.jpg; sourceTree = "<group>"; };
+		535C30461B9E27F1006D3888 /* GoblinRoughrider.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = GoblinRoughrider.jpg; path = ../../images/GoblinRoughrider.jpg; sourceTree = "<group>"; };
+		535C30471B9E27F1006D3888 /* Gravedigger.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Gravedigger.jpg; path = ../../images/Gravedigger.jpg; sourceTree = "<group>"; };
+		535C30481B9E27F1006D3888 /* Grindclock.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Grindclock.jpg; path = ../../images/Grindclock.jpg; sourceTree = "<group>"; };
+		535C30491B9E27F1006D3888 /* Hammerhand.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Hammerhand.jpg; path = ../../images/Hammerhand.jpg; sourceTree = "<group>"; };
+		535C304A1B9E27F1006D3888 /* HauntedPlateMail.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = HauntedPlateMail.jpg; path = ../../images/HauntedPlateMail.jpg; sourceTree = "<group>"; };
+		535C304B1B9E27F1006D3888 /* HeatRay.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = HeatRay.jpg; path = ../../images/HeatRay.jpg; sourceTree = "<group>"; };
+		535C304C1B9E27F1006D3888 /* HeliodsPilgrim.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = HeliodsPilgrim.jpg; path = ../../images/HeliodsPilgrim.jpg; sourceTree = "<group>"; };
+		535C304D1B9E27F1006D3888 /* HoardingDragon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = HoardingDragon.jpg; path = ../../images/HoardingDragon.jpg; sourceTree = "<group>"; };
+		535C304E1B9E27F1006D3888 /* HornetNest.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = HornetNest.jpg; path = ../../images/HornetNest.jpg; sourceTree = "<group>"; };
+		535C304F1B9E27F1006D3888 /* HornetQueen.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = HornetQueen.jpg; path = ../../images/HornetQueen.jpg; sourceTree = "<group>"; };
+		535C30501B9E27F1006D3888 /* HotSoup.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = HotSoup.jpg; path = ../../images/HotSoup.jpg; sourceTree = "<group>"; };
+		535C30511B9E27F1006D3888 /* HuntersAmbush.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = HuntersAmbush.jpg; path = ../../images/HuntersAmbush.jpg; sourceTree = "<group>"; };
+		535C30521B9E27F1006D3888 /* HunttheWeak.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = HunttheWeak.jpg; path = ../../images/HunttheWeak.jpg; sourceTree = "<group>"; };
+		535C30531B9E27F1006D3888 /* HushwingGryff.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = HushwingGryff.jpg; path = ../../images/HushwingGryff.jpg; sourceTree = "<group>"; };
+		535C30541B9E27F1006D3888 /* Hydrosurge.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Hydrosurge.jpg; path = ../../images/Hydrosurge.jpg; sourceTree = "<group>"; };
+		535C30551B9E27F1006D3888 /* IllusoryAngel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = IllusoryAngel.jpg; path = ../../images/IllusoryAngel.jpg; sourceTree = "<group>"; };
+		535C30561B9E27F1006D3888 /* IndulgentTormentor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = IndulgentTormentor.jpg; path = ../../images/IndulgentTormentor.jpg; sourceTree = "<group>"; };
+		535C30571B9E27F1006D3888 /* InfernoFist.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = InfernoFist.jpg; path = ../../images/InfernoFist.jpg; sourceTree = "<group>"; };
+		535C30581B9E27F1006D3888 /* InGarruksWake.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = InGarruksWake.jpg; path = ../../images/InGarruksWake.jpg; sourceTree = "<group>"; };
+		535C30591B9E27F1006D3888 /* InspiredCharge.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = InspiredCharge.jpg; path = ../../images/InspiredCharge.jpg; sourceTree = "<group>"; };
+		535C305A1B9E27F1006D3888 /* IntotheVoid.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = IntotheVoid.jpg; path = ../../images/IntotheVoid.jpg; sourceTree = "<group>"; };
+		535C305B1B9E27F1006D3888 /* InvasiveSpecies.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = InvasiveSpecies.jpg; path = ../../images/InvasiveSpecies.jpg; sourceTree = "<group>"; };
+		535C305C1B9E27F1006D3888 /* Invisibility.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Invisibility.jpg; path = ../../images/Invisibility.jpg; sourceTree = "<group>"; };
+		535C305D1B9E27F1006D3888 /* Island.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Island.jpg; path = ../../images/Island.jpg; sourceTree = "<group>"; };
+		535C305E1B9E27F1006D3888 /* JacesIngenuity.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = JacesIngenuity.jpg; path = ../../images/JacesIngenuity.jpg; sourceTree = "<group>"; };
+		535C305F1B9E27F1006D3888 /* JacetheLivingGuildpact.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = JacetheLivingGuildpact.jpg; path = ../../images/JacetheLivingGuildpact.jpg; sourceTree = "<group>"; };
+		535C30601B9E27F1006D3888 /* JaliraMasterPolymorphist.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = JaliraMasterPolymorphist.jpg; path = ../../images/JaliraMasterPolymorphist.jpg; sourceTree = "<group>"; };
+		535C30611B9E27F1006D3888 /* JorubaiMurkLurker.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = JorubaiMurkLurker.jpg; path = ../../images/JorubaiMurkLurker.jpg; sourceTree = "<group>"; };
+		535C30621B9E27F1006D3888 /* Juggernaut.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Juggernaut.jpg; path = ../../images/Juggernaut.jpg; sourceTree = "<group>"; };
+		535C30631B9E27F1006D3888 /* KalonianTwingrove.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = KalonianTwingrove.jpg; path = ../../images/KalonianTwingrove.jpg; sourceTree = "<group>"; };
+		535C30641B9E27F1006D3888 /* KapshoKitefins.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = KapshoKitefins.jpg; path = ../../images/KapshoKitefins.jpg; sourceTree = "<group>"; };
+		535C30651B9E27F1006D3888 /* KinsbaileSkirmisher.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = KinsbaileSkirmisher.jpg; path = ../../images/KinsbaileSkirmisher.jpg; sourceTree = "<group>"; };
+		535C30661B9E27F1006D3888 /* KirdChieftain.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = KirdChieftain.jpg; path = ../../images/KirdChieftain.jpg; sourceTree = "<group>"; };
+		535C30671B9E27F1006D3888 /* KrenkosEnforcer.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = KrenkosEnforcer.jpg; path = ../../images/KrenkosEnforcer.jpg; sourceTree = "<group>"; };
+		535C30681B9E27F1006D3888 /* KurkeshOnakkeAncient.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = KurkeshOnakkeAncient.jpg; path = ../../images/KurkeshOnakkeAncient.jpg; sourceTree = "<group>"; };
+		535C30691B9E27F1006D3888 /* LavaAxe.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = LavaAxe.jpg; path = ../../images/LavaAxe.jpg; sourceTree = "<group>"; };
+		535C306A1B9E27F1006D3888 /* LeechingSliver.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = LeechingSliver.jpg; path = ../../images/LeechingSliver.jpg; sourceTree = "<group>"; };
+		535C306B1B9E27F1006D3888 /* LifesLegacy.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = LifesLegacy.jpg; path = ../../images/LifesLegacy.jpg; sourceTree = "<group>"; };
+		535C306C1B9E27F1006D3888 /* LightningStrike.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = LightningStrike.jpg; path = ../../images/LightningStrike.jpg; sourceTree = "<group>"; };
+		535C306D1B9E27F1006D3888 /* LilianaVess.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = LilianaVess.jpg; path = ../../images/LilianaVess.jpg; sourceTree = "<group>"; };
+		535C306E1B9E27F1006D3888 /* LivingTotem.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = LivingTotem.jpg; path = ../../images/LivingTotem.jpg; sourceTree = "<group>"; };
+		535C306F1B9E27F1006D3888 /* LlanowarWastes.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = LlanowarWastes.jpg; path = ../../images/LlanowarWastes.jpg; sourceTree = "<group>"; };
+		535C30701B9E27F1006D3888 /* MahamotiDjinn.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MahamotiDjinn.jpg; path = ../../images/MahamotiDjinn.jpg; sourceTree = "<group>"; };
+		535C30711B9E27F1006D3888 /* MarkedbyHonor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MarkedbyHonor.jpg; path = ../../images/MarkedbyHonor.jpg; sourceTree = "<group>"; };
+		535C30721B9E27F1006D3888 /* MassCalcify.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MassCalcify.jpg; path = ../../images/MassCalcify.jpg; sourceTree = "<group>"; };
+		535C30731B9E27F1006D3888 /* MasterofPredicaments.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MasterofPredicaments.jpg; path = ../../images/MasterofPredicaments.jpg; sourceTree = "<group>"; };
+		535C30741B9E27F1006D3888 /* MeditationPuzzle.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MeditationPuzzle.jpg; path = ../../images/MeditationPuzzle.jpg; sourceTree = "<group>"; };
+		535C30751B9E27F1006D3888 /* MercurialPretender.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MercurialPretender.jpg; path = ../../images/MercurialPretender.jpg; sourceTree = "<group>"; };
+		535C30761B9E27F1006D3888 /* Meteorite.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Meteorite.jpg; path = ../../images/Meteorite.jpg; sourceTree = "<group>"; };
+		535C30771B9E27F1006D3888 /* MidnightGuard.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MidnightGuard.jpg; path = ../../images/MidnightGuard.jpg; sourceTree = "<group>"; };
+		535C30781B9E27F1006D3888 /* MightMakesRight.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MightMakesRight.jpg; path = ../../images/MightMakesRight.jpg; sourceTree = "<group>"; };
+		535C30791B9E27F1006D3888 /* MilitaryIntelligence.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MilitaryIntelligence.jpg; path = ../../images/MilitaryIntelligence.jpg; sourceTree = "<group>"; };
+		535C307A1B9E27F1006D3888 /* MindRot.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MindRot.jpg; path = ../../images/MindRot.jpg; sourceTree = "<group>"; };
+		535C307B1B9E27F1006D3888 /* MindSculpt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MindSculpt.jpg; path = ../../images/MindSculpt.jpg; sourceTree = "<group>"; };
+		535C307C1B9E27F1006D3888 /* MinersBane.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = MinersBane.jpg; path = ../../images/MinersBane.jpg; sourceTree = "<group>"; };
+		535C307D1B9E27F1006D3888 /* Mountain.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Mountain.jpg; path = ../../images/Mountain.jpg; sourceTree = "<group>"; };
+		535C307E1B9E27F1006D3888 /* Naturalize.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Naturalize.jpg; path = ../../images/Naturalize.jpg; sourceTree = "<group>"; };
+		535C307F1B9E27F1006D3888 /* Necrobite.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Necrobite.jpg; path = ../../images/Necrobite.jpg; sourceTree = "<group>"; };
+		535C30801B9E27F1006D3888 /* NecrogenScudder.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = NecrogenScudder.jpg; path = ../../images/NecrogenScudder.jpg; sourceTree = "<group>"; };
+		535C30811B9E27F1006D3888 /* NecromancersAssistant.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = NecromancersAssistant.jpg; path = ../../images/NecromancersAssistant.jpg; sourceTree = "<group>"; };
+		535C30821B9E27F1006D3888 /* NecromancersStockpile.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = NecromancersStockpile.jpg; path = ../../images/NecromancersStockpile.jpg; sourceTree = "<group>"; };
+		535C30831B9E27F1006D3888 /* Negate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Negate.jpg; path = ../../images/Negate.jpg; sourceTree = "<group>"; };
+		535C30841B9E27F1006D3888 /* NetcasterSpider.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = NetcasterSpider.jpg; path = ../../images/NetcasterSpider.jpg; sourceTree = "<group>"; };
+		535C30851B9E27F1006D3888 /* NightfireGiant.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = NightfireGiant.jpg; path = ../../images/NightfireGiant.jpg; sourceTree = "<group>"; };
+		535C30861B9E27F1006D3888 /* Nightmare.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Nightmare.jpg; path = ../../images/Nightmare.jpg; sourceTree = "<group>"; };
+		535C30871B9E27F1006D3888 /* NimbusoftheIsles.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = NimbusoftheIsles.jpg; path = ../../images/NimbusoftheIsles.jpg; sourceTree = "<group>"; };
+		535C30881B9E27F1006D3888 /* NissasExpedition.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = NissasExpedition.jpg; path = ../../images/NissasExpedition.jpg; sourceTree = "<group>"; };
+		535C30891B9E27F1006D3888 /* NissaWorldwaker.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = NissaWorldwaker.jpg; path = ../../images/NissaWorldwaker.jpg; sourceTree = "<group>"; };
+		535C308A1B9E27F1006D3888 /* ObeliskofUrd.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ObeliskofUrd.jpg; path = ../../images/ObeliskofUrd.jpg; sourceTree = "<group>"; };
+		535C308B1B9E27F1006D3888 /* ObNixilisUnshackled.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ObNixilisUnshackled.jpg; path = ../../images/ObNixilisUnshackled.jpg; sourceTree = "<group>"; };
+		535C308C1B9E27F1006D3888 /* OppressiveRays.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = OppressiveRays.jpg; path = ../../images/OppressiveRays.jpg; sourceTree = "<group>"; };
+		535C308D1B9E27F1006D3888 /* OreskosSwiftclaw.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = OreskosSwiftclaw.jpg; path = ../../images/OreskosSwiftclaw.jpg; sourceTree = "<group>"; };
+		535C308E1B9E27F1006D3888 /* Ornithopter.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Ornithopter.jpg; path = ../../images/Ornithopter.jpg; sourceTree = "<group>"; };
+		535C308F1B9E27F1006D3888 /* Overwhelm.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Overwhelm.jpg; path = ../../images/Overwhelm.jpg; sourceTree = "<group>"; };
+		535C30901B9E27F1006D3888 /* ParagonofEternalWilds.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ParagonofEternalWilds.jpg; path = ../../images/ParagonofEternalWilds.jpg; sourceTree = "<group>"; };
+		535C30911B9E27F1006D3888 /* ParagonofFierceDefiance.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ParagonofFierceDefiance.jpg; path = ../../images/ParagonofFierceDefiance.jpg; sourceTree = "<group>"; };
+		535C30921B9E27F1006D3888 /* ParagonofGatheringMists.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ParagonofGatheringMists.jpg; path = ../../images/ParagonofGatheringMists.jpg; sourceTree = "<group>"; };
+		535C30931B9E27F1006D3888 /* ParagonofNewDawns.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ParagonofNewDawns.jpg; path = ../../images/ParagonofNewDawns.jpg; sourceTree = "<group>"; };
+		535C30941B9E27F1006D3888 /* ParagonofOpenGraves.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ParagonofOpenGraves.jpg; path = ../../images/ParagonofOpenGraves.jpg; sourceTree = "<group>"; };
+		535C30951B9E27F1006D3888 /* PeelfromReality.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PeelfromReality.jpg; path = ../../images/PeelfromReality.jpg; sourceTree = "<group>"; };
+		535C30961B9E27F1006D3888 /* PerilousVault.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PerilousVault.jpg; path = ../../images/PerilousVault.jpg; sourceTree = "<group>"; };
+		535C30971B9E27F1006D3888 /* PhyrexianRevoker.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PhyrexianRevoker.jpg; path = ../../images/PhyrexianRevoker.jpg; sourceTree = "<group>"; };
+		535C30981B9E27F1006D3888 /* Phytotitan.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Phytotitan.jpg; path = ../../images/Phytotitan.jpg; sourceTree = "<group>"; };
+		535C30991B9E27F1006D3888 /* PillarofLight.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PillarofLight.jpg; path = ../../images/PillarofLight.jpg; sourceTree = "<group>"; };
+		535C309A1B9E27F1006D3888 /* Plains.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Plains.jpg; path = ../../images/Plains.jpg; sourceTree = "<group>"; };
+		535C309B1B9E27F1006D3888 /* Plummet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Plummet.jpg; path = ../../images/Plummet.jpg; sourceTree = "<group>"; };
+		535C309C1B9E27F1006D3888 /* PolymorphistsJest.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PolymorphistsJest.jpg; path = ../../images/PolymorphistsJest.jpg; sourceTree = "<group>"; };
+		535C309D1B9E27F1006D3888 /* PreeminentCaptain.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = PreeminentCaptain.jpg; path = ../../images/PreeminentCaptain.jpg; sourceTree = "<group>"; };
+		535C309E1B9E27F1006D3888 /* ProfaneMemento.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ProfaneMemento.jpg; path = ../../images/ProfaneMemento.jpg; sourceTree = "<group>"; };
+		535C309F1B9E27F1006D3888 /* Quickling.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Quickling.jpg; path = ../../images/Quickling.jpg; sourceTree = "<group>"; };
+		535C30A01B9E27F1006D3888 /* RadiantFountain.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = RadiantFountain.jpg; path = ../../images/RadiantFountain.jpg; sourceTree = "<group>"; };
+		535C30A11B9E27F1006D3888 /* RaisetheAlarm.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = RaisetheAlarm.jpg; path = ../../images/RaisetheAlarm.jpg; sourceTree = "<group>"; };
+		535C30A21B9E27F1006D3888 /* RangersGuile.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = RangersGuile.jpg; path = ../../images/RangersGuile.jpg; sourceTree = "<group>"; };
+		535C30A31B9E27F1006D3888 /* RazorfootGriffin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = RazorfootGriffin.jpg; path = ../../images/RazorfootGriffin.jpg; sourceTree = "<group>"; };
+		535C30A41B9E27F1006D3888 /* ReclamationSage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ReclamationSage.jpg; path = ../../images/ReclamationSage.jpg; sourceTree = "<group>"; };
+		535C30A51B9E27F1006D3888 /* ResearchAssistant.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ResearchAssistant.jpg; path = ../../images/ResearchAssistant.jpg; sourceTree = "<group>"; };
+		535C30A61B9E27F1006D3888 /* ResoluteArchangel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ResoluteArchangel.jpg; path = ../../images/ResoluteArchangel.jpg; sourceTree = "<group>"; };
+		535C30A71B9E27F1006D3888 /* Restock.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Restock.jpg; path = ../../images/Restock.jpg; sourceTree = "<group>"; };
+		535C30A81B9E27F1006D3888 /* ReturntotheRanks.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ReturntotheRanks.jpg; path = ../../images/ReturntotheRanks.jpg; sourceTree = "<group>"; };
+		535C30A91B9E27F1006D3888 /* RoaringPrimadox.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = RoaringPrimadox.jpg; path = ../../images/RoaringPrimadox.jpg; sourceTree = "<group>"; };
+		535C30AA1B9E27F1006D3888 /* RoguesGloves.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = RoguesGloves.jpg; path = ../../images/RoguesGloves.jpg; sourceTree = "<group>"; };
+		535C30AB1B9E27F1006D3888 /* RotfeasterMaggot.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = RotfeasterMaggot.jpg; path = ../../images/RotfeasterMaggot.jpg; sourceTree = "<group>"; };
+		535C30AC1B9E27F1006D3888 /* RummagingGoblin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = RummagingGoblin.jpg; path = ../../images/RummagingGoblin.jpg; sourceTree = "<group>"; };
+		535C30AD1B9E27F1006D3888 /* RuneclawBear.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = RuneclawBear.jpg; path = ../../images/RuneclawBear.jpg; sourceTree = "<group>"; };
+		535C30AE1B9E27F1006D3888 /* SacredArmory.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SacredArmory.jpg; path = ../../images/SacredArmory.jpg; sourceTree = "<group>"; };
+		535C30AF1B9E27F1006D3888 /* SanctifiedCharge.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SanctifiedCharge.jpg; path = ../../images/SanctifiedCharge.jpg; sourceTree = "<group>"; };
+		535C30B01B9E27F1006D3888 /* SatyrWayfinder.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SatyrWayfinder.jpg; path = ../../images/SatyrWayfinder.jpg; sourceTree = "<group>"; };
+		535C30B11B9E27F1006D3888 /* ScrapyardMongrel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ScrapyardMongrel.jpg; path = ../../images/ScrapyardMongrel.jpg; sourceTree = "<group>"; };
+		535C30B21B9E27F1006D3888 /* ScuttlingDoomEngine.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ScuttlingDoomEngine.jpg; path = ../../images/ScuttlingDoomEngine.jpg; sourceTree = "<group>"; };
+		535C30B31B9E27F1006D3888 /* SeismicStrike.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SeismicStrike.jpg; path = ../../images/SeismicStrike.jpg; sourceTree = "<group>"; };
+		535C30B41B9E27F1006D3888 /* SelflessCathar.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SelflessCathar.jpg; path = ../../images/SelflessCathar.jpg; sourceTree = "<group>"; };
+		535C30B51B9E27F1006D3888 /* SengirVampire.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SengirVampire.jpg; path = ../../images/SengirVampire.jpg; sourceTree = "<group>"; };
+		535C30B61B9E27F1006D3888 /* SeraphoftheMasses.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SeraphoftheMasses.jpg; path = ../../images/SeraphoftheMasses.jpg; sourceTree = "<group>"; };
+		535C30B71B9E27F1006D3888 /* SerraAngel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SerraAngel.jpg; path = ../../images/SerraAngel.jpg; sourceTree = "<group>"; };
+		535C30B81B9E27F1006D3888 /* ShadowcloakVampire.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ShadowcloakVampire.jpg; path = ../../images/ShadowcloakVampire.jpg; sourceTree = "<group>"; };
+		535C30B91B9E27F1006D3888 /* ShamanofSpring.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ShamanofSpring.jpg; path = ../../images/ShamanofSpring.jpg; sourceTree = "<group>"; };
+		535C30BA1B9E27F1006D3888 /* ShieldoftheAvatar.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ShieldoftheAvatar.jpg; path = ../../images/ShieldoftheAvatar.jpg; sourceTree = "<group>"; };
+		535C30BB1B9E27F1006D3888 /* ShivanDragon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ShivanDragon.jpg; path = ../../images/ShivanDragon.jpg; sourceTree = "<group>"; };
+		535C30BC1B9E27F1006D3888 /* ShivanReef.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ShivanReef.jpg; path = ../../images/ShivanReef.jpg; sourceTree = "<group>"; };
+		535C30BD1B9E27F1006D3888 /* ShrapnelBlast.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ShrapnelBlast.jpg; path = ../../images/ShrapnelBlast.jpg; sourceTree = "<group>"; };
+		535C30BE1B9E27F1006D3888 /* SiegeDragon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SiegeDragon.jpg; path = ../../images/SiegeDragon.jpg; sourceTree = "<group>"; };
+		535C30BF1B9E27F1006D3888 /* SiegeWurm.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SiegeWurm.jpg; path = ../../images/SiegeWurm.jpg; sourceTree = "<group>"; };
+		535C30C01B9E27F1006D3888 /* SigninBlood.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SigninBlood.jpg; path = ../../images/SigninBlood.jpg; sourceTree = "<group>"; };
+		535C30C11B9E27F1006D3888 /* SliverHive.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SliverHive.jpg; path = ../../images/SliverHive.jpg; sourceTree = "<group>"; };
+		535C30C21B9E27F1006D3888 /* SliverHivelord.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SliverHivelord.jpg; path = ../../images/SliverHivelord.jpg; sourceTree = "<group>"; };
+		535C30C31B9E27F1006D3888 /* SolemnOffering.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SolemnOffering.jpg; path = ../../images/SolemnOffering.jpg; sourceTree = "<group>"; };
+		535C30C41B9E27F1006D3888 /* Soulmender.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Soulmender.jpg; path = ../../images/Soulmender.jpg; sourceTree = "<group>"; };
+		535C30C51B9E27F1006D3888 /* SoulofInnistrad.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SoulofInnistrad.jpg; path = ../../images/SoulofInnistrad.jpg; sourceTree = "<group>"; };
+		535C30C61B9E27F1006D3888 /* SoulofNewPhyrexia.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SoulofNewPhyrexia.jpg; path = ../../images/SoulofNewPhyrexia.jpg; sourceTree = "<group>"; };
+		535C30C71B9E27F1006D3888 /* SoulofRavnica.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SoulofRavnica.jpg; path = ../../images/SoulofRavnica.jpg; sourceTree = "<group>"; };
+		535C30C81B9E27F1006D3888 /* SoulofShandalar.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SoulofShandalar.jpg; path = ../../images/SoulofShandalar.jpg; sourceTree = "<group>"; };
+		535C30C91B9E27F1006D3888 /* SoulofTheros.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SoulofTheros.jpg; path = ../../images/SoulofTheros.jpg; sourceTree = "<group>"; };
+		535C30CA1B9E27F1006D3888 /* SoulofZendikar.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SoulofZendikar.jpg; path = ../../images/SoulofZendikar.jpg; sourceTree = "<group>"; };
+		535C30CB1B9E27F1006D3888 /* SpectraWard.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SpectraWard.jpg; path = ../../images/SpectraWard.jpg; sourceTree = "<group>"; };
+		535C30CC1B9E27F1006D3888 /* SpiritBonds.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SpiritBonds.jpg; path = ../../images/SpiritBonds.jpg; sourceTree = "<group>"; };
+		535C30CD1B9E27F1006D3888 /* StabWound.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StabWound.jpg; path = ../../images/StabWound.jpg; sourceTree = "<group>"; };
+		535C30CE1B9E27F1006D3888 /* StaffoftheDeathMagus.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StaffoftheDeathMagus.jpg; path = ../../images/StaffoftheDeathMagus.jpg; sourceTree = "<group>"; };
+		535C30CF1B9E27F1006D3888 /* StaffoftheFlameMagus.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StaffoftheFlameMagus.jpg; path = ../../images/StaffoftheFlameMagus.jpg; sourceTree = "<group>"; };
+		535C30D01B9E27F1006D3888 /* StaffoftheMindMagus.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StaffoftheMindMagus.jpg; path = ../../images/StaffoftheMindMagus.jpg; sourceTree = "<group>"; };
+		535C30D11B9E27F1006D3888 /* StaffoftheSunMagus.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StaffoftheSunMagus.jpg; path = ../../images/StaffoftheSunMagus.jpg; sourceTree = "<group>"; };
+		535C30D21B9E27F1006D3888 /* StaffoftheWildMagus.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StaffoftheWildMagus.jpg; path = ../../images/StaffoftheWildMagus.jpg; sourceTree = "<group>"; };
+		535C30D31B9E27F1006D3888 /* StaintheMind.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StaintheMind.jpg; path = ../../images/StaintheMind.jpg; sourceTree = "<group>"; };
+		535C30D41B9E27F1006D3888 /* StatuteofDenial.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StatuteofDenial.jpg; path = ../../images/StatuteofDenial.jpg; sourceTree = "<group>"; };
+		535C30D51B9E27F1006D3888 /* StoketheFlames.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StoketheFlames.jpg; path = ../../images/StoketheFlames.jpg; sourceTree = "<group>"; };
+		535C30D61B9E27F1006D3888 /* StormtideLeviathan.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = StormtideLeviathan.jpg; path = ../../images/StormtideLeviathan.jpg; sourceTree = "<group>"; };
+		535C30D71B9E27F1006D3888 /* SunbladeElf.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SunbladeElf.jpg; path = ../../images/SunbladeElf.jpg; sourceTree = "<group>"; };
+		535C30D81B9E27F1006D3888 /* SungracePegasus.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SungracePegasus.jpg; path = ../../images/SungracePegasus.jpg; sourceTree = "<group>"; };
+		535C30D91B9E27F1006D3888 /* Swamp.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Swamp.jpg; path = ../../images/Swamp.jpg; sourceTree = "<group>"; };
+		535C30DA1B9E27F1006D3888 /* TerraStomper.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TerraStomper.jpg; path = ../../images/TerraStomper.jpg; sourceTree = "<group>"; };
+		535C30DB1B9E27F1006D3888 /* TheChainVeil.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TheChainVeil.jpg; path = ../../images/TheChainVeil.jpg; sourceTree = "<group>"; };
+		535C30DC1B9E27F1006D3888 /* ThunderingGiant.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ThunderingGiant.jpg; path = ../../images/ThunderingGiant.jpg; sourceTree = "<group>"; };
+		535C30DD1B9E27F1006D3888 /* TirelessMissionaries.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TirelessMissionaries.jpg; path = ../../images/TirelessMissionaries.jpg; sourceTree = "<group>"; };
+		535C30DE1B9E27F1006D3888 /* TitanicGrowth.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TitanicGrowth.jpg; path = ../../images/TitanicGrowth.jpg; sourceTree = "<group>"; };
+		535C30DF1B9E27F1006D3888 /* TorchFiend.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TorchFiend.jpg; path = ../../images/TorchFiend.jpg; sourceTree = "<group>"; };
+		535C30E01B9E27F1006D3888 /* TormodsCrypt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TormodsCrypt.jpg; path = ../../images/TormodsCrypt.jpg; sourceTree = "<group>"; };
+		535C30E11B9E27F1006D3888 /* TriplicateSpirits.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TriplicateSpirits.jpg; path = ../../images/TriplicateSpirits.jpg; sourceTree = "<group>"; };
+		535C30E21B9E27F1006D3888 /* TurntoFrog.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TurntoFrog.jpg; path = ../../images/TurntoFrog.jpg; sourceTree = "<group>"; };
+		535C30E31B9E27F1006D3888 /* TyphoidRats.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TyphoidRats.jpg; path = ../../images/TyphoidRats.jpg; sourceTree = "<group>"; };
+		535C30E41B9E27F1006D3888 /* TyrantsMachine.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TyrantsMachine.jpg; path = ../../images/TyrantsMachine.jpg; sourceTree = "<group>"; };
+		535C30E51B9E27F1006D3888 /* Ulcerate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Ulcerate.jpg; path = ../../images/Ulcerate.jpg; sourceTree = "<group>"; };
+		535C30E61B9E27F1006D3888 /* UndergrowthScavenger.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = UndergrowthScavenger.jpg; path = ../../images/UndergrowthScavenger.jpg; sourceTree = "<group>"; };
+		535C30E71B9E27F1006D3888 /* UnmaketheGraves.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = UnmaketheGraves.jpg; path = ../../images/UnmaketheGraves.jpg; sourceTree = "<group>"; };
+		535C30E81B9E27F1006D3888 /* UrborgTombofYawgmoth.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = UrborgTombofYawgmoth.jpg; path = ../../images/UrborgTombofYawgmoth.jpg; sourceTree = "<group>"; };
+		535C30E91B9E27F1006D3888 /* VenomSliver.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = VenomSliver.jpg; path = ../../images/VenomSliver.jpg; sourceTree = "<group>"; };
+		535C30EA1B9E27F1006D3888 /* VerdantHaven.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = VerdantHaven.jpg; path = ../../images/VerdantHaven.jpg; sourceTree = "<group>"; };
+		535C30EB1B9E27F1006D3888 /* Vineweft.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Vineweft.jpg; path = ../../images/Vineweft.jpg; sourceTree = "<group>"; };
+		535C30EC1B9E27F1006D3888 /* VoidSnare.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = VoidSnare.jpg; path = ../../images/VoidSnare.jpg; sourceTree = "<group>"; };
+		535C30ED1B9E27F1006D3888 /* WalkingCorpse.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WalkingCorpse.jpg; path = ../../images/WalkingCorpse.jpg; sourceTree = "<group>"; };
+		535C30EE1B9E27F1006D3888 /* WallofEssence.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WallofEssence.jpg; path = ../../images/WallofEssence.jpg; sourceTree = "<group>"; };
+		535C30EF1B9E27F1006D3888 /* WallofFire.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WallofFire.jpg; path = ../../images/WallofFire.jpg; sourceTree = "<group>"; };
+		535C30F01B9E27F1006D3888 /* WallofFrost.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WallofFrost.jpg; path = ../../images/WallofFrost.jpg; sourceTree = "<group>"; };
+		535C30F11B9E27F1006D3888 /* WallofLimbs.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WallofLimbs.jpg; path = ../../images/WallofLimbs.jpg; sourceTree = "<group>"; };
+		535C30F21B9E27F1006D3888 /* WallofMulch.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WallofMulch.jpg; path = ../../images/WallofMulch.jpg; sourceTree = "<group>"; };
+		535C30F31B9E27F1006D3888 /* WardenoftheBeyond.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WardenoftheBeyond.jpg; path = ../../images/WardenoftheBeyond.jpg; sourceTree = "<group>"; };
+		535C30F41B9E27F1006D3888 /* WasteNot.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WasteNot.jpg; path = ../../images/WasteNot.jpg; sourceTree = "<group>"; };
+		535C30F51B9E27F1006D3888 /* WelkinTern.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WelkinTern.jpg; path = ../../images/WelkinTern.jpg; sourceTree = "<group>"; };
+		535C30F61B9E27F1006D3888 /* WillForgedGolem.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WillForgedGolem.jpg; path = ../../images/WillForgedGolem.jpg; sourceTree = "<group>"; };
+		535C30F71B9E27F1006D3888 /* WitchsFamiliar.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = WitchsFamiliar.jpg; path = ../../images/WitchsFamiliar.jpg; sourceTree = "<group>"; };
+		535C30F81B9E27F1006D3888 /* XathridSlyblade.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = XathridSlyblade.jpg; path = ../../images/XathridSlyblade.jpg; sourceTree = "<group>"; };
+		535C30F91B9E27F1006D3888 /* YavimayaCoast.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = YavimayaCoast.jpg; path = ../../images/YavimayaCoast.jpg; sourceTree = "<group>"; };
+		535C30FA1B9E27F1006D3888 /* YisantheWandererBard.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = YisantheWandererBard.jpg; path = ../../images/YisantheWandererBard.jpg; sourceTree = "<group>"; };
+		535C30FB1B9E27F1006D3888 /* ZofShade.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ZofShade.jpg; path = ../../images/ZofShade.jpg; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		535C2FB41B9E1B73006D3888 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		535C2FCD1B9E1B73006D3888 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		535C2FAE1B9E1B73006D3888 = {
+			isa = PBXGroup;
+			children = (
+				535C2FB91B9E1B73006D3888 /* MTG_iOS */,
+				535C2FD31B9E1B73006D3888 /* MTG_iOSTests */,
+				535C2FB81B9E1B73006D3888 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		535C2FB81B9E1B73006D3888 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				535C2FB71B9E1B73006D3888 /* MTG_iOS.app */,
+				535C2FD01B9E1B73006D3888 /* MTG_iOSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		535C2FB91B9E1B73006D3888 /* MTG_iOS */ = {
+			isa = PBXGroup;
+			children = (
+				535C2FEC1B9E1D7B006D3888 /* MTGCard.h */,
+				535C2FED1B9E1D7B006D3888 /* Subtypes.h */,
+				535C2FEE1B9E1D7B006D3888 /* Types.h */,
+				535C2FE41B9E1D4A006D3888 /* CardData.c */,
+				535C2FE51B9E1D4A006D3888 /* CardData.h */,
+				535C2FE61B9E1D4A006D3888 /* List.c */,
+				535C2FE71B9E1D4A006D3888 /* List.h */,
+				535C2FE81B9E1D4A006D3888 /* MTGCard.c */,
+				535C2FE11B9E1C81006D3888 /* images */,
+				535C2FBE1B9E1B73006D3888 /* AppDelegate.h */,
+				535C2FBF1B9E1B73006D3888 /* AppDelegate.m */,
+				535C2FC11B9E1B73006D3888 /* ViewController.h */,
+				535C2FC21B9E1B73006D3888 /* ViewController.m */,
+				535C2FC41B9E1B73006D3888 /* Main.storyboard */,
+				535C2FC71B9E1B73006D3888 /* Images.xcassets */,
+				535C2FC91B9E1B73006D3888 /* LaunchScreen.xib */,
+				535C2FBA1B9E1B73006D3888 /* Supporting Files */,
+			);
+			path = MTG_iOS;
+			sourceTree = "<group>";
+		};
+		535C2FBA1B9E1B73006D3888 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				535C2FBB1B9E1B73006D3888 /* Info.plist */,
+				535C2FBC1B9E1B73006D3888 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		535C2FD31B9E1B73006D3888 /* MTG_iOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				535C2FD61B9E1B73006D3888 /* MTG_iOSTests.m */,
+				535C2FD41B9E1B73006D3888 /* Supporting Files */,
+			);
+			path = MTG_iOSTests;
+			sourceTree = "<group>";
+		};
+		535C2FD41B9E1B73006D3888 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				535C2FD51B9E1B73006D3888 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		535C2FE11B9E1C81006D3888 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				535C2FEF1B9E27F0006D3888 /* AccursedSpirit.jpg */,
+				535C2FF01B9E27F0006D3888 /* ActonImpulse.jpg */,
+				535C2FF11B9E27F0006D3888 /* AegisAngel.jpg */,
+				535C2FF21B9E27F0006D3888 /* AeronautTinkerer.jpg */,
+				535C2FF31B9E27F0006D3888 /* Aetherspouts.jpg */,
+				535C2FF41B9E27F0006D3888 /* AggressiveMining.jpg */,
+				535C2FF51B9E27F0006D3888 /* AjanisPridemate.jpg */,
+				535C2FF61B9E27F0006D3888 /* AjaniSteadfast.jpg */,
+				535C2FF71B9E27F0006D3888 /* AltacBloodseeker.jpg */,
+				535C2FF81B9E27F0006D3888 /* AmphinPathmage.jpg */,
+				535C2FF91B9E27F0006D3888 /* AncientSilverback.jpg */,
+				535C2FFA1B9E27F0006D3888 /* AvacynGuardianAngel.jpg */,
+				535C2FFB1B9E27F0006D3888 /* AvariceAmulet.jpg */,
+				535C2FFC1B9E27F0006D3888 /* BacktoNature.jpg */,
+				535C2FFD1B9E27F0006D3888 /* BattlefieldForge.jpg */,
+				535C2FFE1B9E27F0006D3888 /* BattleMastery.jpg */,
+				535C2FFF1B9E27F0006D3888 /* BelligerentSliver.jpg */,
+				535C30001B9E27F0006D3888 /* BlackCat.jpg */,
+				535C30011B9E27F0006D3888 /* BlastfireBolt.jpg */,
+				535C30021B9E27F0006D3888 /* BloodHost.jpg */,
+				535C30031B9E27F0006D3888 /* BoonweaverGiant.jpg */,
+				535C30041B9E27F0006D3888 /* BorderlandMarauder.jpg */,
+				535C30051B9E27F0006D3888 /* BrawlersPlate.jpg */,
+				535C30061B9E27F0006D3888 /* BronzeSable.jpg */,
+				535C30071B9E27F0006D3888 /* BroodKeeper.jpg */,
+				535C30081B9E27F0006D3888 /* BurningAnger.jpg */,
+				535C30091B9E27F0006D3888 /* Cancel.jpg */,
+				535C300A1B9E27F0006D3888 /* CarnivorousMossBeast.jpg */,
+				535C300B1B9E27F0006D3888 /* CarrionCrow.jpg */,
+				535C300C1B9E27F0006D3888 /* CausticTar.jpg */,
+				535C300D1B9E27F0006D3888 /* CavesofKoilos.jpg */,
+				535C300E1B9E27F0006D3888 /* CentaurCourser.jpg */,
+				535C300F1B9E27F0006D3888 /* ChandraPyromaster.jpg */,
+				535C30101B9E27F0006D3888 /* ChargingRhino.jpg */,
+				535C30111B9E27F0006D3888 /* ChasmSkulker.jpg */,
+				535C30121B9E27F0006D3888 /* ChiefEngineer.jpg */,
+				535C30131B9E27F0006D3888 /* ChildofNight.jpg */,
+				535C30141B9E27F0006D3888 /* ChordofCalling.jpg */,
+				535C30151B9E27F0006D3888 /* Chronostutter.jpg */,
+				535C30161B9E27F0006D3888 /* CircleofFlame.jpg */,
+				535C30171B9E27F0006D3888 /* ClearaPath.jpg */,
+				535C30181B9E27F0006D3888 /* ConeofFlame.jpg */,
+				535C30191B9E27F0006D3888 /* Congregate.jpg */,
+				535C301A1B9E27F0006D3888 /* ConstrictingSliver.jpg */,
+				535C301B1B9E27F0006D3888 /* CoralBarrier.jpg */,
+				535C301C1B9E27F0006D3888 /* CovenantofBlood.jpg */,
+				535C301D1B9E27F0006D3888 /* CripplingBlight.jpg */,
+				535C301E1B9E27F0006D3888 /* CrowdsFavor.jpg */,
+				535C301F1B9E27F1006D3888 /* CrucibleofFire.jpg */,
+				535C30201B9E27F1006D3888 /* CruelSadist.jpg */,
+				535C30211B9E27F1006D3888 /* DarksteelCitadel.jpg */,
+				535C30221B9E27F1006D3888 /* DauntlessRiverMarshal.jpg */,
+				535C30231B9E27F1006D3888 /* DevouringLight.jpg */,
+				535C30241B9E27F1006D3888 /* DiffusionSliver.jpg */,
+				535C30251B9E27F1006D3888 /* Dissipate.jpg */,
+				535C30261B9E27F1006D3888 /* Divination.jpg */,
+				535C30271B9E27F1006D3888 /* DivineFavor.jpg */,
+				535C30281B9E27F1006D3888 /* DivineVerdict.jpg */,
+				535C30291B9E27F1006D3888 /* ElvishMystic.jpg */,
+				535C302A1B9E27F1006D3888 /* Encrust.jpg */,
+				535C302B1B9E27F1006D3888 /* EndlessObedience.jpg */,
+				535C302C1B9E27F1006D3888 /* EnsoulArtifact.jpg */,
+				535C302D1B9E27F1006D3888 /* EphemeralShields.jpg */,
+				535C302E1B9E27F1006D3888 /* EternalThirst.jpg */,
+				535C302F1B9E27F1006D3888 /* EvolvingWilds.jpg */,
+				535C30301B9E27F1006D3888 /* FeastontheFallen.jpg */,
+				535C30311B9E27F1006D3888 /* FeralIncarnation.jpg */,
+				535C30321B9E27F1006D3888 /* Festergloom.jpg */,
+				535C30331B9E27F1006D3888 /* FirstResponse.jpg */,
+				535C30341B9E27F1006D3888 /* FleshtoDust.jpg */,
+				535C30351B9E27F1006D3888 /* Forest.jpg */,
+				535C30361B9E27F1006D3888 /* ForgeDevil.jpg */,
+				535C30371B9E27F1006D3888 /* FoundryStreetDenizen.jpg */,
+				535C30381B9E27F1006D3888 /* FrenziedGoblin.jpg */,
+				535C30391B9E27F1006D3888 /* FrostLynx.jpg */,
+				535C303A1B9E27F1006D3888 /* FugitiveWizard.jpg */,
+				535C303B1B9E27F1006D3888 /* FurnaceWhelp.jpg */,
+				535C303C1B9E27F1006D3888 /* GargoyleSentinel.jpg */,
+				535C303D1B9E27F1006D3888 /* GarrukApexPredator.jpg */,
+				535C303E1B9E27F1006D3888 /* GarruksPackleader.jpg */,
+				535C303F1B9E27F1006D3888 /* GatherCourage.jpg */,
+				535C30401B9E27F1006D3888 /* GeistoftheMoors.jpg */,
+				535C30411B9E27F1006D3888 /* GeneratorServant.jpg */,
+				535C30421B9E27F1006D3888 /* GenesisHydra.jpg */,
+				535C30431B9E27F1006D3888 /* GlacialCrasher.jpg */,
+				535C30441B9E27F1006D3888 /* GoblinKaboomist.jpg */,
+				535C30451B9E27F1006D3888 /* GoblinRabblemaster.jpg */,
+				535C30461B9E27F1006D3888 /* GoblinRoughrider.jpg */,
+				535C30471B9E27F1006D3888 /* Gravedigger.jpg */,
+				535C30481B9E27F1006D3888 /* Grindclock.jpg */,
+				535C30491B9E27F1006D3888 /* Hammerhand.jpg */,
+				535C304A1B9E27F1006D3888 /* HauntedPlateMail.jpg */,
+				535C304B1B9E27F1006D3888 /* HeatRay.jpg */,
+				535C304C1B9E27F1006D3888 /* HeliodsPilgrim.jpg */,
+				535C304D1B9E27F1006D3888 /* HoardingDragon.jpg */,
+				535C304E1B9E27F1006D3888 /* HornetNest.jpg */,
+				535C304F1B9E27F1006D3888 /* HornetQueen.jpg */,
+				535C30501B9E27F1006D3888 /* HotSoup.jpg */,
+				535C30511B9E27F1006D3888 /* HuntersAmbush.jpg */,
+				535C30521B9E27F1006D3888 /* HunttheWeak.jpg */,
+				535C30531B9E27F1006D3888 /* HushwingGryff.jpg */,
+				535C30541B9E27F1006D3888 /* Hydrosurge.jpg */,
+				535C30551B9E27F1006D3888 /* IllusoryAngel.jpg */,
+				535C30561B9E27F1006D3888 /* IndulgentTormentor.jpg */,
+				535C30571B9E27F1006D3888 /* InfernoFist.jpg */,
+				535C30581B9E27F1006D3888 /* InGarruksWake.jpg */,
+				535C30591B9E27F1006D3888 /* InspiredCharge.jpg */,
+				535C305A1B9E27F1006D3888 /* IntotheVoid.jpg */,
+				535C305B1B9E27F1006D3888 /* InvasiveSpecies.jpg */,
+				535C305C1B9E27F1006D3888 /* Invisibility.jpg */,
+				535C305D1B9E27F1006D3888 /* Island.jpg */,
+				535C305E1B9E27F1006D3888 /* JacesIngenuity.jpg */,
+				535C305F1B9E27F1006D3888 /* JacetheLivingGuildpact.jpg */,
+				535C30601B9E27F1006D3888 /* JaliraMasterPolymorphist.jpg */,
+				535C30611B9E27F1006D3888 /* JorubaiMurkLurker.jpg */,
+				535C30621B9E27F1006D3888 /* Juggernaut.jpg */,
+				535C30631B9E27F1006D3888 /* KalonianTwingrove.jpg */,
+				535C30641B9E27F1006D3888 /* KapshoKitefins.jpg */,
+				535C30651B9E27F1006D3888 /* KinsbaileSkirmisher.jpg */,
+				535C30661B9E27F1006D3888 /* KirdChieftain.jpg */,
+				535C30671B9E27F1006D3888 /* KrenkosEnforcer.jpg */,
+				535C30681B9E27F1006D3888 /* KurkeshOnakkeAncient.jpg */,
+				535C30691B9E27F1006D3888 /* LavaAxe.jpg */,
+				535C306A1B9E27F1006D3888 /* LeechingSliver.jpg */,
+				535C306B1B9E27F1006D3888 /* LifesLegacy.jpg */,
+				535C306C1B9E27F1006D3888 /* LightningStrike.jpg */,
+				535C306D1B9E27F1006D3888 /* LilianaVess.jpg */,
+				535C306E1B9E27F1006D3888 /* LivingTotem.jpg */,
+				535C306F1B9E27F1006D3888 /* LlanowarWastes.jpg */,
+				535C30701B9E27F1006D3888 /* MahamotiDjinn.jpg */,
+				535C30711B9E27F1006D3888 /* MarkedbyHonor.jpg */,
+				535C30721B9E27F1006D3888 /* MassCalcify.jpg */,
+				535C30731B9E27F1006D3888 /* MasterofPredicaments.jpg */,
+				535C30741B9E27F1006D3888 /* MeditationPuzzle.jpg */,
+				535C30751B9E27F1006D3888 /* MercurialPretender.jpg */,
+				535C30761B9E27F1006D3888 /* Meteorite.jpg */,
+				535C30771B9E27F1006D3888 /* MidnightGuard.jpg */,
+				535C30781B9E27F1006D3888 /* MightMakesRight.jpg */,
+				535C30791B9E27F1006D3888 /* MilitaryIntelligence.jpg */,
+				535C307A1B9E27F1006D3888 /* MindRot.jpg */,
+				535C307B1B9E27F1006D3888 /* MindSculpt.jpg */,
+				535C307C1B9E27F1006D3888 /* MinersBane.jpg */,
+				535C307D1B9E27F1006D3888 /* Mountain.jpg */,
+				535C307E1B9E27F1006D3888 /* Naturalize.jpg */,
+				535C307F1B9E27F1006D3888 /* Necrobite.jpg */,
+				535C30801B9E27F1006D3888 /* NecrogenScudder.jpg */,
+				535C30811B9E27F1006D3888 /* NecromancersAssistant.jpg */,
+				535C30821B9E27F1006D3888 /* NecromancersStockpile.jpg */,
+				535C30831B9E27F1006D3888 /* Negate.jpg */,
+				535C30841B9E27F1006D3888 /* NetcasterSpider.jpg */,
+				535C30851B9E27F1006D3888 /* NightfireGiant.jpg */,
+				535C30861B9E27F1006D3888 /* Nightmare.jpg */,
+				535C30871B9E27F1006D3888 /* NimbusoftheIsles.jpg */,
+				535C30881B9E27F1006D3888 /* NissasExpedition.jpg */,
+				535C30891B9E27F1006D3888 /* NissaWorldwaker.jpg */,
+				535C308A1B9E27F1006D3888 /* ObeliskofUrd.jpg */,
+				535C308B1B9E27F1006D3888 /* ObNixilisUnshackled.jpg */,
+				535C308C1B9E27F1006D3888 /* OppressiveRays.jpg */,
+				535C308D1B9E27F1006D3888 /* OreskosSwiftclaw.jpg */,
+				535C308E1B9E27F1006D3888 /* Ornithopter.jpg */,
+				535C308F1B9E27F1006D3888 /* Overwhelm.jpg */,
+				535C30901B9E27F1006D3888 /* ParagonofEternalWilds.jpg */,
+				535C30911B9E27F1006D3888 /* ParagonofFierceDefiance.jpg */,
+				535C30921B9E27F1006D3888 /* ParagonofGatheringMists.jpg */,
+				535C30931B9E27F1006D3888 /* ParagonofNewDawns.jpg */,
+				535C30941B9E27F1006D3888 /* ParagonofOpenGraves.jpg */,
+				535C30951B9E27F1006D3888 /* PeelfromReality.jpg */,
+				535C30961B9E27F1006D3888 /* PerilousVault.jpg */,
+				535C30971B9E27F1006D3888 /* PhyrexianRevoker.jpg */,
+				535C30981B9E27F1006D3888 /* Phytotitan.jpg */,
+				535C30991B9E27F1006D3888 /* PillarofLight.jpg */,
+				535C309A1B9E27F1006D3888 /* Plains.jpg */,
+				535C309B1B9E27F1006D3888 /* Plummet.jpg */,
+				535C309C1B9E27F1006D3888 /* PolymorphistsJest.jpg */,
+				535C309D1B9E27F1006D3888 /* PreeminentCaptain.jpg */,
+				535C309E1B9E27F1006D3888 /* ProfaneMemento.jpg */,
+				535C309F1B9E27F1006D3888 /* Quickling.jpg */,
+				535C30A01B9E27F1006D3888 /* RadiantFountain.jpg */,
+				535C30A11B9E27F1006D3888 /* RaisetheAlarm.jpg */,
+				535C30A21B9E27F1006D3888 /* RangersGuile.jpg */,
+				535C30A31B9E27F1006D3888 /* RazorfootGriffin.jpg */,
+				535C30A41B9E27F1006D3888 /* ReclamationSage.jpg */,
+				535C30A51B9E27F1006D3888 /* ResearchAssistant.jpg */,
+				535C30A61B9E27F1006D3888 /* ResoluteArchangel.jpg */,
+				535C30A71B9E27F1006D3888 /* Restock.jpg */,
+				535C30A81B9E27F1006D3888 /* ReturntotheRanks.jpg */,
+				535C30A91B9E27F1006D3888 /* RoaringPrimadox.jpg */,
+				535C30AA1B9E27F1006D3888 /* RoguesGloves.jpg */,
+				535C30AB1B9E27F1006D3888 /* RotfeasterMaggot.jpg */,
+				535C30AC1B9E27F1006D3888 /* RummagingGoblin.jpg */,
+				535C30AD1B9E27F1006D3888 /* RuneclawBear.jpg */,
+				535C30AE1B9E27F1006D3888 /* SacredArmory.jpg */,
+				535C30AF1B9E27F1006D3888 /* SanctifiedCharge.jpg */,
+				535C30B01B9E27F1006D3888 /* SatyrWayfinder.jpg */,
+				535C30B11B9E27F1006D3888 /* ScrapyardMongrel.jpg */,
+				535C30B21B9E27F1006D3888 /* ScuttlingDoomEngine.jpg */,
+				535C30B31B9E27F1006D3888 /* SeismicStrike.jpg */,
+				535C30B41B9E27F1006D3888 /* SelflessCathar.jpg */,
+				535C30B51B9E27F1006D3888 /* SengirVampire.jpg */,
+				535C30B61B9E27F1006D3888 /* SeraphoftheMasses.jpg */,
+				535C30B71B9E27F1006D3888 /* SerraAngel.jpg */,
+				535C30B81B9E27F1006D3888 /* ShadowcloakVampire.jpg */,
+				535C30B91B9E27F1006D3888 /* ShamanofSpring.jpg */,
+				535C30BA1B9E27F1006D3888 /* ShieldoftheAvatar.jpg */,
+				535C30BB1B9E27F1006D3888 /* ShivanDragon.jpg */,
+				535C30BC1B9E27F1006D3888 /* ShivanReef.jpg */,
+				535C30BD1B9E27F1006D3888 /* ShrapnelBlast.jpg */,
+				535C30BE1B9E27F1006D3888 /* SiegeDragon.jpg */,
+				535C30BF1B9E27F1006D3888 /* SiegeWurm.jpg */,
+				535C30C01B9E27F1006D3888 /* SigninBlood.jpg */,
+				535C30C11B9E27F1006D3888 /* SliverHive.jpg */,
+				535C30C21B9E27F1006D3888 /* SliverHivelord.jpg */,
+				535C30C31B9E27F1006D3888 /* SolemnOffering.jpg */,
+				535C30C41B9E27F1006D3888 /* Soulmender.jpg */,
+				535C30C51B9E27F1006D3888 /* SoulofInnistrad.jpg */,
+				535C30C61B9E27F1006D3888 /* SoulofNewPhyrexia.jpg */,
+				535C30C71B9E27F1006D3888 /* SoulofRavnica.jpg */,
+				535C30C81B9E27F1006D3888 /* SoulofShandalar.jpg */,
+				535C30C91B9E27F1006D3888 /* SoulofTheros.jpg */,
+				535C30CA1B9E27F1006D3888 /* SoulofZendikar.jpg */,
+				535C30CB1B9E27F1006D3888 /* SpectraWard.jpg */,
+				535C30CC1B9E27F1006D3888 /* SpiritBonds.jpg */,
+				535C30CD1B9E27F1006D3888 /* StabWound.jpg */,
+				535C30CE1B9E27F1006D3888 /* StaffoftheDeathMagus.jpg */,
+				535C30CF1B9E27F1006D3888 /* StaffoftheFlameMagus.jpg */,
+				535C30D01B9E27F1006D3888 /* StaffoftheMindMagus.jpg */,
+				535C30D11B9E27F1006D3888 /* StaffoftheSunMagus.jpg */,
+				535C30D21B9E27F1006D3888 /* StaffoftheWildMagus.jpg */,
+				535C30D31B9E27F1006D3888 /* StaintheMind.jpg */,
+				535C30D41B9E27F1006D3888 /* StatuteofDenial.jpg */,
+				535C30D51B9E27F1006D3888 /* StoketheFlames.jpg */,
+				535C30D61B9E27F1006D3888 /* StormtideLeviathan.jpg */,
+				535C30D71B9E27F1006D3888 /* SunbladeElf.jpg */,
+				535C30D81B9E27F1006D3888 /* SungracePegasus.jpg */,
+				535C30D91B9E27F1006D3888 /* Swamp.jpg */,
+				535C30DA1B9E27F1006D3888 /* TerraStomper.jpg */,
+				535C30DB1B9E27F1006D3888 /* TheChainVeil.jpg */,
+				535C30DC1B9E27F1006D3888 /* ThunderingGiant.jpg */,
+				535C30DD1B9E27F1006D3888 /* TirelessMissionaries.jpg */,
+				535C30DE1B9E27F1006D3888 /* TitanicGrowth.jpg */,
+				535C30DF1B9E27F1006D3888 /* TorchFiend.jpg */,
+				535C30E01B9E27F1006D3888 /* TormodsCrypt.jpg */,
+				535C30E11B9E27F1006D3888 /* TriplicateSpirits.jpg */,
+				535C30E21B9E27F1006D3888 /* TurntoFrog.jpg */,
+				535C30E31B9E27F1006D3888 /* TyphoidRats.jpg */,
+				535C30E41B9E27F1006D3888 /* TyrantsMachine.jpg */,
+				535C30E51B9E27F1006D3888 /* Ulcerate.jpg */,
+				535C30E61B9E27F1006D3888 /* UndergrowthScavenger.jpg */,
+				535C30E71B9E27F1006D3888 /* UnmaketheGraves.jpg */,
+				535C30E81B9E27F1006D3888 /* UrborgTombofYawgmoth.jpg */,
+				535C30E91B9E27F1006D3888 /* VenomSliver.jpg */,
+				535C30EA1B9E27F1006D3888 /* VerdantHaven.jpg */,
+				535C30EB1B9E27F1006D3888 /* Vineweft.jpg */,
+				535C30EC1B9E27F1006D3888 /* VoidSnare.jpg */,
+				535C30ED1B9E27F1006D3888 /* WalkingCorpse.jpg */,
+				535C30EE1B9E27F1006D3888 /* WallofEssence.jpg */,
+				535C30EF1B9E27F1006D3888 /* WallofFire.jpg */,
+				535C30F01B9E27F1006D3888 /* WallofFrost.jpg */,
+				535C30F11B9E27F1006D3888 /* WallofLimbs.jpg */,
+				535C30F21B9E27F1006D3888 /* WallofMulch.jpg */,
+				535C30F31B9E27F1006D3888 /* WardenoftheBeyond.jpg */,
+				535C30F41B9E27F1006D3888 /* WasteNot.jpg */,
+				535C30F51B9E27F1006D3888 /* WelkinTern.jpg */,
+				535C30F61B9E27F1006D3888 /* WillForgedGolem.jpg */,
+				535C30F71B9E27F1006D3888 /* WitchsFamiliar.jpg */,
+				535C30F81B9E27F1006D3888 /* XathridSlyblade.jpg */,
+				535C30F91B9E27F1006D3888 /* YavimayaCoast.jpg */,
+				535C30FA1B9E27F1006D3888 /* YisantheWandererBard.jpg */,
+				535C30FB1B9E27F1006D3888 /* ZofShade.jpg */,
+				535C2FE21B9E1CB1006D3888 /* cover.jpg */,
+			);
+			name = images;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		535C2FB61B9E1B73006D3888 /* MTG_iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 535C2FDA1B9E1B73006D3888 /* Build configuration list for PBXNativeTarget "MTG_iOS" */;
+			buildPhases = (
+				535C2FB31B9E1B73006D3888 /* Sources */,
+				535C2FB41B9E1B73006D3888 /* Frameworks */,
+				535C2FB51B9E1B73006D3888 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MTG_iOS;
+			productName = MTG_iOS;
+			productReference = 535C2FB71B9E1B73006D3888 /* MTG_iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		535C2FCF1B9E1B73006D3888 /* MTG_iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 535C2FDD1B9E1B73006D3888 /* Build configuration list for PBXNativeTarget "MTG_iOSTests" */;
+			buildPhases = (
+				535C2FCC1B9E1B73006D3888 /* Sources */,
+				535C2FCD1B9E1B73006D3888 /* Frameworks */,
+				535C2FCE1B9E1B73006D3888 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				535C2FD21B9E1B73006D3888 /* PBXTargetDependency */,
+			);
+			name = MTG_iOSTests;
+			productName = MTG_iOSTests;
+			productReference = 535C2FD01B9E1B73006D3888 /* MTG_iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		535C2FAF1B9E1B73006D3888 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = jeewoongpark;
+				TargetAttributes = {
+					535C2FB61B9E1B73006D3888 = {
+						CreatedOnToolsVersion = 6.3;
+					};
+					535C2FCF1B9E1B73006D3888 = {
+						CreatedOnToolsVersion = 6.3;
+						TestTargetID = 535C2FB61B9E1B73006D3888;
+					};
+				};
+			};
+			buildConfigurationList = 535C2FB21B9E1B73006D3888 /* Build configuration list for PBXProject "MTG_iOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 535C2FAE1B9E1B73006D3888;
+			productRefGroup = 535C2FB81B9E1B73006D3888 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				535C2FB61B9E1B73006D3888 /* MTG_iOS */,
+				535C2FCF1B9E1B73006D3888 /* MTG_iOSTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		535C2FB51B9E1B73006D3888 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				535C31D01B9E27F1006D3888 /* SolemnOffering.jpg in Resources */,
+				535C314C1B9E27F1006D3888 /* GatherCourage.jpg in Resources */,
+				535C31441B9E27F1006D3888 /* FoundryStreetDenizen.jpg in Resources */,
+				535C315D1B9E27F1006D3888 /* HotSoup.jpg in Resources */,
+				535C32021B9E27F1006D3888 /* WelkinTern.jpg in Resources */,
+				535C2FC61B9E1B73006D3888 /* Main.storyboard in Resources */,
+				535C30FD1B9E27F1006D3888 /* ActonImpulse.jpg in Resources */,
+				535C2FCB1B9E1B73006D3888 /* LaunchScreen.xib in Resources */,
+				535C31571B9E27F1006D3888 /* HauntedPlateMail.jpg in Resources */,
+				535C31AE1B9E27F1006D3888 /* RaisetheAlarm.jpg in Resources */,
+				535C31871B9E27F1006D3888 /* MindRot.jpg in Resources */,
+				535C31E11B9E27F1006D3888 /* StatuteofDenial.jpg in Resources */,
+				535C31161B9E27F1006D3888 /* Cancel.jpg in Resources */,
+				535C310A1B9E27F1006D3888 /* BattlefieldForge.jpg in Resources */,
+				535C31301B9E27F1006D3888 /* DevouringLight.jpg in Resources */,
+				535C31B21B9E27F1006D3888 /* ResearchAssistant.jpg in Resources */,
+				535C31FB1B9E27F1006D3888 /* WallofEssence.jpg in Resources */,
+				535C31341B9E27F1006D3888 /* DivineFavor.jpg in Resources */,
+				535C31B91B9E27F1006D3888 /* RummagingGoblin.jpg in Resources */,
+				535C31421B9E27F1006D3888 /* Forest.jpg in Resources */,
+				535C31451B9E27F1006D3888 /* FrenziedGoblin.jpg in Resources */,
+				535C31751B9E27F1006D3888 /* KurkeshOnakkeAncient.jpg in Resources */,
+				535C31891B9E27F1006D3888 /* MinersBane.jpg in Resources */,
+				535C318A1B9E27F1006D3888 /* Mountain.jpg in Resources */,
+				535C31031B9E27F1006D3888 /* AjaniSteadfast.jpg in Resources */,
+				535C31F41B9E27F1006D3888 /* UnmaketheGraves.jpg in Resources */,
+				535C31641B9E27F1006D3888 /* InfernoFist.jpg in Resources */,
+				535C31F61B9E27F1006D3888 /* VenomSliver.jpg in Resources */,
+				535C31AC1B9E27F1006D3888 /* Quickling.jpg in Resources */,
+				535C31961B9E27F1006D3888 /* NissaWorldwaker.jpg in Resources */,
+				535C31A41B9E27F1006D3888 /* PhyrexianRevoker.jpg in Resources */,
+				535C31681B9E27F1006D3888 /* InvasiveSpecies.jpg in Resources */,
+				535C31781B9E27F1006D3888 /* LifesLegacy.jpg in Resources */,
+				535C316A1B9E27F1006D3888 /* Island.jpg in Resources */,
+				535C31041B9E27F1006D3888 /* AltacBloodseeker.jpg in Resources */,
+				535C31D51B9E27F1006D3888 /* SoulofShandalar.jpg in Resources */,
+				535C31D91B9E27F1006D3888 /* SpiritBonds.jpg in Resources */,
+				535C314F1B9E27F1006D3888 /* GenesisHydra.jpg in Resources */,
+				535C316B1B9E27F1006D3888 /* JacesIngenuity.jpg in Resources */,
+				535C31ED1B9E27F1006D3888 /* TormodsCrypt.jpg in Resources */,
+				535C31771B9E27F1006D3888 /* LeechingSliver.jpg in Resources */,
+				535C31D11B9E27F1006D3888 /* Soulmender.jpg in Resources */,
+				535C31DB1B9E27F1006D3888 /* StaffoftheDeathMagus.jpg in Resources */,
+				535C31BF1B9E27F1006D3888 /* ScuttlingDoomEngine.jpg in Resources */,
+				535C32051B9E27F1006D3888 /* XathridSlyblade.jpg in Resources */,
+				535C31881B9E27F1006D3888 /* MindSculpt.jpg in Resources */,
+				535C31931B9E27F1006D3888 /* Nightmare.jpg in Resources */,
+				535C311D1B9E27F1006D3888 /* ChargingRhino.jpg in Resources */,
+				535C31741B9E27F1006D3888 /* KrenkosEnforcer.jpg in Resources */,
+				535C31A71B9E27F1006D3888 /* Plains.jpg in Resources */,
+				535C31C41B9E27F1006D3888 /* SerraAngel.jpg in Resources */,
+				535C31B31B9E27F1006D3888 /* ResoluteArchangel.jpg in Resources */,
+				535C314A1B9E27F1006D3888 /* GarrukApexPredator.jpg in Resources */,
+				535C31081B9E27F1006D3888 /* AvariceAmulet.jpg in Resources */,
+				535C317C1B9E27F1006D3888 /* LlanowarWastes.jpg in Resources */,
+				535C31E01B9E27F1006D3888 /* StaintheMind.jpg in Resources */,
+				535C31801B9E27F1006D3888 /* MasterofPredicaments.jpg in Resources */,
+				535C31E21B9E27F1006D3888 /* StoketheFlames.jpg in Resources */,
+				535C31A61B9E27F1006D3888 /* PillarofLight.jpg in Resources */,
+				535C31151B9E27F1006D3888 /* BurningAnger.jpg in Resources */,
+				535C31901B9E27F1006D3888 /* Negate.jpg in Resources */,
+				535C31831B9E27F1006D3888 /* Meteorite.jpg in Resources */,
+				535C31BE1B9E27F1006D3888 /* ScrapyardMongrel.jpg in Resources */,
+				535C31B11B9E27F1006D3888 /* ReclamationSage.jpg in Resources */,
+				535C319C1B9E27F1006D3888 /* Overwhelm.jpg in Resources */,
+				535C31091B9E27F1006D3888 /* BacktoNature.jpg in Resources */,
+				535C31CA1B9E27F1006D3888 /* ShrapnelBlast.jpg in Resources */,
+				535C31941B9E27F1006D3888 /* NimbusoftheIsles.jpg in Resources */,
+				535C31D61B9E27F1006D3888 /* SoulofTheros.jpg in Resources */,
+				535C31721B9E27F1006D3888 /* KinsbaileSkirmisher.jpg in Resources */,
+				535C31581B9E27F1006D3888 /* HeatRay.jpg in Resources */,
+				535C31EC1B9E27F1006D3888 /* TorchFiend.jpg in Resources */,
+				535C31F71B9E27F1006D3888 /* VerdantHaven.jpg in Resources */,
+				535C31711B9E27F1006D3888 /* KapshoKitefins.jpg in Resources */,
+				535C31261B9E27F1006D3888 /* Congregate.jpg in Resources */,
+				535C31CB1B9E27F1006D3888 /* SiegeDragon.jpg in Resources */,
+				535C31FA1B9E27F1006D3888 /* WalkingCorpse.jpg in Resources */,
+				535C31C21B9E27F1006D3888 /* SengirVampire.jpg in Resources */,
+				535C31521B9E27F1006D3888 /* GoblinRabblemaster.jpg in Resources */,
+				535C32061B9E27F1006D3888 /* YavimayaCoast.jpg in Resources */,
+				535C31EE1B9E27F1006D3888 /* TriplicateSpirits.jpg in Resources */,
+				535C311B1B9E27F1006D3888 /* CentaurCourser.jpg in Resources */,
+				535C314B1B9E27F1006D3888 /* GarruksPackleader.jpg in Resources */,
+				535C31671B9E27F1006D3888 /* IntotheVoid.jpg in Resources */,
+				535C31541B9E27F1006D3888 /* Gravedigger.jpg in Resources */,
+				535C31241B9E27F1006D3888 /* ClearaPath.jpg in Resources */,
+				535C318F1B9E27F1006D3888 /* NecromancersStockpile.jpg in Resources */,
+				535C313D1B9E27F1006D3888 /* FeastontheFallen.jpg in Resources */,
+				535C31FD1B9E27F1006D3888 /* WallofFrost.jpg in Resources */,
+				535C2FC81B9E1B73006D3888 /* Images.xcassets in Resources */,
+				535C2FE31B9E1CB1006D3888 /* cover.jpg in Resources */,
+				535C319A1B9E27F1006D3888 /* OreskosSwiftclaw.jpg in Resources */,
+				535C31701B9E27F1006D3888 /* KalonianTwingrove.jpg in Resources */,
+				535C32001B9E27F1006D3888 /* WardenoftheBeyond.jpg in Resources */,
+				535C31431B9E27F1006D3888 /* ForgeDevil.jpg in Resources */,
+				535C31AF1B9E27F1006D3888 /* RangersGuile.jpg in Resources */,
+				535C313C1B9E27F1006D3888 /* EvolvingWilds.jpg in Resources */,
+				535C31B01B9E27F1006D3888 /* RazorfootGriffin.jpg in Resources */,
+				535C31B41B9E27F1006D3888 /* Restock.jpg in Resources */,
+				535C310E1B9E27F1006D3888 /* BlastfireBolt.jpg in Resources */,
+				535C31391B9E27F1006D3888 /* EnsoulArtifact.jpg in Resources */,
+				535C31661B9E27F1006D3888 /* InspiredCharge.jpg in Resources */,
+				535C312D1B9E27F1006D3888 /* CruelSadist.jpg in Resources */,
+				535C31E41B9E27F1006D3888 /* SunbladeElf.jpg in Resources */,
+				535C313B1B9E27F1006D3888 /* EternalThirst.jpg in Resources */,
+				535C31761B9E27F1006D3888 /* LavaAxe.jpg in Resources */,
+				535C31271B9E27F1006D3888 /* ConstrictingSliver.jpg in Resources */,
+				535C31E51B9E27F1006D3888 /* SungracePegasus.jpg in Resources */,
+				535C31F51B9E27F1006D3888 /* UrborgTombofYawgmoth.jpg in Resources */,
+				535C31821B9E27F1006D3888 /* MercurialPretender.jpg in Resources */,
+				535C317F1B9E27F1006D3888 /* MassCalcify.jpg in Resources */,
+				535C312E1B9E27F1006D3888 /* DarksteelCitadel.jpg in Resources */,
+				535C310D1B9E27F1006D3888 /* BlackCat.jpg in Resources */,
+				535C31F31B9E27F1006D3888 /* UndergrowthScavenger.jpg in Resources */,
+				535C31591B9E27F1006D3888 /* HeliodsPilgrim.jpg in Resources */,
+				535C312C1B9E27F1006D3888 /* CrucibleofFire.jpg in Resources */,
+				535C31D31B9E27F1006D3888 /* SoulofNewPhyrexia.jpg in Resources */,
+				535C31281B9E27F1006D3888 /* CoralBarrier.jpg in Resources */,
+				535C31B61B9E27F1006D3888 /* RoaringPrimadox.jpg in Resources */,
+				535C31231B9E27F1006D3888 /* CircleofFlame.jpg in Resources */,
+				535C31971B9E27F1006D3888 /* ObeliskofUrd.jpg in Resources */,
+				535C31001B9E27F1006D3888 /* Aetherspouts.jpg in Resources */,
+				535C31991B9E27F1006D3888 /* OppressiveRays.jpg in Resources */,
+				535C317A1B9E27F1006D3888 /* LilianaVess.jpg in Resources */,
+				535C31481B9E27F1006D3888 /* FurnaceWhelp.jpg in Resources */,
+				535C31111B9E27F1006D3888 /* BorderlandMarauder.jpg in Resources */,
+				535C319F1B9E27F1006D3888 /* ParagonofGatheringMists.jpg in Resources */,
+				535C31C71B9E27F1006D3888 /* ShieldoftheAvatar.jpg in Resources */,
+				535C314D1B9E27F1006D3888 /* GeistoftheMoors.jpg in Resources */,
+				535C30FC1B9E27F1006D3888 /* AccursedSpirit.jpg in Resources */,
+				535C31D21B9E27F1006D3888 /* SoulofInnistrad.jpg in Resources */,
+				535C312F1B9E27F1006D3888 /* DauntlessRiverMarshal.jpg in Resources */,
+				535C313E1B9E27F1006D3888 /* FeralIncarnation.jpg in Resources */,
+				535C31371B9E27F1006D3888 /* Encrust.jpg in Resources */,
+				535C32041B9E27F1006D3888 /* WitchsFamiliar.jpg in Resources */,
+				535C31E71B9E27F1006D3888 /* TerraStomper.jpg in Resources */,
+				535C315B1B9E27F1006D3888 /* HornetNest.jpg in Resources */,
+				535C31B81B9E27F1006D3888 /* RotfeasterMaggot.jpg in Resources */,
+				535C31C51B9E27F1006D3888 /* ShadowcloakVampire.jpg in Resources */,
+				535C31E91B9E27F1006D3888 /* ThunderingGiant.jpg in Resources */,
+				535C31D41B9E27F1006D3888 /* SoulofRavnica.jpg in Resources */,
+				535C31651B9E27F1006D3888 /* InGarruksWake.jpg in Resources */,
+				535C31B71B9E27F1006D3888 /* RoguesGloves.jpg in Resources */,
+				535C31051B9E27F1006D3888 /* AmphinPathmage.jpg in Resources */,
+				535C31951B9E27F1006D3888 /* NissasExpedition.jpg in Resources */,
+				535C318C1B9E27F1006D3888 /* Necrobite.jpg in Resources */,
+				535C31461B9E27F1006D3888 /* FrostLynx.jpg in Resources */,
+				535C31F81B9E27F1006D3888 /* Vineweft.jpg in Resources */,
+				535C31601B9E27F1006D3888 /* HushwingGryff.jpg in Resources */,
+				535C314E1B9E27F1006D3888 /* GeneratorServant.jpg in Resources */,
+				535C32011B9E27F1006D3888 /* WasteNot.jpg in Resources */,
+				535C31FC1B9E27F1006D3888 /* WallofFire.jpg in Resources */,
+				535C31411B9E27F1006D3888 /* FleshtoDust.jpg in Resources */,
+				535C31911B9E27F1006D3888 /* NetcasterSpider.jpg in Resources */,
+				535C31811B9E27F1006D3888 /* MeditationPuzzle.jpg in Resources */,
+				535C311F1B9E27F1006D3888 /* ChiefEngineer.jpg in Resources */,
+				535C31BC1B9E27F1006D3888 /* SanctifiedCharge.jpg in Resources */,
+				535C319B1B9E27F1006D3888 /* Ornithopter.jpg in Resources */,
+				535C31611B9E27F1006D3888 /* Hydrosurge.jpg in Resources */,
+				535C31DF1B9E27F1006D3888 /* StaffoftheWildMagus.jpg in Resources */,
+				535C31DA1B9E27F1006D3888 /* StabWound.jpg in Resources */,
+				535C31621B9E27F1006D3888 /* IllusoryAngel.jpg in Resources */,
+				535C31381B9E27F1006D3888 /* EndlessObedience.jpg in Resources */,
+				535C31351B9E27F1006D3888 /* DivineVerdict.jpg in Resources */,
+				535C32031B9E27F1006D3888 /* WillForgedGolem.jpg in Resources */,
+				535C31C11B9E27F1006D3888 /* SelflessCathar.jpg in Resources */,
+				535C31C91B9E27F1006D3888 /* ShivanReef.jpg in Resources */,
+				535C31501B9E27F1006D3888 /* GlacialCrasher.jpg in Resources */,
+				535C311C1B9E27F1006D3888 /* ChandraPyromaster.jpg in Resources */,
+				535C31C31B9E27F1006D3888 /* SeraphoftheMasses.jpg in Resources */,
+				535C31631B9E27F1006D3888 /* IndulgentTormentor.jpg in Resources */,
+				535C31EB1B9E27F1006D3888 /* TitanicGrowth.jpg in Resources */,
+				535C315F1B9E27F1006D3888 /* HunttheWeak.jpg in Resources */,
+				535C32071B9E27F1006D3888 /* YisantheWandererBard.jpg in Resources */,
+				535C31C81B9E27F1006D3888 /* ShivanDragon.jpg in Resources */,
+				535C31981B9E27F1006D3888 /* ObNixilisUnshackled.jpg in Resources */,
+				535C31AA1B9E27F1006D3888 /* PreeminentCaptain.jpg in Resources */,
+				535C31EF1B9E27F1006D3888 /* TurntoFrog.jpg in Resources */,
+				535C31361B9E27F1006D3888 /* ElvishMystic.jpg in Resources */,
+				535C31AB1B9E27F1006D3888 /* ProfaneMemento.jpg in Resources */,
+				535C31A81B9E27F1006D3888 /* Plummet.jpg in Resources */,
+				535C31201B9E27F1006D3888 /* ChildofNight.jpg in Resources */,
+				535C31A01B9E27F1006D3888 /* ParagonofNewDawns.jpg in Resources */,
+				535C31071B9E27F1006D3888 /* AvacynGuardianAngel.jpg in Resources */,
+				535C31A21B9E27F1006D3888 /* PeelfromReality.jpg in Resources */,
+				535C311E1B9E27F1006D3888 /* ChasmSkulker.jpg in Resources */,
+				535C31171B9E27F1006D3888 /* CarnivorousMossBeast.jpg in Resources */,
+				535C31011B9E27F1006D3888 /* AggressiveMining.jpg in Resources */,
+				535C316D1B9E27F1006D3888 /* JaliraMasterPolymorphist.jpg in Resources */,
+				535C318D1B9E27F1006D3888 /* NecrogenScudder.jpg in Resources */,
+				535C31551B9E27F1006D3888 /* Grindclock.jpg in Resources */,
+				535C312A1B9E27F1006D3888 /* CripplingBlight.jpg in Resources */,
+				535C31F21B9E27F1006D3888 /* Ulcerate.jpg in Resources */,
+				535C31F91B9E27F1006D3888 /* VoidSnare.jpg in Resources */,
+				535C318E1B9E27F1006D3888 /* NecromancersAssistant.jpg in Resources */,
+				535C31331B9E27F1006D3888 /* Divination.jpg in Resources */,
+				535C31A51B9E27F1006D3888 /* Phytotitan.jpg in Resources */,
+				535C319E1B9E27F1006D3888 /* ParagonofFierceDefiance.jpg in Resources */,
+				535C30FF1B9E27F1006D3888 /* AeronautTinkerer.jpg in Resources */,
+				535C31691B9E27F1006D3888 /* Invisibility.jpg in Resources */,
+				535C31921B9E27F1006D3888 /* NightfireGiant.jpg in Resources */,
+				535C316C1B9E27F1006D3888 /* JacetheLivingGuildpact.jpg in Resources */,
+				535C31B51B9E27F1006D3888 /* ReturntotheRanks.jpg in Resources */,
+				535C31BB1B9E27F1006D3888 /* SacredArmory.jpg in Resources */,
+				535C32081B9E27F1006D3888 /* ZofShade.jpg in Resources */,
+				535C31321B9E27F1006D3888 /* Dissipate.jpg in Resources */,
+				535C315E1B9E27F1006D3888 /* HuntersAmbush.jpg in Resources */,
+				535C31401B9E27F1006D3888 /* FirstResponse.jpg in Resources */,
+				535C31731B9E27F1006D3888 /* KirdChieftain.jpg in Resources */,
+				535C310F1B9E27F1006D3888 /* BloodHost.jpg in Resources */,
+				535C31E61B9E27F1006D3888 /* Swamp.jpg in Resources */,
+				535C311A1B9E27F1006D3888 /* CavesofKoilos.jpg in Resources */,
+				535C31FE1B9E27F1006D3888 /* WallofLimbs.jpg in Resources */,
+				535C318B1B9E27F1006D3888 /* Naturalize.jpg in Resources */,
+				535C31C01B9E27F1006D3888 /* SeismicStrike.jpg in Resources */,
+				535C31D81B9E27F1006D3888 /* SpectraWard.jpg in Resources */,
+				535C313F1B9E27F1006D3888 /* Festergloom.jpg in Resources */,
+				535C310C1B9E27F1006D3888 /* BelligerentSliver.jpg in Resources */,
+				535C31251B9E27F1006D3888 /* ConeofFlame.jpg in Resources */,
+				535C31CC1B9E27F1006D3888 /* SiegeWurm.jpg in Resources */,
+				535C312B1B9E27F1006D3888 /* CrowdsFavor.jpg in Resources */,
+				535C31311B9E27F1006D3888 /* DiffusionSliver.jpg in Resources */,
+				535C31E81B9E27F1006D3888 /* TheChainVeil.jpg in Resources */,
+				535C31131B9E27F1006D3888 /* BronzeSable.jpg in Resources */,
+				535C317E1B9E27F1006D3888 /* MarkedbyHonor.jpg in Resources */,
+				535C31E31B9E27F1006D3888 /* StormtideLeviathan.jpg in Resources */,
+				535C31061B9E27F1006D3888 /* AncientSilverback.jpg in Resources */,
+				535C310B1B9E27F1006D3888 /* BattleMastery.jpg in Resources */,
+				535C31A31B9E27F1006D3888 /* PerilousVault.jpg in Resources */,
+				535C31491B9E27F1006D3888 /* GargoyleSentinel.jpg in Resources */,
+				535C31101B9E27F1006D3888 /* BoonweaverGiant.jpg in Resources */,
+				535C317B1B9E27F1006D3888 /* LivingTotem.jpg in Resources */,
+				535C31A11B9E27F1006D3888 /* ParagonofOpenGraves.jpg in Resources */,
+				535C31851B9E27F1006D3888 /* MightMakesRight.jpg in Resources */,
+				535C31471B9E27F1006D3888 /* FugitiveWizard.jpg in Resources */,
+				535C31F11B9E27F1006D3888 /* TyrantsMachine.jpg in Resources */,
+				535C31DD1B9E27F1006D3888 /* StaffoftheMindMagus.jpg in Resources */,
+				535C31FF1B9E27F1006D3888 /* WallofMulch.jpg in Resources */,
+				535C31791B9E27F1006D3888 /* LightningStrike.jpg in Resources */,
+				535C31DC1B9E27F1006D3888 /* StaffoftheFlameMagus.jpg in Resources */,
+				535C31CF1B9E27F1006D3888 /* SliverHivelord.jpg in Resources */,
+				535C31BA1B9E27F1006D3888 /* RuneclawBear.jpg in Resources */,
+				535C31291B9E27F1006D3888 /* CovenantofBlood.jpg in Resources */,
+				535C31531B9E27F1006D3888 /* GoblinRoughrider.jpg in Resources */,
+				535C31191B9E27F1006D3888 /* CausticTar.jpg in Resources */,
+				535C31181B9E27F1006D3888 /* CarrionCrow.jpg in Resources */,
+				535C31DE1B9E27F1006D3888 /* StaffoftheSunMagus.jpg in Resources */,
+				535C31AD1B9E27F1006D3888 /* RadiantFountain.jpg in Resources */,
+				535C31141B9E27F1006D3888 /* BroodKeeper.jpg in Resources */,
+				535C31561B9E27F1006D3888 /* Hammerhand.jpg in Resources */,
+				535C316E1B9E27F1006D3888 /* JorubaiMurkLurker.jpg in Resources */,
+				535C317D1B9E27F1006D3888 /* MahamotiDjinn.jpg in Resources */,
+				535C31221B9E27F1006D3888 /* Chronostutter.jpg in Resources */,
+				535C315A1B9E27F1006D3888 /* HoardingDragon.jpg in Resources */,
+				535C31511B9E27F1006D3888 /* GoblinKaboomist.jpg in Resources */,
+				535C31861B9E27F1006D3888 /* MilitaryIntelligence.jpg in Resources */,
+				535C31D71B9E27F1006D3888 /* SoulofZendikar.jpg in Resources */,
+				535C31C61B9E27F1006D3888 /* ShamanofSpring.jpg in Resources */,
+				535C316F1B9E27F1006D3888 /* Juggernaut.jpg in Resources */,
+				535C31EA1B9E27F1006D3888 /* TirelessMissionaries.jpg in Resources */,
+				535C31841B9E27F1006D3888 /* MidnightGuard.jpg in Resources */,
+				535C31021B9E27F1006D3888 /* AjanisPridemate.jpg in Resources */,
+				535C31A91B9E27F1006D3888 /* PolymorphistsJest.jpg in Resources */,
+				535C313A1B9E27F1006D3888 /* EphemeralShields.jpg in Resources */,
+				535C30FE1B9E27F1006D3888 /* AegisAngel.jpg in Resources */,
+				535C31F01B9E27F1006D3888 /* TyphoidRats.jpg in Resources */,
+				535C31211B9E27F1006D3888 /* ChordofCalling.jpg in Resources */,
+				535C319D1B9E27F1006D3888 /* ParagonofEternalWilds.jpg in Resources */,
+				535C31CD1B9E27F1006D3888 /* SigninBlood.jpg in Resources */,
+				535C31121B9E27F1006D3888 /* BrawlersPlate.jpg in Resources */,
+				535C31CE1B9E27F1006D3888 /* SliverHive.jpg in Resources */,
+				535C315C1B9E27F1006D3888 /* HornetQueen.jpg in Resources */,
+				535C31BD1B9E27F1006D3888 /* SatyrWayfinder.jpg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		535C2FCE1B9E1B73006D3888 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		535C2FB31B9E1B73006D3888 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				535C2FEA1B9E1D4A006D3888 /* List.c in Sources */,
+				535C2FC31B9E1B73006D3888 /* ViewController.m in Sources */,
+				535C2FC01B9E1B73006D3888 /* AppDelegate.m in Sources */,
+				535C2FBD1B9E1B73006D3888 /* main.m in Sources */,
+				535C2FEB1B9E1D4A006D3888 /* MTGCard.c in Sources */,
+				535C2FE91B9E1D4A006D3888 /* CardData.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		535C2FCC1B9E1B73006D3888 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				535C2FD71B9E1B73006D3888 /* MTG_iOSTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		535C2FD21B9E1B73006D3888 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 535C2FB61B9E1B73006D3888 /* MTG_iOS */;
+			targetProxy = 535C2FD11B9E1B73006D3888 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		535C2FC41B9E1B73006D3888 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				535C2FC51B9E1B73006D3888 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		535C2FC91B9E1B73006D3888 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				535C2FCA1B9E1B73006D3888 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		535C2FD81B9E1B73006D3888 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		535C2FD91B9E1B73006D3888 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		535C2FDB1B9E1B73006D3888 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = MTG_iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		535C2FDC1B9E1B73006D3888 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = MTG_iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		535C2FDE1B9E1B73006D3888 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = MTG_iOSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MTG_iOS.app/MTG_iOS";
+			};
+			name = Debug;
+		};
+		535C2FDF1B9E1B73006D3888 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = MTG_iOSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MTG_iOS.app/MTG_iOS";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		535C2FB21B9E1B73006D3888 /* Build configuration list for PBXProject "MTG_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				535C2FD81B9E1B73006D3888 /* Debug */,
+				535C2FD91B9E1B73006D3888 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		535C2FDA1B9E1B73006D3888 /* Build configuration list for PBXNativeTarget "MTG_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				535C2FDB1B9E1B73006D3888 /* Debug */,
+				535C2FDC1B9E1B73006D3888 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		535C2FDD1B9E1B73006D3888 /* Build configuration list for PBXNativeTarget "MTG_iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				535C2FDE1B9E1B73006D3888 /* Debug */,
+				535C2FDF1B9E1B73006D3888 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 535C2FAF1B9E1B73006D3888 /* Project object */;
+}

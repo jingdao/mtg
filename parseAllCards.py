@@ -3,6 +3,7 @@
 import json
 import unicodedata
 import re
+import os
 
 downloadImages = False
 
@@ -51,6 +52,8 @@ for page in cards:
 		variableName = re.sub(r'\W+','',name)
 		headerFile.write('MTGCard* '+variableName+';\n')
 		outFile.write('cd.'+variableName+'=NewMTGCard("'+variableName+'"); ')
+		if downloadImages:
+			os.system('curl "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid='+str(multiverse_id)+'&type=card" -o images/'+variableName+'.jpg')
 		if 'types' in node:
 			for t in node['types']:
 				if t in types:
