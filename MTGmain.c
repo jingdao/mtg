@@ -7,10 +7,15 @@
 //
 
 #include <stdio.h>
-#include "CardData.h"
+#include "MTGController.h"
+
+CardData cd;
+List* manaList;
 
 int main(int argc, const char * argv[]) {
-	CardData cd = loadCardData();
-    printf("%s: %d %d\n",cd.BoonweaverGiant->name,cd.BoonweaverGiant->power,cd.BoonweaverGiant->toughness);
+	cd = loadCardData();
+	manaList = InitList();
+	newGame();
+	DeleteList(manaList);
     return 0;
 }

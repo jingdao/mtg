@@ -27,6 +27,10 @@ types=set([
 "vanguard"
 ])
 subtypes=set()
+targetSets=[
+"Magic 2015 Core Set",
+"Magic Origins"
+]
 
 headerFile = open('CardData.h','w')
 headerFile.write('#include "MTGCard.h"\n\n')
@@ -40,7 +44,7 @@ for page in cards:
 		valid = False
 		multiverse_id = 0
 		for edition in node['editions']:
-			if edition['set'] == 'Magic 2015 Core Set':
+			if edition['set'] in targetSets:
 				valid = True
 				multiverse_id = edition['multiverse_id']
 				break
@@ -51,9 +55,12 @@ for page in cards:
 		name = unicodedata.normalize('NFKD',name).encode('ascii','ignore')
 		variableName = re.sub(r'\W+','',name)
 		headerFile.write('MTGCard* '+variableName+';\n')
-		outFile.write('cd.'+variableName+'=NewMTGCard("'+variableName+'"); ')
+		outFile.write('cd.'+variableName+'=NewMTGCard("'+variableName+'",'+str(node['cmc'])+'); ')
 		if downloadImages:
 			os.system('curl "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid='+str(multiverse_id)+'&type=card" -o images/'+variableName+'.jpg')
+		if 'colors' in node:
+			for color in node['colors']:
+				outFile.write('cd.'+variableName+'->is_'+color+'=true; ')
 		if 'types' in node:
 			for t in node['types']:
 				if t in types:
@@ -65,10 +72,25 @@ for page in cards:
 				subtypes.add(t)
 				outFile.write('cd.'+variableName+'->is_'+t+'=true; ')
 		if 'power' in node and node['power'].isnumeric():
-			outFile.write('cd.'+variableName+'->power='+node['power']+';')
-		if 'toughness' in node and node['power'].isnumeric():
-			outFile.write('cd.'+variableName+'->toughness='+node['toughness']+';')
+			outFile.write('cd.'+variableName+'->power='+node['power']+'; ')
+		if 'toughness' in node and node['toughness'].isnumeric():
+			outFile.write('cd.'+variableName+'->toughness='+node['toughness']+'; ')
+		if 'loyalty' in node:
+			outFile.write('cd.'+variableName+'->loyalty='+str(node['loyalty'])+'; ')
 		cost = node['cost']
+		if cost:
+			costList = cost[1:-1].split('}{')
+			i=0
+			while i < len(costList):
+				if costList[i].isnumeric():
+					outFile.write('AppendToList(cd.'+variableName+'->manaCost,colorlessMana('+costList[i]+')); ')
+				else:
+					count=1
+					while i+1 < len(costList) and costList[i] == costList[i+1]:
+						count += 1
+						i += 1
+					outFile.write('AppendToList(cd.'+variableName+'->manaCost,'+costList[i]+'_Mana('+str(count)+')); ')
+				i+=1
 		outFile.write("\n")
 headerFile.write('} CardData;\n\n')
 headerFile.write('CardData loadCardData();\n')
