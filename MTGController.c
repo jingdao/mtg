@@ -14,7 +14,15 @@ void buildDeck(List* cards) {
 }
 
 void shuffleDeck(List* cards) {
-	
+    unsigned int n = cards->size;
+    List* tmp;
+    while (n > 1) {
+        unsigned int i = rand() % n;
+        tmp = cards->entries[i];
+        cards->entries[i] = cards->entries[n-1];
+        cards->entries[n-1] = tmp;
+        n--;
+    }
 }
 
 void newGame() {
@@ -22,5 +30,7 @@ void newGame() {
 	buildDeck(deck);
 	shuffleDeck(deck);
 	displayHand(deck);
+    displayLifepoints(20, true);
+    displayLifepoints(20, false);
 	DeleteList(deck);
 }

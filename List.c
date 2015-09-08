@@ -28,7 +28,6 @@ void DeleteList(List* ls) {
 
 int AppendToList(List* ls, void* entry) {
 	if (!ls) return 0;
-	char* ns = entry;
 	if (ls->maxSize==ls->size) {
 		//printf("Now doubling size of list\n");
 		void** newEntries = (void**)realloc(ls->entries,ls->maxSize*2*sizeof(void*));

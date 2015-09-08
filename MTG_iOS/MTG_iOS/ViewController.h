@@ -9,10 +9,19 @@
 #import <UIKit/UIKit.h>
 
 @interface ViewController : UIViewController {
-    UIImageView* cover;
+    int width,height,margin,numColumn,maxColumns;
+    int popupWidth,popupHeight,textWidth;
+    CGFloat cardWidth,cardHeight;
+    UIImageView* selfDeck;
+    UIImageView* opponentDeck;
     UIImage* coverImage;
-    UIImageView* views[5];
-    UIImage* images[5];
+    NSMutableArray* views;
+    NSMutableArray* images;
+    UIScrollView* scrollView;
+    UIImageView* popupImage;
+    UIView* popupMask;
+    @public UITextView* selfHP;
+    @public UITextView* opponentHP;
 }
 
 @end

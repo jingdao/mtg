@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "CardData.h"
 #include "ViewInterface.h"
 #pragma once
