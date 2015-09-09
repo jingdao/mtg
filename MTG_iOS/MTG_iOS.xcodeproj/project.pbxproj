@@ -538,6 +538,7 @@
 		5393F75C1B9E504C0016234F /* YokedOx.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5393F6621B9E504C0016234F /* YokedOx.jpg */; };
 		5393F75D1B9E504C0016234F /* ZendikarIncarnate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5393F6631B9E504C0016234F /* ZendikarIncarnate.jpg */; };
 		5393F75E1B9E504C0016234F /* ZendikarsRoil.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5393F6641B9E504C0016234F /* ZendikarsRoil.jpg */; };
+		5393F7631B9FBA3F0016234F /* MTGPlayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 5393F7611B9FBA3F0016234F /* MTGPlayer.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1094,6 +1095,8 @@
 		5393F6621B9E504C0016234F /* YokedOx.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = YokedOx.jpg; path = ../../images/YokedOx.jpg; sourceTree = "<group>"; };
 		5393F6631B9E504C0016234F /* ZendikarIncarnate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ZendikarIncarnate.jpg; path = ../../images/ZendikarIncarnate.jpg; sourceTree = "<group>"; };
 		5393F6641B9E504C0016234F /* ZendikarsRoil.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ZendikarsRoil.jpg; path = ../../images/ZendikarsRoil.jpg; sourceTree = "<group>"; };
+		5393F7611B9FBA3F0016234F /* MTGPlayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MTGPlayer.c; path = ../../MTGPlayer.c; sourceTree = "<group>"; };
+		5393F7621B9FBA3F0016234F /* MTGPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTGPlayer.h; path = ../../MTGPlayer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1135,6 +1138,9 @@
 		535C2FB91B9E1B73006D3888 /* MTG_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				535C2FE11B9E1C81006D3888 /* images */,
+				5393F7611B9FBA3F0016234F /* MTGPlayer.c */,
+				5393F7621B9FBA3F0016234F /* MTGPlayer.h */,
 				5393F5671B9E4F760016234F /* MTGController.c */,
 				5393F5681B9E4F760016234F /* MTGController.h */,
 				5393F5691B9E4F760016234F /* ViewInterface.h */,
@@ -1145,7 +1151,6 @@
 				535C2FE61B9E1D4A006D3888 /* List.c */,
 				535C2FE71B9E1D4A006D3888 /* List.h */,
 				535C2FE81B9E1D4A006D3888 /* MTGCard.c */,
-				535C2FE11B9E1C81006D3888 /* images */,
 				535C2FBE1B9E1B73006D3888 /* AppDelegate.h */,
 				535C2FBF1B9E1B73006D3888 /* AppDelegate.m */,
 				535C2FC11B9E1B73006D3888 /* ViewController.h */,
@@ -2332,6 +2337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				535C2FEA1B9E1D4A006D3888 /* List.c in Sources */,
+				5393F7631B9FBA3F0016234F /* MTGPlayer.c in Sources */,
 				535C2FC31B9E1B73006D3888 /* ViewController.m in Sources */,
 				535C2FC01B9E1B73006D3888 /* AppDelegate.m in Sources */,
 				5393F56A1B9E4F760016234F /* MTGController.c in Sources */,

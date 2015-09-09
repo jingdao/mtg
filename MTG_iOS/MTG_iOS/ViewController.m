@@ -7,7 +7,6 @@
 //
 
 #import "ViewController.h"
-#include "MTGController.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface ViewController ()
@@ -15,7 +14,6 @@
 @end
 
 CardData cd;
-List* manaList;
 ViewController* viewController;
 
 @implementation ViewController
@@ -28,8 +26,11 @@ ViewController* viewController;
     }
     [self->views removeAllObjects];
     
+    int numCards = cards->size > maxColumns ? maxColumns : cards->size;
+    self->scrollView.contentSize = CGSizeMake((cardWidth+margin)*numCards,cardHeight);
+    
     NSString* extension = @".jpg";
-    for (unsigned int i=0;i<cards->size && i<maxColumns;i++) {
+    for (unsigned int i=0;i<numCards && i<maxColumns;i++) {
         MTGCard* card = cards->entries[i];
         const char* tag = card->name;
         [self->views addObject:[[UIImageView alloc] initWithFrame:CGRectMake((margin+cardWidth)*i,0, cardWidth, cardHeight)]];
@@ -46,7 +47,6 @@ ViewController* viewController;
     [super viewDidLoad];
     
     viewController = self;
-    manaList = InitList();
     srand((unsigned int) time(NULL));
     
     self->coverImage = [UIImage imageNamed:@"cover.jpg"];
@@ -65,6 +65,7 @@ ViewController* viewController;
     int divider = /*height-margin-cardHeight*/400;
     self->selfDeck = [[UIImageView alloc] initWithFrame:CGRectMake(width-margin*2-cardWidth-textWidth,divider-margin-cardHeight,cardWidth,cardHeight)];
     [self->selfDeck setImage: self->coverImage];
+    self->selfDeck.userInteractionEnabled = YES;
     [self.view addSubview:self->selfDeck];
     self->opponentDeck = [[UIImageView alloc] initWithFrame:CGRectMake(margin,margin,cardWidth,cardHeight)];
     [self->opponentDeck setImage: self->coverImage];
@@ -90,6 +91,7 @@ ViewController* viewController;
     [selfHP.layer setBorderWidth:2.0];
     selfHP.layer.cornerRadius = 5;
     selfHP.clipsToBounds = YES;
+    selfHP.editable = NO;
     [selfHP setFont: [UIFont boldSystemFontOfSize:25]];
     [self.view addSubview:selfHP];
     self->opponentHP= [[UITextView alloc] initWithFrame:CGRectMake(margin*2+cardWidth,margin, textWidth, cardHeight)];
@@ -97,6 +99,7 @@ ViewController* viewController;
     [opponentHP.layer setBorderWidth:2.0];
     opponentHP.layer.cornerRadius = 5;
     opponentHP.clipsToBounds = YES;
+    opponentHP.editable = NO;
     [opponentHP setFont: [UIFont boldSystemFontOfSize:25]];
     [self.view addSubview:opponentHP];
     
@@ -107,8 +110,14 @@ ViewController* viewController;
     
     UITapGestureRecognizer *recog2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(exitTap:)];
     [self->popupMask addGestureRecognizer:recog2];
+    
+    UILongPressGestureRecognizer *recog3 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpress:)];
+    [self->scrollView addGestureRecognizer:recog3];
+    
+    UITapGestureRecognizer *recog4 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDeck:)];
+    [self->selfDeck addGestureRecognizer:recog4];
+    
     cd = loadCardData();
-
     newGame();
 
 }
@@ -131,17 +140,48 @@ ViewController* viewController;
     [self->popupImage removeFromSuperview];
 }
 
+- (void) longpress: (UILongPressGestureRecognizer*) gesture {
+    if (!(gesture.state==UIGestureRecognizerStateBegan))
+        return;
+    CGPoint p = [gesture locationInView:self->scrollView];
+    int idx = p.x / (self->cardWidth + self->margin);
+    if (MTGPlayer_playCard(self->player, idx, self->buffer)) {
+        displayHand(self->player->hand);
+        displayStats(self->player->hp,self->player->library->size, self->player->hand->size, true);
+    } else {
+        NSString *err = [NSString stringWithUTF8String:self->buffer];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:err delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+}
+
+- (void) tapDeck: (UITapGestureRecognizer*) gesture {
+    newTurn();
+}
+
 @end
 
 void displayHand(List* cards) {
     [viewController updateHand:cards];
 }
 
-void displayLifepoints(int hp,bool selfOrOpponent) {
-    NSString* hpString = [NSString stringWithFormat:@"%d",hp];
+void displayStats(int hp,int librarySize,int handSize, bool selfOrOpponent) {
+    NSString* hpString = [NSString stringWithFormat:@"HP: %d\nLibrary: %d\nHand: %d",hp,librarySize,handSize];
     if (selfOrOpponent) {
         [viewController->selfHP setText:hpString];
     } else {
         [viewController->opponentHP setText:hpString];
     }
+}
+
+void saveDeck(char* name,List* cards){
+    
+}
+
+void loadDeck(char* name,List* cards) {
+    
+}
+
+void startTurn(MTGPlayer* player) {
+    viewController->player = player;
 }

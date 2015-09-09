@@ -5,7 +5,7 @@
 #pragma once
 
 typedef enum {
-	COLORLESS, WHITE, BLUE, BLACK, RED, GREEN
+	COLORLESS=0, WHITE=1, BLUE=2, BLACK=3, RED=4, GREEN=5
 } Color;
 
 typedef struct {

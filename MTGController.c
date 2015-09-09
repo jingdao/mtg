@@ -1,6 +1,8 @@
 #include "MTGController.h"
 
 extern CardData cd;
+MTGPlayer* player1;
+MTGPlayer* player2;
 
 void buildDeck(List* cards) {
 	for (int i=0;i<10;i++)
@@ -25,23 +27,39 @@ void shuffleDeck(List* cards) {
     }
 }
 
-void newGame() {
-	MTGPlayer* player1 = InitMTGPlayer();
-	buildDeck(player1->deck);
-	saveDeck("deck.txt",player1->deck);
-	shuffleDeck(player1->deck);
+void newTurn() {
+    MTGPlayer_refresh(player1);
+    startTurn(player1);
+    MTGPlayer_drawCards(player1, 1);
+    displayHand(player1->hand);
+    displayStats(player1->hp,player1->library->size,player1->hand->size, true);
+}
 
-	MTGPlayer* player2 = InitMTGPlayer();
-	buildDeck(player2->deck);
-	shuffleDeck(player2->deck);
+void newGame() {
+    player1 = InitMTGPlayer();
+	buildDeck(player1->library);
+	saveDeck("deck.txt",player1->library);
+	shuffleDeck(player1->library);
+
+	player2 = InitMTGPlayer();
+	buildDeck(player2->library);
+	shuffleDeck(player2->library);
 
 	MTGPlayer_drawCards(player1,7);
 	MTGPlayer_drawCards(player2,7);
 
 	displayHand(player1->hand);
-    displayLifepoints(20, true);
-    displayLifepoints(20, false);
+    displayStats(player1->hp,player1->library->size,player1->hand->size, true);
+    displayStats(player2->hp,player2->library->size,player2->hand->size, false);
+  
+    MTGPlayer_refresh(player1);
+    startTurn(player1);
+    
+    //MTGPlayer_refresh(player2);
+    //startTurn(player2);	
+}
 
-	DeleteMTGPlayer(player1);
-	DeleteMTGPlayer(player2);
+void endGame() {
+    DeleteMTGPlayer(player1);
+    DeleteMTGPlayer(player2);
 }

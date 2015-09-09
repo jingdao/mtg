@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#include "MTGController.h"
 
 @interface ViewController : UIViewController {
     int width,height,margin,numColumn,maxColumns;
@@ -22,6 +23,8 @@
     UIView* popupMask;
     @public UITextView* selfHP;
     @public UITextView* opponentHP;
+    MTGPlayer* player;
+    char buffer[128];
 }
 
 @end

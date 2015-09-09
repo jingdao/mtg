@@ -6,4 +6,6 @@
 
 void buildDeck(List* cards);
 void shuffleDeck(List* cards);
+void newTurn();
 void newGame();
+void endGame();
