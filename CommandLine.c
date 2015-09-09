@@ -11,11 +11,11 @@ void displayHand(List* cards) {
 	printf("\n");
 }
 
-void displayLifepoints(int hp,bool selfOrOppponent) {
-	if (selfOrOppponent)
-		printf("Your HP: %d\n",hp);
+void displayStats(int hp,int librarySize,int handSize, bool selfOrOpponent) {
+	if (selfOrOpponent)
+		printf("Your HP: %d Library: %d Hand: %d\n",hp,librarySize,handSize);
 	else
-		printf("Opponent's HP: %d\n",hp);
+		printf("Opponent's HP: %d Library: %d Hand: %d\n",hp,librarySize,handSize);
 }
 
 void saveDeck(char* name,List* cards) {
@@ -29,4 +29,16 @@ void saveDeck(char* name,List* cards) {
 
 void loadDeck(char* name,List* cards) {
 	
+}
+
+void discardToSeven(MTGPlayer* player) {
+
+}
+
+void startTurn(MTGPlayer* player) {
+
+}
+
+void message(char* msg) {
+	printf("%s\n",msg);
 }

@@ -3,6 +3,7 @@
 extern CardData cd;
 MTGPlayer* player1;
 MTGPlayer* player2;
+MTGPlayer* currentPlayer;
 
 void buildDeck(List* cards) {
 	for (int i=0;i<10;i++)
@@ -28,11 +29,20 @@ void shuffleDeck(List* cards) {
 }
 
 void newTurn() {
-    MTGPlayer_refresh(player1);
-    startTurn(player1);
-    MTGPlayer_drawCards(player1, 1);
-    displayHand(player1->hand);
-    displayStats(player1->hp,player1->library->size,player1->hand->size, true);
+
+	if (currentPlayer == player1) {
+		if (player1->hand->size > 7)
+			discardToSeven(player1);
+		currentPlayer = player2;
+	} else {
+		currentPlayer = player1;
+		MTGPlayer_refresh(player1);
+		startTurn(player1);
+		MTGPlayer_drawCards(player1, 1);
+		displayHand(player1->hand);
+		displayStats(player1->hp,player1->library->size,player1->hand->size, true);
+	}
+
 }
 
 void newGame() {
@@ -52,11 +62,16 @@ void newGame() {
     displayStats(player1->hp,player1->library->size,player1->hand->size, true);
     displayStats(player2->hp,player2->library->size,player2->hand->size, false);
   
-    MTGPlayer_refresh(player1);
-    startTurn(player1);
-    
-    //MTGPlayer_refresh(player2);
-    //startTurn(player2);	
+ 	if (rand() % 2) {
+		currentPlayer = player1;
+		message("You start first");
+	} else {
+		currentPlayer = player2;
+		message("Opponent starts first");
+	}
+
+	MTGPlayer_refresh(currentPlayer);
+	startTurn(currentPlayer); //starting player does not draw 1 card
 }
 
 void endGame() {
