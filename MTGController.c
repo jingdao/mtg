@@ -26,11 +26,22 @@ void shuffleDeck(List* cards) {
 }
 
 void newGame() {
-	List* deck = InitList();
-	buildDeck(deck);
-	shuffleDeck(deck);
-	displayHand(deck);
+	MTGPlayer* player1 = InitMTGPlayer();
+	buildDeck(player1->deck);
+	saveDeck("deck.txt",player1->deck);
+	shuffleDeck(player1->deck);
+
+	MTGPlayer* player2 = InitMTGPlayer();
+	buildDeck(player2->deck);
+	shuffleDeck(player2->deck);
+
+	MTGPlayer_drawCards(player1,7);
+	MTGPlayer_drawCards(player2,7);
+
+	displayHand(player1->hand);
     displayLifepoints(20, true);
     displayLifepoints(20, false);
-	DeleteList(deck);
+
+	DeleteMTGPlayer(player1);
+	DeleteMTGPlayer(player2);
 }

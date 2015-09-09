@@ -31,9 +31,11 @@ targetSets=[
 "Magic 2015 Core Set",
 "Magic Origins"
 ]
+cardslist=[]
 
 headerFile = open('CardData.h','w')
-headerFile.write('#include "MTGCard.h"\n\n')
+headerFile.write('#include "MTGCard.h"\n')
+headerFile.write('#pragma once\n\n')
 headerFile.write('typedef struct {\n')
 outFile = open('CardData.c','w')
 outFile.write('#include "CardData.h"\n\n')
@@ -54,6 +56,7 @@ for page in cards:
 		name = name.replace(u'\xc6','Ae')
 		name = unicodedata.normalize('NFKD',name).encode('ascii','ignore')
 		variableName = re.sub(r'\W+','',name)
+		cardslist.append(variableName)
 		headerFile.write('MTGCard* '+variableName+';\n')
 		outFile.write('cd.'+variableName+'=NewMTGCard("'+variableName+'",'+str(node['cmc'])+'); ')
 		if downloadImages:
@@ -94,8 +97,13 @@ for page in cards:
 		outFile.write("\n")
 headerFile.write('} CardData;\n\n')
 headerFile.write('CardData loadCardData();\n')
+headerFile.write('void freeCardData(CardData* cd);\n')
 headerFile.close()
-outFile.write('return cd;\n}\n')
+outFile.write('return cd;\n}\n\n')
+outFile.write('void freeCardData(CardData* cd) {\n')
+for c in cardslist:
+	outFile.write('DeleteMTGCard(cd->'+c+');\n')
+outFile.write('}\n')
 outFile.close()
 
 #print types

@@ -1,7 +1,5 @@
 #include "MTGCard.h"
 
-extern List* manaList;
-
 MTGCard* NewMTGCard(const char* s,int cost) {
 	MTGCard* m = (MTGCard*) calloc(1,sizeof(MTGCard));
 	m->name = s;
@@ -59,3 +57,9 @@ Manacost* X_Mana(int n) {
 	return m;
 }
 
+void DeleteMTGCard(MTGCard* card) {
+	for (unsigned int i=0;i<card->manaCost->size;i++)
+		free(card->manaCost->entries[i]);
+	DeleteList(card->manaCost);
+	free(card);
+}

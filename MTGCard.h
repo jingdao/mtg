@@ -52,3 +52,4 @@ Manacost* B_Mana(int n);
 Manacost* R_Mana(int n);
 Manacost* G_Mana(int n);
 Manacost* X_Mana(int n);
+void DeleteMTGCard(MTGCard* card);

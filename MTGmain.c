@@ -7,15 +7,14 @@
 //
 
 #include <stdio.h>
+#include <time.h>
 #include "MTGController.h"
 
 CardData cd;
-List* manaList;
-
 int main(int argc, const char * argv[]) {
+	srand(time(NULL));
 	cd = loadCardData();
-	manaList = InitList();
 	newGame();
-	DeleteList(manaList);
+	freeCardData(&cd);
     return 0;
 }
