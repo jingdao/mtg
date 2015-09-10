@@ -8,6 +8,15 @@ MTGCard* NewMTGCard(const char* s,int cost) {
 	return m;
 }
 
+Permanent* NewPermanent(MTGCard* source) {
+    Permanent* p = (Permanent*) malloc(sizeof(Permanent));
+    p->is_tapped = false;
+    p->power = source->power;
+    p->toughness = source->toughness;
+    p->source = source;
+    return p;
+}
+
 Manacost* colorlessMana(int n) {
 	Manacost* m = (Manacost*) calloc(1,sizeof(Manacost));
 	m->color1 = COLORLESS;

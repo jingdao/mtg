@@ -28,12 +28,27 @@ void shuffleDeck(List* cards) {
     }
 }
 
+void apply_mulligan(MTGPlayer* p) {
+    unsigned int sz = p->hand->size;
+    if (sz == 0)
+        return;
+    for (unsigned int i=0;i<sz;i++) {
+        AppendToList(p->library, p->hand->entries[i]);
+    }
+    p->hand->size = 0;
+    shuffleDeck(p->library);
+    MTGPlayer_drawCards(p, sz - 1);
+    displayHand(p->hand);
+    displayStats(p->hp,p->library->size,p->hand->size, true);
+}
+
 void newTurn() {
 
 	if (currentPlayer == player1) {
 		if (player1->hand->size > 7)
 			discardToSeven(player1);
 		currentPlayer = player2;
+        newTurn();
 	} else {
 		currentPlayer = player1;
 		MTGPlayer_refresh(player1);
@@ -45,7 +60,7 @@ void newTurn() {
 
 }
 
-void newGame() {
+MTGPlayer* newGame() {
     player1 = InitMTGPlayer();
 	buildDeck(player1->library);
 	saveDeck("deck.txt",player1->library);
@@ -69,9 +84,16 @@ void newGame() {
 		currentPlayer = player2;
 		message("Opponent starts first");
 	}
+    
+    mulligan();
+    return player1;
+}
 
-	MTGPlayer_refresh(currentPlayer);
-	startTurn(currentPlayer); //starting player does not draw 1 card
+void startGame() {
+    if (currentPlayer == player1)
+        startTurn(currentPlayer); //starting player does not draw 1 card
+    else
+        newTurn();
 }
 
 void endGame() {

@@ -9,22 +9,29 @@
 #import <UIKit/UIKit.h>
 #include "MTGController.h"
 
-@interface ViewController : UIViewController {
-    int width,height,margin,numColumn,maxColumns;
-    int popupWidth,popupHeight,textWidth;
-    CGFloat cardWidth,cardHeight;
-    UIImageView* selfDeck;
-    UIImageView* opponentDeck;
-    UIImage* coverImage;
-    NSMutableArray* views;
-    NSMutableArray* images;
-    UIScrollView* scrollView;
-    UIImageView* popupImage;
-    UIView* popupMask;
+@interface ViewController : UIViewController<UIActionSheetDelegate> {
+    @public int width,height,margin,topmargin,numColumn,maxColumns;
+    @public int popupWidth,popupHeight,textWidth,textHeight,buttonWidth,buttonHeight;
+    @public int gridHeight,gridHeight2;
+    @public CGFloat cardWidth,cardHeight,cardWidth2,cardHeight2;
+    @public UIImageView* selfDeck;
+    @public UIImageView* opponentDeck;
+    @public UIImage* coverImage;
+    @public NSMutableArray* views;
+    @public NSMutableArray* images;
+    @public UIScrollView* opponentLands;
+    @public UIScrollView* opponentBattlefield;
+    @public UIScrollView* stackView;
+    @public UIScrollView* selfBattlefield;
+    @public UIScrollView* selfLands;
+    @public UIScrollView* scrollView;
+    @public UIImageView* popupImage;
+    @public UIView* popupMask;
     @public UITextView* selfHP;
     @public UITextView* opponentHP;
-    MTGPlayer* player;
-    char buffer[128];
+    @public UIAlertView* mulliganAlert;
+    @public MTGPlayer* player;
+    @public char buffer[128];
 }
 
 @end

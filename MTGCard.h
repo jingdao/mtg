@@ -44,7 +44,15 @@ typedef struct  {
 	int loyalty;
 } MTGCard;
 
+typedef struct {
+    bool is_tapped;
+    int power;
+    int toughness;
+    MTGCard* source;
+} Permanent;
+
 MTGCard* NewMTGCard(const char* s,int cost);
+Permanent* NewPermanent(MTGCard* source);
 Manacost* colorlessMana(int n);
 Manacost* W_Mana(int n);
 Manacost* U_Mana(int n);
