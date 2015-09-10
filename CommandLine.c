@@ -11,6 +11,14 @@ void displayHand(List* cards) {
 	printf("\n");
 }
 
+void displayBattlefield(List* permanents, bool selfOrOpponent) {
+
+}
+
+void displayLands(List* permanents, bool selfOrOpponent) {
+
+}
+
 void displayStats(int hp,int librarySize,int handSize, bool selfOrOpponent) {
 	if (selfOrOpponent)
 		printf("Your HP: %d Library: %d Hand: %d\n",hp,librarySize,handSize);
@@ -37,6 +45,9 @@ void discardToSeven(MTGPlayer* player) {
 
 void startTurn(MTGPlayer* player) {
 
+}
+
+void mulligan() {
 }
 
 void message(char* msg) {

@@ -74,7 +74,9 @@ void DeleteMTGPlayer(MTGPlayer* p) {
     DeleteList(p->exile);
     for (unsigned int i=0;i<p->lands->size;i++)
         free(p->lands->entries[i]);
+	DeleteList(p->lands);
     for (unsigned int i=0;i<p->battlefield->size;i++)
         free(p->battlefield->entries[i]);
+	DeleteList(p->battlefield);
 	free(p);
 }

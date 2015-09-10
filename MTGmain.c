@@ -15,6 +15,7 @@ int main(int argc, const char * argv[]) {
 	srand(time(NULL));
 	cd = loadCardData();
 	newGame();
+	startGame();
 	endGame();
 	freeCardData(&cd);
     return 0;
