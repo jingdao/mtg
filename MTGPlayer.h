@@ -19,5 +19,6 @@ MTGPlayer* InitMTGPlayer();
 void MTGPlayer_drawCards(MTGPlayer* p,int num);
 bool MTGPlayer_playCard(MTGPlayer* p,int cardIndex,char* err);
 void MTGPlayer_refresh(MTGPlayer* p);
-void MTGPlayer_tapLand(MTGPlayer* player,int cardIndex);
+void MTGPlayer_tap(MTGPlayer* player,Permanent* perm);
+bool MTGPlayer_payMana(MTGPlayer* player,MTGCard* card);
 void DeleteMTGPlayer(MTGPlayer* p);

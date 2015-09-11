@@ -56,6 +56,8 @@ void newTurn() {
 		MTGPlayer_drawCards(player1, 1);
 		displayHand(player1->hand);
 		displayStats(player1->hp,player1->library->size,player1->hand->size, true);
+        displayLands(player1->lands, true);
+        displayBattlefield(player1->battlefield, true);
 	}
 
 }

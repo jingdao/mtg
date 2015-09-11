@@ -19,9 +19,19 @@
     @public UIImage* coverImage;
     @public NSMutableArray* views;
     @public NSMutableArray* images;
+    @public NSMutableArray* opponentLandsViews;
+    @public NSMutableArray* opponentLandsImages;
+    @public NSMutableArray* opponentBattlefieldViews;
+    @public NSMutableArray* opponentBattlefieldImages;
+    @public NSMutableArray* stackViews;
+    @public NSMutableArray* stackImages;
+    @public NSMutableArray* selfLandsViews;
+    @public NSMutableArray* selfLandsImages;
+    @public NSMutableArray* selfBattlefieldViews;
+    @public NSMutableArray* selfBattlefieldImages;
     @public UIScrollView* opponentLands;
     @public UIScrollView* opponentBattlefield;
-    @public UIScrollView* stackView;
+    @public UIScrollView* stack;
     @public UIScrollView* selfBattlefield;
     @public UIScrollView* selfLands;
     @public UIScrollView* scrollView;
@@ -31,6 +41,7 @@
     @public UITextView* opponentHP;
     @public UIAlertView* mulliganAlert;
     @public MTGPlayer* player;
+    @public Permanent* currentPermanent;
     @public char buffer[128];
 }
 

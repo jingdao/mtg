@@ -25,7 +25,7 @@ void MTGPlayer_drawCards(MTGPlayer* p,int num) {
 
 bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     MTGCard* card = (MTGCard*)player->hand->entries[cardIndex];
-    if (card->cmc > player->mana[0]) {
+    if (! MTGPlayer_payMana(player, card)) {
         sprintf(err,"Not enough mana to play %s (%d/%d)",card->name,player->mana[0],card->cmc);
         return false;
     }
@@ -52,19 +52,48 @@ bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     return true;
 }
 
-void MTGPlayer_tapLand(MTGPlayer* player,int cardIndex) {
-    Permanent* permanent = player->lands->entries[cardIndex];
+void MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
     permanent->is_tapped = true;
     if (permanent->source == cd.Plains) player->mana[1]++;
     else if (permanent->source == cd.Island) player->mana[2]++;
     else if (permanent->source == cd.Swamp) player->mana[3]++;
     else if (permanent->source == cd.Mountain) player->mana[4]++;
     else if (permanent->source == cd.Forest) player->mana[5]++;
+    player->mana[0]++;
+}
+
+bool MTGPlayer_payMana(MTGPlayer* player,MTGCard* card) {
+    if (card->cmc > player->mana[0]) {
+        return false;
+    }
+    for (unsigned int i=0;i<card->manaCost->size;i++) {
+        Manacost *cost = card->manaCost->entries[i];
+        if (cost->isVariable) {
+            
+        } else if (cost->color1 == COLORLESS) {
+            
+        } else { //one color
+            if (player->mana[cost->color1] == 0)
+                return false;
+            else
+                player->mana[cost->color1]--;
+            player->mana[0]--;
+        }
+    }
+    return true;
 }
 
 void MTGPlayer_refresh(MTGPlayer* player) {
     player->playedLand = false;
     memset(player->mana,0,6 * sizeof(int));
+    for (unsigned int i=0;i<player->battlefield->size;i++) {
+        Permanent* p = player->battlefield->entries[i];
+        p->is_tapped = false;
+    }
+    for (unsigned int i=0;i<player->lands->size;i++) {
+        Permanent* p = player->lands->entries[i];
+        p->is_tapped = false;
+    }
 }
 
 void DeleteMTGPlayer(MTGPlayer* p) {
