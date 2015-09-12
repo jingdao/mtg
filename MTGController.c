@@ -39,14 +39,12 @@ void apply_mulligan(MTGPlayer* p) {
     shuffleDeck(p->library);
     MTGPlayer_drawCards(p, sz - 1);
     displayHand(p->hand);
-    displayStats(p->hp,p->library->size,p->hand->size, true);
+    displayStats(p->hp,p->library->size,p->hand->size, p->mana,true);
 }
 
 void newTurn() {
 
 	if (currentPlayer == player1) {
-		if (player1->hand->size > 7)
-			discardToSeven(player1);
 		currentPlayer = player2;
         newTurn();
 	} else {
@@ -55,7 +53,7 @@ void newTurn() {
 		startTurn(player1);
 		MTGPlayer_drawCards(player1, 1);
 		displayHand(player1->hand);
-		displayStats(player1->hp,player1->library->size,player1->hand->size, true);
+		displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
         displayLands(player1->lands, true);
         displayBattlefield(player1->battlefield, true);
 	}
@@ -76,8 +74,12 @@ MTGPlayer* newGame() {
 	MTGPlayer_drawCards(player2,7);
 
 	displayHand(player1->hand);
-    displayStats(player1->hp,player1->library->size,player1->hand->size, true);
-    displayStats(player2->hp,player2->library->size,player2->hand->size, false);
+    displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
+    displayLands(player1->lands, true);
+    displayBattlefield(player1->battlefield, true);
+    displayStats(player2->hp,player2->library->size,player2->hand->size,player2->mana ,false);
+    displayLands(player2->lands, false);
+    displayBattlefield(player2->battlefield, false);
   
  	if (rand() % 2) {
 		currentPlayer = player1;

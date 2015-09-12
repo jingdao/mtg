@@ -48,6 +48,7 @@ typedef struct {
     bool is_tapped;
     int power;
     int toughness;
+    int loyalty;
     MTGCard* source;
 } Permanent;
 

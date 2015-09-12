@@ -52,6 +52,13 @@ bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     return true;
 }
 
+void MTGPlayer_discard(MTGPlayer* player,int cardIndex) {
+    AppendToList(player->graveyard, player->hand->entries[cardIndex]);
+    //remove card from hand
+    memmove(player->hand->entries+cardIndex,player->hand->entries+cardIndex+1,(player->hand->size-1-cardIndex)*sizeof(void*));
+    player->hand->size--;
+}
+
 void MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
     permanent->is_tapped = true;
     if (permanent->source == cd.Plains) player->mana[1]++;

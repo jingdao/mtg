@@ -41,6 +41,8 @@ ViewController* viewController;
     self->cardWidth2 = cardHeight2/coverHeight*coverWidth;
     self->popupWidth = width/3;
     self->popupHeight = popupWidth/coverWidth*coverHeight;
+    self->labelWidth = cardHeight/2;
+    self->labelHeight = labelWidth/2;
     self->textWidth = 100;
     self->textHeight = 200;
     self->buttonWidth = 100;
@@ -70,39 +72,39 @@ ViewController* viewController;
     self->opponentLands.contentSize = CGSizeMake((cardHeight2+margin)*maxColumns,gridHeight2);
     [self->opponentLands setShowsHorizontalScrollIndicator:NO];
     [self.view addSubview:self->opponentLands];
-    [self->opponentLands setBackgroundColor:[UIColor redColor]];
+    //[self->opponentLands setBackgroundColor:[UIColor redColor]];
     
     self->opponentBattlefield = [[UIScrollView alloc] initWithFrame:CGRectMake(margin*3+cardWidth+textWidth,topmargin+gridHeight2, width-margin*5-cardWidth-textWidth-buttonWidth, gridHeight)];
     self->opponentBattlefield.contentSize = CGSizeMake((cardHeight+margin)*maxColumns,gridHeight);
     [self->opponentBattlefield setShowsHorizontalScrollIndicator:NO];
     [self.view addSubview:self->opponentBattlefield];
-    [self->opponentBattlefield setBackgroundColor:[UIColor greenColor]];
+    //[self->opponentBattlefield setBackgroundColor:[UIColor greenColor]];
     
     self->stack = [[UIScrollView alloc] initWithFrame:CGRectMake(margin*3+cardWidth+textWidth,topmargin+gridHeight+gridHeight2, width-margin*6-cardWidth*2-textWidth*2, gridHeight)];
     self->stack.contentSize = CGSizeMake((cardHeight+margin)*maxColumns,gridHeight);
     [self->stack setShowsHorizontalScrollIndicator:NO];
     [self.view addSubview:self->stack];
-    [self->stack setBackgroundColor:[UIColor redColor]];
+    //[self->stack setBackgroundColor:[UIColor redColor]];
     
     self->selfBattlefield = [[UIScrollView alloc] initWithFrame:CGRectMake(margin, height-margin-gridHeight*2-gridHeight2, width-margin*4-cardWidth-textWidth, gridHeight)];
     self->selfBattlefield.contentSize = CGSizeMake((cardHeight+margin)*maxColumns,gridHeight);
     [self->selfBattlefield setShowsHorizontalScrollIndicator:NO];
     [self.view addSubview:self->selfBattlefield];
-    [self->selfBattlefield setBackgroundColor:[UIColor greenColor]];
+    //[self->selfBattlefield setBackgroundColor:[UIColor greenColor]];
     
     self->selfLands = [[UIScrollView alloc] initWithFrame:CGRectMake(margin, height-margin-gridHeight-gridHeight2, width-margin*4-cardWidth-textWidth, gridHeight2)];
     self->selfLands.contentSize = CGSizeMake((cardHeight2+margin)*maxColumns,gridHeight2);
     [self->selfLands setShowsHorizontalScrollIndicator:NO];
     [self.view addSubview:self->selfLands];
-    [self->selfLands setBackgroundColor:[UIColor redColor]];
+    //[self->selfLands setBackgroundColor:[UIColor redColor]];
     
     self->scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(margin, height-margin-gridHeight, width-margin*2, gridHeight)];
     self->scrollView.contentSize = CGSizeMake((cardWidth+margin)*maxColumns,gridHeight);
     [self->scrollView setShowsHorizontalScrollIndicator:NO];
     [self.view addSubview:self->scrollView];
     //[self->scrollView setBackgroundColor:[UIColor greenColor]];
-    self->scrollView.layer.borderColor = [UIColor blueColor].CGColor;
-    self->scrollView.layer.borderWidth = 3.0;
+    //self->scrollView.layer.borderColor = [UIColor blueColor].CGColor;
+    //self->scrollView.layer.borderWidth = 3.0;
     
     self->popupMask = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     self->popupMask.alpha = 0.5;
@@ -134,12 +136,25 @@ ViewController* viewController;
     //[pauseButton setBackgroundColor:[UIColor grayColor]];
     [pauseButton addTarget:self action:@selector(onPause:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:pauseButton];
-    UIButton* endturnButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    endturnButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [endturnButton setFrame:CGRectMake(width-buttonWidth-margin, topmargin+margin+buttonHeight, buttonWidth, buttonHeight)];
     [endturnButton setTitle:@"End Turn" forState:UIControlStateNormal];
     //[endturnButton setBackgroundColor:[UIColor grayColor]];
     [endturnButton addTarget:self action:@selector(onEndturn:) forControlEvents:UIControlEventTouchUpInside];
+    endturnButton.enabled=false;
     [self.view addSubview:endturnButton];
+    attackButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [attackButton setFrame:CGRectMake(width-buttonWidth-margin, topmargin+(margin+buttonHeight)*2, buttonWidth, buttonHeight)];
+    [attackButton setTitle:@"Attack" forState:UIControlStateNormal];
+    [attackButton addTarget:self action:@selector(onAttack:) forControlEvents:UIControlEventTouchUpInside];
+    attackButton.enabled=false;
+    [self.view addSubview:attackButton];
+    confirmButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [confirmButton setFrame:CGRectMake(width-buttonWidth-margin, topmargin+(margin+buttonHeight)*3, buttonWidth, buttonHeight)];
+    [confirmButton setTitle:@"Confirm" forState:UIControlStateNormal];
+    [confirmButton addTarget:self action:@selector(onConfirm:) forControlEvents:UIControlEventTouchUpInside];
+    confirmButton.enabled=false;
+    [self.view addSubview:confirmButton];
     
     UITapGestureRecognizer *recog1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
     recog1.numberOfTapsRequired = 2;
@@ -221,15 +236,35 @@ ViewController* viewController;
     }];
 }
 
+- (void) toggleHighlight: (UIScrollView*) sv {
+    if (sv.layer.borderWidth > 0) {
+        sv.layer.borderWidth = 0;
+    } else {
+        sv.layer.borderColor = [UIColor blueColor].CGColor;
+        sv.layer.borderWidth = 3.0;
+    }
+}
+
+- (void) toggleCard: (UIImageView*) iv {
+    if (iv.layer.borderWidth > 0) {
+        iv.layer.borderWidth = 0;
+    } else {
+        iv.layer.borderColor = [UIColor redColor].CGColor;
+        iv.layer.borderWidth = 5.0;
+    }
+}
+
 - (void) doubleTap: (UITapGestureRecognizer*) gesture {
     unsigned long idx;
     CGPoint p = [gesture locationInView:[gesture view]];
-    if ([gesture view] == self->scrollView) {
+    if ([gesture view] == self->scrollView && player->hand->size > 0) {
         idx = p.x / (self->cardWidth + self->margin);
         if (idx >= self->images.count)
             idx = self->images.count - 1;
         [self->popupImage setImage:self->images[idx]];
-    } else if ([gesture view] == self->selfLands) {
+        [self.view addSubview:self->popupMask];
+        [self.view addSubview:self->popupImage];
+    } else if ([gesture view] == self->selfLands && selfLandsViews.count > 0) {
         for (idx=0;idx<self->selfLandsViews.count;idx++) {
             UIImageView *imv = self->selfLandsViews[idx];
             if (p.x < imv.frame.origin.x + imv.frame.size.width)
@@ -238,8 +273,9 @@ ViewController* viewController;
         if (idx >= self->selfLandsViews.count)
             idx = self->selfLandsViews.count - 1;
         [self->popupImage setImage:self->selfLandsImages[idx]];
-        self->currentPermanent = self->player->lands->entries[idx];
-    } else if ([gesture view] == self->selfBattlefield) {
+        [self.view addSubview:self->popupMask];
+        [self.view addSubview:self->popupImage];
+    } else if ([gesture view] == self->selfBattlefield && selfBattlefieldViews.count > 0) {
         for (idx=0;idx<self->selfLandsViews.count;idx++) {
             UIImageView *imv = self->selfBattlefieldViews[idx];
             if (p.x < imv.frame.origin.x + imv.frame.size.width)
@@ -248,10 +284,9 @@ ViewController* viewController;
         if (idx >= self->selfBattlefieldViews.count)
             idx = self->selfBattlefieldViews.count - 1;
         [self->popupImage setImage:self->selfBattlefieldImages[idx]];
-        self->currentPermanent = self->player->battlefield->entries[idx];
+        [self.view addSubview:self->popupMask];
+        [self.view addSubview:self->popupImage];
     }
-    [self.view addSubview:self->popupMask];
-    [self.view addSubview:self->popupImage];
 }
      
 - (void) exitTap: (UITapGestureRecognizer*) gesture {
@@ -264,17 +299,23 @@ ViewController* viewController;
         return;
     CGPoint p = [gesture locationInView:[gesture view]];
     unsigned long idx;
-    if ([gesture view] == self->scrollView) {
+    if ([gesture view] == self->scrollView && player->hand->size > 0) {
         idx = p.x / (self->cardWidth + self->margin);
-        if (MTGPlayer_playCard(self->player, (int)idx, self->buffer)) {
-            displayHand(self->player->hand);
-            displayStats(self->player->hp,self->player->library->size, self->player->hand->size, true);
-            displayLands(self->player->lands, true);
-            displayBattlefield(self->player->battlefield, true);
-        } else {
-            message(self->buffer);
+        if (idx >= self->images.count)
+            idx = self->images.count - 1;
+        if (mode==DISCARD) {
+            [self toggleCard:self->views[idx]];
+        } else if (mode==NONE){
+            if (MTGPlayer_playCard(self->player, (int)idx, self->buffer)) {
+                displayHand(self->player->hand);
+                displayStats(self->player->hp,self->player->library->size, self->player->hand->size, self->player->mana,true);
+                displayLands(self->player->lands, true);
+                displayBattlefield(self->player->battlefield, true);
+            } else {
+                message(self->buffer);
+            }
         }
-    } else if ([gesture view] == self->selfLands) {
+    } else if ([gesture view] == self->selfLands && selfLandsViews.count > 0) {
         for (idx=0;idx<self->selfLandsViews.count;idx++) {
             UIImageView *imv = self->selfLandsViews[idx];
             if (p.x < imv.frame.origin.x + imv.frame.size.width)
@@ -282,11 +323,14 @@ ViewController* viewController;
         }
         if (idx >= self->selfLandsViews.count)
             idx = self->selfLandsViews.count - 1;
-        self->currentPermanent = self->player->lands->entries[idx];
-        if (!self->currentPermanent->is_tapped)
-            MTGPlayer_tap(self->player, self->currentPermanent);
-        displayLands(self->player->lands, true);
-    } else if ([gesture view] == self->selfBattlefield) {
+        if (mode==NONE) {
+            self->currentPermanent = self->player->lands->entries[idx];
+            if (!self->currentPermanent->is_tapped)
+                MTGPlayer_tap(self->player, self->currentPermanent);
+            displayLands(self->player->lands, true);
+            displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->mana, self);
+        }
+    } else if ([gesture view] == self->selfBattlefield && selfBattlefieldViews.count > 0) {
         for (idx=0;idx<self->selfLandsViews.count;idx++) {
             UIImageView *imv = self->selfBattlefieldViews[idx];
             if (p.x < imv.frame.origin.x + imv.frame.size.width)
@@ -294,27 +338,55 @@ ViewController* viewController;
         }
         if (idx >= self->selfBattlefieldViews.count)
             idx = self->selfBattlefieldViews.count - 1;
-        self->currentPermanent = self->player->battlefield->entries[idx];
-        if (!self->currentPermanent->is_tapped)
-            MTGPlayer_tap(self->player, self->currentPermanent);
-        displayBattlefield(self->player->battlefield, true);
+        if (mode==ATTACK) {
+            [self toggleCard:selfBattlefieldViews[idx]];
+        } else if (mode==NONE) {
+            self->currentPermanent = self->player->battlefield->entries[idx];
+            if (!self->currentPermanent->is_tapped)
+                MTGPlayer_tap(self->player, self->currentPermanent);
+            displayBattlefield(self->player->battlefield, true);
+        }
     }
 }
 
 - (void) onEndturn: (id)sender{
-    newTurn();
-}
-
-- (void) onTap: (id) sender{
-    MTGPlayer_tap(self->player, self->currentPermanent);
-    [self->popupMask removeFromSuperview];
-    [self->popupImage removeFromSuperview];
-
+    if (player->hand->size > 7)
+        discardToSeven(player);
+    else {
+        newTurn();
+    }
 }
 
 - (void) onPause:(id)sender {
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"New Game",@"Tap All Lands", nil];
     [sheet showInView:self.view];
+}
+
+- (void) onAttack: (id)sender {
+    [self toggleHighlight:selfBattlefield];
+    mode=ATTACK;
+    attackButton.enabled=false;
+    confirmButton.enabled=true;
+    endturnButton.enabled=false;
+}
+
+- (void) onConfirm: (id)sender {
+    if (mode == DISCARD) {
+        int discarded=0;
+        for (int i=0;i<views.count;i++) {
+            UIImageView* iv = views[i];
+            if (iv.layer.borderWidth > 0) {
+                MTGPlayer_discard(player, i - discarded);
+                discarded++;
+            }
+        }
+        displayHand(player->hand);
+    } else if (mode == ATTACK) {
+        displayBattlefield(player->battlefield, self);
+    }
+    confirmButton.enabled=false;
+    endturnButton.enabled=true;
+    mode=NONE;
 }
 
 - (void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -331,6 +403,7 @@ ViewController* viewController;
                 }
             }
             displayLands(self->player->lands, true);
+            displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->mana, self);
             break;
         default:
             break;
@@ -344,6 +417,7 @@ ViewController* viewController;
             if (self->player->hand->size > 0)
                 mulligan();
         } else {
+            
             startGame();
         }
     }
@@ -358,6 +432,7 @@ void displayHand(List* cards) {
         [iv removeFromSuperview];
     }
     [viewController->views removeAllObjects];
+    viewController->scrollView.layer.borderWidth=0;
     
     int numCards = cards->size > viewController->maxColumns ? viewController->maxColumns : cards->size;
     viewController->scrollView.contentSize = CGSizeMake((viewController->cardWidth+viewController->margin)*numCards,viewController->cardHeight);
@@ -376,8 +451,10 @@ void displayHand(List* cards) {
     
 }
 
-void displayStats(int hp,int librarySize,int handSize, bool selfOrOpponent) {
-    NSString* hpString = [NSString stringWithFormat:@"HP: %d\nLibrary: %d\nHand: %d",hp,librarySize,handSize];
+void displayStats(int hp,int librarySize,int handSize,int* mana, bool selfOrOpponent) {
+    NSString* hpString = [NSString stringWithFormat:
+            @"HP: %d\nLibrary: %d\nHand: %d\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d\nTotal: %d\n",
+            hp,librarySize,handSize,mana[1],mana[2],mana[3],mana[4],mana[5],mana[0]];
     if (selfOrOpponent) {
         [viewController->selfHP setText:hpString];
     } else {
@@ -404,6 +481,7 @@ void displayLands(List* permanents, bool selfOrOpponent) {
         [iv removeFromSuperview];
     }
     [currentViews removeAllObjects];
+    currentScrollView.layer.borderWidth=0;
     
     int numCards = permanents->size > viewController->maxColumns ? viewController->maxColumns : permanents->size;
     currentScrollView.contentSize = CGSizeMake((viewController->cardHeight2+viewController->margin)*numCards,viewController->cardHeight2);
@@ -437,14 +515,17 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
     UIScrollView* currentScrollView;
     NSMutableArray* currentImages;
     NSMutableArray* currentViews;
+    NSMutableArray* currentLabels;
     if (selfOrOpponent) {
         currentScrollView = viewController->selfBattlefield;
         currentImages = viewController->selfBattlefieldImages;
         currentViews = viewController->selfBattlefieldViews;
+        currentLabels = viewController->selfLabels;
     } else {
         currentScrollView = viewController->opponentBattlefield;
         currentImages = viewController->opponentBattlefieldImages;
         currentViews = viewController->opponentBattlefieldViews;
+        currentLabels = viewController->opponentLabels;
     }
     
     [currentImages removeAllObjects];
@@ -452,6 +533,11 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
         [iv removeFromSuperview];
     }
     [currentViews removeAllObjects];
+    for (UILabel* lb in currentLabels) {
+        [lb removeFromSuperview];
+    }
+    [currentLabels removeAllObjects];
+    currentScrollView.layer.borderWidth=0;
     
     int numCards = permanents->size > viewController->maxColumns ? viewController->maxColumns : permanents->size;
     currentScrollView.contentSize = CGSizeMake((viewController->cardHeight+viewController->margin)*numCards,viewController->cardHeight);
@@ -476,6 +562,20 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
             [currentImages addObject:[UIImage imageNamed:fileName]];
             x += viewController->cardWidth + viewController->margin;
         }
+        UILabel* lb = [[UILabel alloc] init];
+        UIImageView* iv = currentViews[i];
+        [currentLabels addObject:lb] ;
+        if (p->loyalty > 0)
+            lb.text = [NSString stringWithFormat:@"%d",p->loyalty];
+        else
+            lb.text = [NSString stringWithFormat:@"%d/%d",p->power,p->toughness];
+        lb.textColor = [UIColor whiteColor];
+        lb.backgroundColor = [UIColor blackColor];
+        lb.textAlignment = NSTextAlignmentCenter;
+        lb.frame = CGRectMake(iv.frame.size.width-viewController->labelWidth, iv.frame.size.height-viewController->labelHeight, viewController->labelWidth, viewController->labelHeight);
+        lb.layer.cornerRadius = 10;
+        lb.layer.masksToBounds = YES;
+        [iv addSubview:lb];
         [currentViews[i] setImage: currentImages[i]];
         [currentScrollView addSubview:currentViews[i]];
     }
@@ -490,15 +590,25 @@ void loadDeck(char* name,List* cards) {
 }
 
 void startTurn(MTGPlayer* player) {
-
+    viewController->attackButton.enabled=true;
+    viewController->confirmButton.enabled=false;
+    viewController->endturnButton.enabled=true;
+    viewController->mode=NONE;
 }
 
 void discardToSeven(MTGPlayer* player){
     sprintf(viewController->buffer,"Please discard down to 7 cards\n");
     message(viewController->buffer);
+    if (viewController->scrollView.layer.borderWidth == 0)
+        [viewController toggleHighlight:viewController->scrollView];
+    viewController->confirmButton.enabled=true;
+    viewController->endturnButton.enabled=false;
+    viewController->attackButton.enabled=false;
+    viewController->mode=DISCARD;
 }
 
 void mulligan() {
+    viewController->mode=WAIT;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [viewController->mulliganAlert show];
     });

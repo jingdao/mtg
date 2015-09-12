@@ -9,10 +9,18 @@
 #import <UIKit/UIKit.h>
 #include "MTGController.h"
 
+typedef enum {
+    NONE,
+    DISCARD,
+    ATTACK,
+    TARGET,
+    WAIT
+} Mode ;
+
 @interface ViewController : UIViewController<UIActionSheetDelegate> {
     @public int width,height,margin,topmargin,numColumn,maxColumns;
     @public int popupWidth,popupHeight,textWidth,textHeight,buttonWidth,buttonHeight;
-    @public int gridHeight,gridHeight2;
+    @public int gridHeight,gridHeight2, labelWidth,labelHeight;
     @public CGFloat cardWidth,cardHeight,cardWidth2,cardHeight2;
     @public UIImageView* selfDeck;
     @public UIImageView* opponentDeck;
@@ -29,6 +37,8 @@
     @public NSMutableArray* selfLandsImages;
     @public NSMutableArray* selfBattlefieldViews;
     @public NSMutableArray* selfBattlefieldImages;
+    @public NSMutableArray* selfLabels;
+    @public NSMutableArray* opponentLabels;
     @public UIScrollView* opponentLands;
     @public UIScrollView* opponentBattlefield;
     @public UIScrollView* stack;
@@ -40,9 +50,13 @@
     @public UITextView* selfHP;
     @public UITextView* opponentHP;
     @public UIAlertView* mulliganAlert;
+    @public UIButton* endturnButton;
+    @public UIButton* attackButton;
+    @public UIButton* confirmButton;
     @public MTGPlayer* player;
     @public Permanent* currentPermanent;
     @public char buffer[128];
+    @public Mode mode;
 }
 
 @end
