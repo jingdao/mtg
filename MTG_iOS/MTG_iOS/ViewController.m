@@ -356,10 +356,17 @@ ViewController* viewController;
         }
         if (idx >= self->selfBattlefieldViews.count)
             idx = self->selfBattlefieldViews.count - 1;
+        self->currentPermanent = self->player->battlefield->entries[idx];
         if (mode==ATTACK) {
-            [self toggleCard:selfBattlefieldViews[idx]];
+            if (self->currentPermanent->has_summoning_sickness)
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->source->name]];
+            else if (self->currentPermanent->is_tapped)
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot attack while tapped!",self->currentPermanent->source->name]];
+            else {
+                self->currentPermanent->has_attacked= !self->currentPermanent->has_attacked;
+                [self toggleCard:selfBattlefieldViews[idx]];
+            }
         } else if (mode==NONE) {
-            self->currentPermanent = self->player->battlefield->entries[idx];
             if (!self->currentPermanent->is_tapped)
                 MTGPlayer_tap(self->player, self->currentPermanent);
             displayBattlefield(self->player->battlefield, true);
@@ -376,7 +383,7 @@ ViewController* viewController;
 }
 
 - (void) onPause:(id)sender {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"New Game",@"Tap All Lands", nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"New Game",@"Tap All Lands", @"Attack All",nil];
     [sheet showInView:self.view];
 }
 
@@ -400,7 +407,21 @@ ViewController* viewController;
         }
         displayHand(player->hand);
     } else if (mode == ATTACK) {
-        displayBattlefield(player->battlefield, self);
+        List* permanentList = InitList();
+        for (unsigned int i=0;i<player->battlefield->size;i++) {
+            Permanent* p = player->battlefield->entries[i];
+            if (p->has_attacked) {
+                p->is_tapped = true;
+                AppendToList(permanentList, p);
+            }
+        }
+        if (permanentList->size > 0)
+            resolveAttack(self->player, permanentList);
+        else {
+            attackButton.enabled=true;
+            displayBattlefield(player->battlefield, self);
+        }
+        DeleteList(permanentList);
     }
     confirmButton.enabled=false;
     endturnButton.enabled=true;
@@ -422,6 +443,21 @@ ViewController* viewController;
             }
             displayLands(self->player->lands, true);
             displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->mana, self);
+            break;
+        case 2:
+            [self toggleHighlight:selfBattlefield];
+            mode=ATTACK;
+            attackButton.enabled=false;
+            confirmButton.enabled=true;
+            endturnButton.enabled=false;
+            for (int i=0;i<self->selfBattlefieldViews.count;i++) {
+                UIImageView* iv = self->selfBattlefieldViews[i];
+                Permanent* p = self->player->battlefield->entries[i];
+                if (!p->has_summoning_sickness && !p->is_tapped) {
+                    [self toggleCard:iv];
+                    p->has_attacked = true;
+                }
+            }
             break;
         default:
             break;

@@ -114,7 +114,9 @@ void MTGPlayer_refresh(MTGPlayer* player) {
     memset(player->mana,0,6 * sizeof(int));
     for (unsigned int i=0;i<player->battlefield->size;i++) {
         Permanent* p = player->battlefield->entries[i];
+        p->has_attacked = false;
         p->is_tapped = false;
+        p->has_summoning_sickness = false;
     }
     for (unsigned int i=0;i<player->lands->size;i++) {
         Permanent* p = player->lands->entries[i];

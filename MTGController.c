@@ -46,6 +46,18 @@ void apply_mulligan(MTGPlayer* p) {
     displayStats(p->hp,p->library->size,p->hand->size, p->mana,true);
 }
 
+void resolveAttack(MTGPlayer* attacker,List* permanentList) {
+    MTGPlayer* defender = attacker==player1 ? player2 : player1;
+    for(unsigned int i=0;i<permanentList->size;i++) {
+        Permanent* p = permanentList->entries[i];
+        defender->hp -= p->power;
+    }
+    displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
+    displayBattlefield(player1->battlefield, true);
+    displayStats(player2->hp,player2->library->size,player2->hand->size, player2->mana,false);
+    displayBattlefield(player2->battlefield, false);
+}
+
 void newTurn() {
 
 	if (currentPlayer == player1) {

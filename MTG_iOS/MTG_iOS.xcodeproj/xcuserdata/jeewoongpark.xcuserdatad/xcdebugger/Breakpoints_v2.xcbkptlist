@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "463804400.70964"
+            timestampString = "463809699.306993"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "374"
-            endingLineNumber = "374"
+            startingLineNumber = "381"
+            endingLineNumber = "381"
             landmarkName = "-onEndturn:"
             landmarkType = "5">
          </BreakpointContent>
@@ -72,11 +72,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "463804400.70964"
+            timestampString = "463812148.504853"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "536"
-            endingLineNumber = "536"
+            startingLineNumber = "572"
+            endingLineNumber = "572"
             landmarkName = "displayLands()"
             landmarkType = "7">
          </BreakpointContent>
@@ -104,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../MTGController.c"
-            timestampString = "463779714.309387"
+            timestampString = "463808926.936575"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
             landmarkName = "newGame()"
             landmarkType = "7">
          </BreakpointContent>
@@ -120,11 +120,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../MTGController.c"
-            timestampString = "463779714.309387"
+            timestampString = "463808926.936575"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
             landmarkName = "newGame()"
             landmarkType = "7">
          </BreakpointContent>
@@ -136,11 +136,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../MTGController.c"
-            timestampString = "463779714.309387"
+            timestampString = "463808926.936575"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
             landmarkName = "newGame()"
             landmarkType = "7">
          </BreakpointContent>
@@ -152,11 +152,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "463804400.70964"
+            timestampString = "463812148.504853"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "623"
-            endingLineNumber = "623"
+            startingLineNumber = "659"
+            endingLineNumber = "659"
             landmarkName = "displayBattlefield()"
             landmarkType = "7">
          </BreakpointContent>
@@ -200,11 +200,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "463804400.70964"
+            timestampString = "463812148.504853"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "611"
-            endingLineNumber = "611"
+            startingLineNumber = "647"
+            endingLineNumber = "647"
             landmarkName = "displayBattlefield()"
             landmarkType = "7">
          </BreakpointContent>
@@ -216,12 +216,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "463804400.70964"
+            timestampString = "463812148.504853"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "631"
-            endingLineNumber = "631"
+            startingLineNumber = "667"
+            endingLineNumber = "667"
             landmarkName = "selectMana()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../MTGController.c"
+            timestampString = "463808926.936575"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "newGame()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../MTGController.c"
+            timestampString = "463809062.848542"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
+            landmarkName = "resolveAttack()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
