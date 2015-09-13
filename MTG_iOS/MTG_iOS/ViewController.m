@@ -47,6 +47,8 @@ ViewController* viewController;
     self->textHeight = 200;
     self->buttonWidth = 100;
     self->buttonHeight = 30;
+    self->stepperWidth = 100;
+    self->stepperHeight = 35;
     self->selfDeck = [[UIImageView alloc] initWithFrame:CGRectMake(width-margin*2-cardWidth-textWidth,height-margin-gridHeight*2-gridHeight2,cardWidth,cardHeight)];
     [self->selfDeck setImage: self->coverImage];
     self->selfDeck.userInteractionEnabled = YES;
@@ -191,6 +193,20 @@ ViewController* viewController;
     [self->selfLands addGestureRecognizer:recog11];
     
     self->mulliganAlert = [[UIAlertView alloc] initWithTitle:nil message:@"Mulligan?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes",nil];
+    self->manaAlert = [[UIView alloc] initWithFrame: CGRectMake((width-stepperWidth*2-margin*2)/2, (height-margin*4-stepperHeight*5)/2, margin*4+stepperWidth*2, margin*4+stepperHeight*5)];
+    manaAlert.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+    manaAlert.layer.cornerRadius = 10.0;
+    self->manaLabel = [[UITextView alloc] initWithFrame:CGRectMake(margin*2, margin*2, stepperWidth,margin*2+stepperHeight*5)];
+    manaLabel.editable = false;
+    manaLabel.backgroundColor = manaAlert.backgroundColor;
+    [manaLabel setFont: [UIFont systemFontOfSize:15]];
+    [manaAlert addSubview:manaLabel];
+    for (int i=1;i<=5;i++) {
+        UIStepper* stepper = [[UIStepper alloc] initWithFrame:CGRectMake(stepperWidth+margin*2,margin+stepperHeight*(i-1),stepperWidth,stepperHeight)];
+        stepper.tag=i;
+        [stepper addTarget:self action:@selector(stepperChanged:) forControlEvents:UIControlEventValueChanged];
+        [manaAlert addSubview:stepper];
+    }
     
     cd = loadCardData();
     self->player = newGame();
@@ -276,7 +292,7 @@ ViewController* viewController;
         [self.view addSubview:self->popupMask];
         [self.view addSubview:self->popupImage];
     } else if ([gesture view] == self->selfBattlefield && selfBattlefieldViews.count > 0) {
-        for (idx=0;idx<self->selfLandsViews.count;idx++) {
+        for (idx=0;idx<self->selfBattlefieldViews.count;idx++) {
             UIImageView *imv = self->selfBattlefieldViews[idx];
             if (p.x < imv.frame.origin.x + imv.frame.size.width)
                 break;
@@ -290,8 +306,10 @@ ViewController* viewController;
 }
      
 - (void) exitTap: (UITapGestureRecognizer*) gesture {
-    [self->popupMask removeFromSuperview];
-    [self->popupImage removeFromSuperview];
+    if (self->mode != MANA) {
+        [self->popupMask removeFromSuperview];
+        [self->popupImage removeFromSuperview];
+    }
 }
 
 - (void) longpress: (UILongPressGestureRecognizer*) gesture {
@@ -420,6 +438,32 @@ ViewController* viewController;
             
             startGame();
         }
+    }
+}
+
+- (void) stepperChanged:(UIStepper*)theStepper{
+    //NSLog(@"%ld %f",(long)theStepper.tag, theStepper.value);
+    int* mana = self->manaBuffer;
+    int index = theStepper.tag % 10;
+    long old_value = theStepper.tag / 10;
+    if (theStepper.value > old_value && mana[index] > 0) { //increment
+        mana[index]--;
+        mana[0]--;
+        pendingMana--;
+    } else  if (theStepper.value < old_value && mana[index] < player->mana[index]) { //decrement
+        mana[index]++;
+        mana[0]++;
+        pendingMana++;
+    }
+    if (pendingMana == 0) {
+        memcpy(viewController->player->mana, mana, 6*sizeof(int));
+        displayStats(player->hp,player->library->size,player->hand->size,player->mana,true);
+        self->mode = NONE;
+        [self->manaAlert removeFromSuperview];
+        [self->popupMask removeFromSuperview];
+    } else {
+        theStepper.tag = theStepper.value * 10 + index;
+        self->manaLabel.text = [NSString stringWithFormat:@"Select mana\n(%d remaining)\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d",viewController->pendingMana,mana[1],mana[2],mana[3],mana[4],mana[5]];
     }
 }
 
@@ -565,7 +609,7 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
         UILabel* lb = [[UILabel alloc] init];
         UIImageView* iv = currentViews[i];
         [currentLabels addObject:lb] ;
-        if (p->loyalty > 0)
+        if (p->source->is_planeswalker)
             lb.text = [NSString stringWithFormat:@"%d",p->loyalty];
         else
             lb.text = [NSString stringWithFormat:@"%d/%d",p->power,p->toughness];
@@ -579,6 +623,15 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
         [currentViews[i] setImage: currentImages[i]];
         [currentScrollView addSubview:currentViews[i]];
     }
+}
+
+void selectMana(int* mana,int amount) {
+    viewController->pendingMana = amount;
+    memcpy(viewController->manaBuffer, viewController->player->mana, 6*sizeof(int));
+    viewController->manaLabel.text = [NSString stringWithFormat:@"Select mana\n(%d remaining)\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d",viewController->pendingMana,mana[1],mana[2],mana[3],mana[4],mana[5]];
+    viewController->mode = MANA;
+    [viewController.view addSubview:viewController->popupMask];
+    [viewController.view addSubview:viewController->manaAlert];
 }
 
 void saveDeck(char* name,List* cards){

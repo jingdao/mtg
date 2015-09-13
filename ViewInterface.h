@@ -7,6 +7,7 @@ void displayLands(List* permanents, bool selfOrOpponent);
 void displayBattlefield(List* permanents, bool selfOrOpponent);
 void displayStats(int hp,int librarySize,int handSize, int* mana,bool selfOrOpponent);
 void discardToSeven(MTGPlayer* player);
+void selectMana(int* mana,int amount);
 void saveDeck(char* name,List* cards);
 void loadDeck(char* name,List* cards);
 void startTurn(MTGPlayer* player);

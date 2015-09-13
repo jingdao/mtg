@@ -73,12 +73,31 @@ bool MTGPlayer_payMana(MTGPlayer* player,MTGCard* card) {
     if (card->cmc > player->mana[0]) {
         return false;
     }
-    for (unsigned int i=0;i<card->manaCost->size;i++) {
+    for (int i=card->manaCost->size-1;i>=0;i--) {
         Manacost *cost = card->manaCost->entries[i];
         if (cost->isVariable) {
             
-        } else if (cost->color1 == COLORLESS) {
+        } else if (cost->hasOption) {
             
+        } else if (cost->color1 == COLORLESS) {
+            if (cost->num == player->mana[0]) {
+                memset(player->mana, 0, 6*sizeof(int));
+            } else {
+                int countNonzero=0;
+                int nonzeroIndex=0;
+                for (int i=1;i<=5;i++) {
+                    if (player->mana[i] > 0) {
+                        countNonzero++;
+                        nonzeroIndex=i;
+                    }
+                }
+                if (countNonzero == 1 && player->mana[nonzeroIndex] > cost->num) {
+                    player->mana[nonzeroIndex] -= cost->num;
+                    player->mana[0] -= cost->num;
+                } else {
+                    selectMana(player->mana,cost->num);
+                }
+            }
         } else { //one color
             if (player->mana[cost->color1] == 0)
                 return false;

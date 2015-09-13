@@ -12,8 +12,12 @@ void buildDeck(List* cards) {
 		AppendToList(cards,cd.OreskosSwiftclaw);
 	for (int i=0;i<10;i++)
 		AppendToList(cards,cd.RazorfootGriffin);
-	for (int i=0;i<30;i++)
+	for (int i=0;i<10;i++)
 		AppendToList(cards,cd.Plains);
+    for (int i=0;i<10;i++)
+        AppendToList(cards,cd.Swamp);
+    for (int i=0;i<10;i++)
+        AppendToList(cards,cd.Forest);
 }
 
 void shuffleDeck(List* cards) {

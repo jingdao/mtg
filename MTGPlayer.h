@@ -2,6 +2,7 @@
 #include "CardData.h"
 #pragma once
 
+void selectMana(int* mana,int amount);
 
 typedef struct {
 	List* hand;

@@ -11,11 +11,13 @@ MTGCard* NewMTGCard(const char* s,int cost) {
 Permanent* NewPermanent(MTGCard* source) {
     Permanent* p = (Permanent*) malloc(sizeof(Permanent));
     p->is_tapped = false;
-    if (source->loyalty > 0)
+    p->has_attacked = false;
+    if (source->is_planeswalker)
         p->loyalty = source->loyalty;
-    else {
+    else if (source->is_creature){
         p->power = source->power;
         p->toughness = source->toughness;
+        p->has_summoning_sickness = true;
     }
     p->source = source;
     return p;

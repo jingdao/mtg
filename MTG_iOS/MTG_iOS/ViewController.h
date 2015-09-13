@@ -12,6 +12,7 @@
 typedef enum {
     NONE,
     DISCARD,
+    MANA,
     ATTACK,
     TARGET,
     WAIT
@@ -20,7 +21,7 @@ typedef enum {
 @interface ViewController : UIViewController<UIActionSheetDelegate> {
     @public int width,height,margin,topmargin,numColumn,maxColumns;
     @public int popupWidth,popupHeight,textWidth,textHeight,buttonWidth,buttonHeight;
-    @public int gridHeight,gridHeight2, labelWidth,labelHeight;
+    @public int gridHeight,gridHeight2, labelWidth,labelHeight, stepperWidth, stepperHeight;
     @public CGFloat cardWidth,cardHeight,cardWidth2,cardHeight2;
     @public UIImageView* selfDeck;
     @public UIImageView* opponentDeck;
@@ -50,13 +51,17 @@ typedef enum {
     @public UITextView* selfHP;
     @public UITextView* opponentHP;
     @public UIAlertView* mulliganAlert;
+    @public UIView* manaAlert;
     @public UIButton* endturnButton;
     @public UIButton* attackButton;
     @public UIButton* confirmButton;
+    @public UITextView* manaLabel;
     @public MTGPlayer* player;
     @public Permanent* currentPermanent;
     @public char buffer[128];
+    @public int manaBuffer[6];
     @public Mode mode;
+    @public int pendingMana;
 }
 
 @end

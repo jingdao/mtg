@@ -46,6 +46,8 @@ typedef struct  {
 
 typedef struct {
     bool is_tapped;
+    bool has_attacked;
+    bool has_summoning_sickness;
     int power;
     int toughness;
     int loyalty;
