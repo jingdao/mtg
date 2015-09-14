@@ -11,12 +11,16 @@
 #include "MTGController.h"
 
 CardData cd;
+HashTable* cdt;
+
 int main(int argc, const char * argv[]) {
 	srand(time(NULL));
 	cd = loadCardData();
+	loadCardDataTable();
 	newGame();
 	startGame();
 	endGame();
 	freeCardData(&cd);
+	DeleteHashTable(cdt);
     return 0;
 }

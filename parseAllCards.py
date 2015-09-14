@@ -27,6 +27,62 @@ types=set([
 "vanguard"
 ])
 subtypes=set()
+keywords=[
+#'Absorb',
+#'Affinity',
+#'Amplify',
+#'Banding',
+#'Bestow',
+#'Bloodthirst',
+#'Buyback',
+#'Cipher',
+'Convoke',
+#'Dash',
+'Deathtouch',
+'Defender',
+#'Delve',
+#'Devoid',
+#'Devour',
+'Double strike',
+#'Dredge',
+'Enchant',
+#'Entwine',
+#'Fading',
+'First strike',
+'Flash',
+#'Flashback',
+#'Forbidden',
+#'Fuse',
+'Haste',
+'Hexproof',
+#'Hidden agenda',
+'Indestructible',
+'Infect',
+#'Kicker',
+#'Landhome',
+'Lifelink',
+#'Megamorph',
+#'Morph',
+#'Offering',
+#'Overload',
+#'Phasing',
+'Protection',
+#'Prowl',
+'Reach',
+#'Retrace',
+#'Shroud',
+#'Splice',
+#'Split second',
+#'Sunburst',
+#'Totem armor',
+'Trample',
+#'Tribute',
+#'Unleash',
+#'Vanishing',
+'Vigilance',
+#'Wither'
+]
+keywordSet=set()
 targetSets=[
 "Magic 2015 Core Set",
 "Magic Origins"
@@ -34,8 +90,8 @@ targetSets=[
 cardslist=[]
 
 headerFile = open('CardData.h','w')
-headerFile.write('#include "MTGCard.h"\n')
 headerFile.write('#pragma once\n\n')
+headerFile.write('#include "MTGCard.h"\n')
 headerFile.write('typedef struct {\n')
 outFile = open('CardData.c','w')
 outFile.write('#include "CardData.h"\n\n')
@@ -74,6 +130,11 @@ for page in cards:
 			for t in node['subtypes']:
 				subtypes.add(t)
 				outFile.write('cd.'+variableName+'->is_'+t+'=true; ')
+		for k in keywords:
+			if k in node['text']:
+				k_ = k.lower().replace(' ','_')
+				keywordSet.add(k_)
+				outFile.write('cd.'+variableName+'->is_'+k_+'=true; ')
 		if 'power' in node and node['power'].isnumeric():
 			outFile.write('cd.'+variableName+'->power='+node['power']+'; ')
 		if 'toughness' in node and node['toughness'].isnumeric():
@@ -110,6 +171,8 @@ outFile.close()
 subtypeFile = open('Subtypes.h','w')
 subtypeFile.write('#define SUBTYPE_PLACEHOLDER \\\n')
 for s in subtypes:
+	subtypeFile.write('bool is_'+s+';\\\n')
+for s in keywordSet:
 	subtypeFile.write('bool is_'+s+';\\\n')
 subtypeFile.write('bool has_multitype;\n')
 subtypeFile.close()

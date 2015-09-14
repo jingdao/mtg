@@ -1,7 +1,8 @@
+#pragma once
 #include "List.h"
+#include "HashTable.h"
 #include "CardData.h"
 #include "MTGPlayer.h"
-#pragma once
 void displayHand(List* cards);
 void displayLands(List* permanents, bool selfOrOpponent);
 void displayBattlefield(List* permanents, bool selfOrOpponent);

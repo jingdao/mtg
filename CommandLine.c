@@ -2,6 +2,7 @@
 #include "ViewInterface.h"
 
 extern CardData cd;
+extern HashTable* cdt;
 
 void displayHand(List* cards) {
 	for(unsigned int i=0;i<cards->size;i++) {
@@ -19,11 +20,18 @@ void displayLands(List* permanents, bool selfOrOpponent) {
 
 }
 
-void displayStats(int hp,int librarySize,int handSize, bool selfOrOpponent) {
-	if (selfOrOpponent)
+void displayStats(int hp,int librarySize,int handSize, int* mana,bool selfOrOpponent) {
+	if (selfOrOpponent) {
 		printf("Your HP: %d Library: %d Hand: %d\n",hp,librarySize,handSize);
-	else
+		printf("W: %d U: %d B: %d G: %d R: %d\n",mana[1],mana[2],mana[3],mana[4],mana[5]);
+	} else {
 		printf("Opponent's HP: %d Library: %d Hand: %d\n",hp,librarySize,handSize);
+		printf("W: %d U: %d B: %d G: %d R: %d\n",mana[1],mana[2],mana[3],mana[4],mana[5]);
+	}
+}
+
+void selectMana(int* mana,int amount) {
+
 }
 
 void saveDeck(char* name,List* cards) {
@@ -36,6 +44,13 @@ void saveDeck(char* name,List* cards) {
 }
 
 void loadDeck(char* name,List* cards) {
+	char buffer[128];
+	FILE* file = fopen(name,"r");
+	while (fgets(buffer,128,file)) {
+		MTGCard* card = (MTGCard*) HashTable_findVar(cdt,buffer,strlen(buffer) - 1);
+		AppendToList(cards,card);
+	}
+	fclose(file);
 	
 }
 

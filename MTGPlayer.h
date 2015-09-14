@@ -1,6 +1,6 @@
+#pragma once
 #include <stdio.h>
 #include "CardData.h"
-#pragma once
 
 void selectMana(int* mana,int amount);
 

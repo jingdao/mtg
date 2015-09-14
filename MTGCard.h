@@ -1,8 +1,8 @@
+#pragma once
 #include <stdbool.h>
 #include <stdlib.h>
 #include "List.h"
 #include "Subtypes.h"
-#pragma once
 
 typedef enum {
 	COLORLESS=0, WHITE=1, BLUE=2, BLACK=3, RED=4, GREEN=5

@@ -1,9 +1,20 @@
 #include "MTGController.h"
 
 extern CardData cd;
+extern HashTable* cdt;
 MTGPlayer* player1;
 MTGPlayer* player2;
 MTGPlayer* currentPlayer;
+
+void loadCardDataTable() {
+	cdt = InitHashTable();
+	int numCards = sizeof(CardData) / sizeof(MTGCard*);
+	MTGCard** cardArray = & cd.AbbotofKeralKeep;
+	for (int i=0;i<numCards;i++) {
+		HashTable_insertVar(cdt,(void*)(*cardArray)->name, strlen((*cardArray)->name), *cardArray);
+		cardArray++;
+	}
+}
 
 void buildDeck(List* cards) {
 	for (int i=0;i<10;i++)
@@ -78,9 +89,10 @@ void newTurn() {
 
 MTGPlayer* newGame() {
     player1 = InitMTGPlayer();
-	buildDeck(player1->library);
-	saveDeck("deck.txt",player1->library);
+//	buildDeck(player1->library);
+	loadDeck("deck.txt",player1->library);
 	shuffleDeck(player1->library);
+	saveDeck("deck.txt",player1->library);
 
 	player2 = InitMTGPlayer();
 	buildDeck(player2->library);
