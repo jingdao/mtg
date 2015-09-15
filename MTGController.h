@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "ViewInterface.h"
 #include "MTGPlayer.h"
+#include "AIPlayer.h"
 
 void loadCardDataTable();
 void buildDeck(List* cards);

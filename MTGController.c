@@ -11,7 +11,7 @@ void loadCardDataTable() {
 	int numCards = sizeof(CardData) / sizeof(MTGCard*);
 	MTGCard** cardArray = & cd.AbbotofKeralKeep;
 	for (int i=0;i<numCards;i++) {
-		HashTable_insertVar(cdt,(void*)(*cardArray)->name, strlen((*cardArray)->name), *cardArray);
+		HashTable_insertVar(cdt,(void*)(*cardArray)->name, (int) strlen((*cardArray)->name), *cardArray);
 		cardArray++;
 	}
 }
@@ -72,13 +72,27 @@ void resolveAttack(MTGPlayer* attacker,List* permanentList) {
 void newTurn() {
 
 	if (currentPlayer == player1) {
+        MTGPlayer_restore(player1);
+        displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
+        displayBattlefield(player1->battlefield, true);
+        
 		currentPlayer = player2;
-        newTurn();
+        MTGPlayer_refresh(player2);
+        MTGPlayer_drawCards(player2, 1);
+        startTurn(player2);
+        displayStats(player2->hp,player2->library->size,player2->hand->size, player2->mana,false);
+        displayLands(player2->lands, false);
+        displayBattlefield(player2->battlefield, false);
+        AI_getAction(player2);
 	} else {
+        MTGPlayer_restore(player2);
+        displayStats(player2->hp,player2->library->size,player2->hand->size, player2->mana,false);
+        displayBattlefield(player2->battlefield, false);
+        
 		currentPlayer = player1;
 		MTGPlayer_refresh(player1);
-		startTurn(player1);
 		MTGPlayer_drawCards(player1, 1);
+        startTurn(player1);
 		displayHand(player1->hand);
 		displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
         displayLands(player1->lands, true);
@@ -89,12 +103,14 @@ void newTurn() {
 
 MTGPlayer* newGame() {
     player1 = InitMTGPlayer();
-//	buildDeck(player1->library);
 	loadDeck("deck.txt",player1->library);
+    if (player1->library->size <= 0)
+        buildDeck(player1->library);
 	shuffleDeck(player1->library);
 	saveDeck("deck.txt",player1->library);
 
 	player2 = InitMTGPlayer();
+    AI_init(player2);
 	buildDeck(player2->library);
 	shuffleDeck(player2->library);
 
@@ -122,10 +138,7 @@ MTGPlayer* newGame() {
 }
 
 void startGame() {
-    if (currentPlayer == player1)
-        startTurn(currentPlayer); //starting player does not draw 1 card
-    else
-        newTurn();
+    startTurn(currentPlayer); //starting player does not draw 1 card
 }
 
 void endGame() {

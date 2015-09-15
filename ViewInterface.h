@@ -14,4 +14,5 @@ void loadDeck(char* name,List* cards);
 void startTurn(MTGPlayer* player);
 void mulligan();
 void message(char* msg);
+void AI_status(char* msg);
 

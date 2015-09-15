@@ -16,11 +16,14 @@ MTGPlayer* InitMTGPlayer() {
 	return p;
 }
 
-void MTGPlayer_drawCards(MTGPlayer* p,int num) {
+bool MTGPlayer_drawCards(MTGPlayer* p,int num) {
+    if (p->library->size < num)
+        return false;
 	for (int i=0;i<num;i++) {
 		AppendToList(p->hand,p->library->entries[p->library->size-1-i]);
 	}
 	p->library->size -=num;
+    return true;
 }
 
 bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
@@ -111,7 +114,6 @@ bool MTGPlayer_payMana(MTGPlayer* player,MTGCard* card) {
 
 void MTGPlayer_refresh(MTGPlayer* player) {
     player->playedLand = false;
-    memset(player->mana,0,6 * sizeof(int));
     for (unsigned int i=0;i<player->battlefield->size;i++) {
         Permanent* p = player->battlefield->entries[i];
         p->has_attacked = false;
@@ -121,6 +123,17 @@ void MTGPlayer_refresh(MTGPlayer* player) {
     for (unsigned int i=0;i<player->lands->size;i++) {
         Permanent* p = player->lands->entries[i];
         p->is_tapped = false;
+    }
+}
+
+void MTGPlayer_restore(MTGPlayer* player) {
+    memset(player->mana,0,6 * sizeof(int));
+    for (unsigned int i=0;i<player->battlefield->size;i++) {
+        Permanent* p = player->battlefield->entries[i];
+        if (p->source->is_creature) {
+            p->power = p->source->power;
+            p->toughness = p->source->toughness;
+        }
     }
 }
 

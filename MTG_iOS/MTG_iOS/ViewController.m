@@ -14,6 +14,7 @@
 @end
 
 CardData cd;
+HashTable* cdt;
 ViewController* viewController;
 
 @implementation ViewController
@@ -155,7 +156,6 @@ ViewController* viewController;
     [confirmButton setFrame:CGRectMake(width-buttonWidth-margin, topmargin+(margin+buttonHeight)*3, buttonWidth, buttonHeight)];
     [confirmButton setTitle:@"Confirm" forState:UIControlStateNormal];
     [confirmButton addTarget:self action:@selector(onConfirm:) forControlEvents:UIControlEventTouchUpInside];
-    confirmButton.enabled=false;
     [self.view addSubview:confirmButton];
     
     UITapGestureRecognizer *recog1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
@@ -191,6 +191,10 @@ ViewController* viewController;
     [self->selfBattlefield addGestureRecognizer:recog10];
     UILongPressGestureRecognizer *recog11 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpress:)];
     [self->selfLands addGestureRecognizer:recog11];
+    UILongPressGestureRecognizer *recog12 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpress:)];
+    [self->opponentBattlefield addGestureRecognizer:recog12];
+    UILongPressGestureRecognizer *recog13 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpress:)];
+    [self->opponentLands addGestureRecognizer:recog13];
     
     self->mulliganAlert = [[UIAlertView alloc] initWithTitle:nil message:@"Mulligan?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes",nil];
     self->manaAlert = [[UIView alloc] initWithFrame: CGRectMake((width-stepperWidth*2-margin*2)/2, (height-margin*4-stepperHeight*5)/2, margin*4+stepperWidth*2, margin*4+stepperHeight*5)];
@@ -209,6 +213,7 @@ ViewController* viewController;
     }
     
     cd = loadCardData();
+    loadCardDataTable();
     self->player = newGame();
 
 }
@@ -302,6 +307,28 @@ ViewController* viewController;
         [self->popupImage setImage:self->selfBattlefieldImages[idx]];
         [self.view addSubview:self->popupMask];
         [self.view addSubview:self->popupImage];
+    } else if ([gesture view] == self->opponentLands && opponentLandsViews.count > 0) {
+        for (idx=0;idx<self->opponentLandsViews.count;idx++) {
+            UIImageView *imv = self->opponentLandsViews[idx];
+            if (p.x < imv.frame.origin.x + imv.frame.size.width)
+                break;
+        }
+        if (idx >= self->opponentLandsViews.count)
+            idx = self->opponentLandsViews.count - 1;
+        [self->popupImage setImage:self->opponentLandsImages[idx]];
+        [self.view addSubview:self->popupMask];
+        [self.view addSubview:self->popupImage];
+    } else if ([gesture view] == self->opponentBattlefield && opponentBattlefieldViews.count > 0) {
+        for (idx=0;idx<self->opponentBattlefieldViews.count;idx++) {
+            UIImageView *imv = self->opponentBattlefieldViews[idx];
+            if (p.x < imv.frame.origin.x + imv.frame.size.width)
+                break;
+        }
+        if (idx >= self->opponentBattlefieldViews.count)
+            idx = self->opponentBattlefieldViews.count - 1;
+        [self->popupImage setImage:self->opponentBattlefieldImages[idx]];
+        [self.view addSubview:self->popupMask];
+        [self.view addSubview:self->popupImage];
     }
 }
      
@@ -378,6 +405,10 @@ ViewController* viewController;
     if (player->hand->size > 7)
         discardToSeven(player);
     else {
+        attackButton.enabled=false;
+        confirmButton.enabled=true;
+        endturnButton.enabled=false;
+        mode = WAIT;
         newTurn();
     }
 }
@@ -422,6 +453,9 @@ ViewController* viewController;
             displayBattlefield(player->battlefield, self);
         }
         DeleteList(permanentList);
+    } else if (mode == WAIT) {
+        AI_getAction();
+        return;
     }
     confirmButton.enabled=false;
     endturnButton.enabled=true;
@@ -431,6 +465,9 @@ ViewController* viewController;
 - (void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
         case 0:
+            attackButton.enabled=false;
+            confirmButton.enabled=true;
+            endturnButton.enabled=false;
             endGame();
             self->player = newGame();
             break;
@@ -442,7 +479,7 @@ ViewController* viewController;
                 }
             }
             displayLands(self->player->lands, true);
-            displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->mana, self);
+            displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->mana, true);
             break;
         case 2:
             [self toggleHighlight:selfBattlefield];
@@ -671,18 +708,44 @@ void selectMana(int* mana,int amount) {
 }
 
 void saveDeck(char* name,List* cards){
-    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *fileName = [NSString stringWithFormat:@"%@/%s",
+                          documentsDirectory,name];
+    FILE* fh = fopen([fileName cStringUsingEncoding:NSUTF8StringEncoding],"w");
+    for (unsigned int i=0;i<cards->size;i++) {
+        MTGCard* card = cards->entries[i];
+        fprintf(fh,"%s\n",card->name);
+    }
+    fclose(fh);
 }
 
 void loadDeck(char* name,List* cards) {
-    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *fileName = [NSString stringWithFormat:@"%@/%s",
+                          documentsDirectory,name];
+    FILE* fh = fopen([fileName cStringUsingEncoding:NSUTF8StringEncoding],"w");
+    char buffer[128];
+    while (fgets(buffer,128,fh)) {
+        MTGCard* card = (MTGCard*) HashTable_findVar(cdt,buffer,(int)strlen(buffer) - 1);
+        AppendToList(cards,card);
+    }
+    fclose(fh);
 }
 
 void startTurn(MTGPlayer* player) {
-    viewController->attackButton.enabled=true;
-    viewController->confirmButton.enabled=false;
-    viewController->endturnButton.enabled=true;
-    viewController->mode=NONE;
+    if (player == viewController->player) {
+        viewController->attackButton.enabled=true;
+        viewController->confirmButton.enabled=false;
+        viewController->endturnButton.enabled=true;
+        viewController->mode=NONE;
+        [viewController displayToastWithMessage:@"Your turn"];
+    } else {
+        [viewController displayToastWithMessage:@"Opponent's Turn"];
+    }
 }
 
 void discardToSeven(MTGPlayer* player){
@@ -710,5 +773,4 @@ void message(char* msg) {
         //[alert show];
     //});
     [viewController displayToastWithMessage:err];
-
 }
