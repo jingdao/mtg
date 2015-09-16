@@ -35,6 +35,9 @@ void selectMana(int* mana,int amount) {
 
 }
 
+void selectBlockers(List* permanentList,List* blockersList) {
+}
+
 void saveDeck(char* name,List* cards) {
 	FILE* file = fopen(name,"w");
 	for (unsigned int i=0;i<cards->size;i++) {
@@ -47,6 +50,8 @@ void saveDeck(char* name,List* cards) {
 void loadDeck(char* name,List* cards) {
 	char buffer[128];
 	FILE* file = fopen(name,"r");
+	if (!file)
+		return;
 	while (fgets(buffer,128,file)) {
 		MTGCard* card = (MTGCard*) HashTable_findVar(cdt,buffer,strlen(buffer) - 1);
 		AppendToList(cards,card);

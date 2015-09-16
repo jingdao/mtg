@@ -8,6 +8,18 @@ void AI_init(MTGPlayer* player) {
     aiplayer = player;
 }
 
+void AI_getBlockers(List* attackerList, List* blockersList){
+	for (unsigned int i=0;i<aiplayer->battlefield->size;i++) {
+		Permanent* p = aiplayer->battlefield->entries[i];
+		if (p->source->is_creature && !p->is_tapped) {
+			int j = rand() % attackerList->size;
+			Permanent* attacker = attackerList->entries[j];
+			List* blockers = blockersList->entries[j];
+			AppendToList(blockersList,p);
+		}
+	}
+}
+
 void AI_getAction() {
     char buffer[128];
     state = (state + 1) % AI_NUMSTATES;

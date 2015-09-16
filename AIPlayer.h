@@ -17,3 +17,4 @@ typedef enum {
 
 void AI_init(MTGPlayer* player);
 void AI_getAction();
+void AI_getBlockers(List* attackerList, List* blockersList);

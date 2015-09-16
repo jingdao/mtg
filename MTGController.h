@@ -6,7 +6,7 @@
 #include "AIPlayer.h"
 
 void loadCardDataTable();
-void buildDeck(List* cards);
+void buildDeck(List* cards,int index);
 void shuffleDeck(List* cards);
 void apply_mulligan(MTGPlayer* p);
 void resolveAttack(MTGPlayer* attacker,List* permanentList);

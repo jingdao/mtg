@@ -16,19 +16,143 @@ void loadCardDataTable() {
 	}
 }
 
-void buildDeck(List* cards) {
-	for (int i=0;i<10;i++)
-		AppendToList(cards,cd.SelflessCathar);
-	for (int i=0;i<10;i++)
-		AppendToList(cards,cd.OreskosSwiftclaw);
-	for (int i=0;i<10;i++)
-		AppendToList(cards,cd.RazorfootGriffin);
-	for (int i=0;i<10;i++)
-		AppendToList(cards,cd.Plains);
-    for (int i=0;i<10;i++)
-        AppendToList(cards,cd.Swamp);
-    for (int i=0;i<10;i++)
-        AppendToList(cards,cd.Forest);
+void buildDeck(List* cards,int index) {
+	if (index == 0) {
+		for (int i=0;i<10;i++) AppendToList(cards,cd.SelflessCathar);
+		for (int i=0;i<10;i++) AppendToList(cards,cd.OreskosSwiftclaw);
+		for (int i=0;i<10;i++) AppendToList(cards,cd.RazorfootGriffin);
+		for (int i=0;i<10;i++) AppendToList(cards,cd.Plains);
+		for (int i=0;i<10;i++) AppendToList(cards,cd.Swamp);
+		for (int i=0;i<10;i++) AppendToList(cards,cd.Forest);
+	} else if (index == 1) {
+		for (int i=0;i<2;i++) AppendToList(cards,cd.Ornithopter);
+		for (int i=0;i<3;i++) AppendToList(cards,cd.BronzeSable);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.WelkinTern);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.RummagingGoblin);
+		for (int i=0;i<3;i++) AppendToList(cards,cd.AeronautTinkerer);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.KrenkosEnforcer);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.WallofFrost);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.Juggernaut);
+		for (int i=0;i<3;i++) AppendToList(cards,cd.ScrapyardMongrel);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.HoardingDragon);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.GlacialCrasher);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.SiegeDragon);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.RoguesGloves);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.SacredArmory);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.TyrantsMachine);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.ShrapnelBlast);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.EnsoulArtifact);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.BrawlersPlate);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.StaffoftheFlameMagus);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.StaffoftheMindMagus);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.LavaAxe);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.DarksteelCitadel);
+		for (int i=0;i<12;i++) AppendToList(cards,cd.Mountain);
+		for (int i=0;i<12;i++) AppendToList(cards,cd.Island);
+	} else if (index == 2) {
+		for (int i=0;i<1;i++) AppendToList(cards,cd.FugitiveWizard);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.ResearchAssistant);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.RuneclawBear);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.SatyrWayfinder);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.CoralBarrier);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.FrostLynx);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.IllusoryAngel);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.InvasiveSpecies);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.ReclamationSage);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.RoaringPrimadox);
+		for (int i=0;i<3;i++) AppendToList(cards,cd.ShamanofSpring);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.MercurialPretender);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.KapshoKitefins);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.CarnivorousMossBeast);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.StormtideLeviathan);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.Negate);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.PeelfromReality);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.TurntoFrog);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.Plummet);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.Encrust);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.IntotheVoid);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.Meteorite);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.Restock);
+		for (int i=0;i<13;i++) AppendToList(cards,cd.Island);
+		for (int i=0;i<12;i++) AppendToList(cards,cd.Forest);
+	} else if (index == 3) {
+		for (int i=0;i<3;i++) AppendToList(cards,cd.TyphoidRats);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.TorchFiend);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.GargoyleSentinel);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.CarrionCrow);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.GoblinRoughrider);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.WallofFire);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.Gravedigger);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.ZofShade);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.NightfireGiant);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.IndulgentTormentor);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.ThunderingGiant);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.ProfaneMemento);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.ClearaPath);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.LightningStrike);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.Festergloom);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.StabWound);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.BurningAnger);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.FleshtoDust);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.ConeofFlame);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.BlastfireBolt);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.CausticTar);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.HeatRay);
+		for (int i=0;i<13;i++) AppendToList(cards,cd.Swamp);
+		for (int i=0;i<13;i++) AppendToList(cards,cd.Mountain);
+	} else if (index == 4) {
+		for (int i=0;i<3;i++) AppendToList(cards,cd.Soulmender);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.AjanisPridemate);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.KinsbaileSkirmisher);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.SungracePegasus);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.WallofEssence);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.ChildofNight);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.WallofLimbs);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.WitchsFamiliar);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.GeistoftheMoors);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.AccursedSpirit);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.TirelessMissionaries);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.ShadowcloakVampire);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.BloodHost);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.ResoluteArchangel);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.CripplingBlight);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.Ulcerate);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.DivineFavor);
+		for (int i=0;i<3;i++) AppendToList(cards,cd.SigninBlood);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.StaffoftheDeathMagus);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.StaffoftheSunMagus);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.PillarofLight);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.SolemnOffering);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.FirstResponse);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.MassCalcify);
+		for (int i=0;i<12;i++) AppendToList(cards,cd.Plains);
+		for (int i=0;i<13;i++) AppendToList(cards,cd.Swamp);
+	} else if (index == 5) {
+		for (int i=0;i<2;i++) AppendToList(cards,cd.SunbladeElf);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.SelflessCathar);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.WallofMulch);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.OreskosSwiftclaw);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.MidnightGuard);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.LivingTotem);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.WillForgedGolem);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.Phytotitan);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.SiegeWurm);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.SeraphoftheMasses);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.HornetQueen);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.GatherCourage);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.Naturalize);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.TitanicGrowth);
+		for (int i=0;i<3;i++) AppendToList(cards,cd.RaisetheAlarm);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.DevouringLight);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.NissasExpedition);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.SanctifiedCharge);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.MeditationPuzzle);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.TriplicateSpirits);
+		for (int i=0;i<1;i++) AppendToList(cards,cd.Overwhelm);
+		for (int i=0;i<2;i++) AppendToList(cards,cd.FeralIncarnation);
+		for (int i=0;i<13;i++) AppendToList(cards,cd.Forest);
+		for (int i=0;i<12;i++) AppendToList(cards,cd.Plains);
+	}
 }
 
 void shuffleDeck(List* cards) {
@@ -58,10 +182,31 @@ void apply_mulligan(MTGPlayer* p) {
 }
 
 void resolveAttack(MTGPlayer* attacker,List* permanentList) {
-    MTGPlayer* defender = attacker==player1 ? player2 : player1;
+    MTGPlayer* defender;
+	List* blockersList = InitList();
+	for (unsigned int i=0;i<permanentList->size;i++) {
+		List* blockers = InitList();
+		AppendToList(blockersList,blockers);
+	}
+	if (attacker==player1) {
+		defender = player2;
+		AI_getBlockers(permanentList,blockersList);
+	} else {
+		defender = player1;
+		selectBlockers(permanentList,blockersList);
+	}
     for(unsigned int i=0;i<permanentList->size;i++) {
         Permanent* p = permanentList->entries[i];
-        defender->hp -= p->power;
+		List* blockers = blockersList->entries[i];
+		if (blockers->size == 0)
+        	defender->hp -= p->power;
+		else {
+			for (unsigned int j=0;j<blockers->size;j++) {
+				Permanent* q = blockers->entries[j];
+				p->toughness -= q->power;
+				q->toughness -= p->power;
+			}
+		}
     }
     displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
     displayBattlefield(player1->battlefield, true);
@@ -105,13 +250,13 @@ MTGPlayer* newGame() {
     player1 = InitMTGPlayer();
 	loadDeck("deck.txt",player1->library);
     if (player1->library->size <= 0)
-        buildDeck(player1->library);
+        buildDeck(player1->library,rand() % 6);
 	shuffleDeck(player1->library);
 	saveDeck("deck.txt",player1->library);
 
 	player2 = InitMTGPlayer();
     AI_init(player2);
-	buildDeck(player2->library);
+	buildDeck(player2->library,rand() % 6);
 	shuffleDeck(player2->library);
 
 	MTGPlayer_drawCards(player1,7);
