@@ -156,6 +156,7 @@ ViewController* viewController;
     [confirmButton setFrame:CGRectMake(width-buttonWidth-margin, topmargin+(margin+buttonHeight)*3, buttonWidth, buttonHeight)];
     [confirmButton setTitle:@"Confirm" forState:UIControlStateNormal];
     [confirmButton addTarget:self action:@selector(onConfirm:) forControlEvents:UIControlEventTouchUpInside];
+    confirmButton.enabled = false;
     [self.view addSubview:confirmButton];
     
     UITapGestureRecognizer *recog1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
@@ -376,7 +377,7 @@ ViewController* viewController;
             displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->mana, self);
         }
     } else if ([gesture view] == self->selfBattlefield && selfBattlefieldViews.count > 0) {
-        for (idx=0;idx<self->selfLandsViews.count;idx++) {
+        for (idx=0;idx<self->selfBattlefieldViews.count;idx++) {
             UIImageView *imv = self->selfBattlefieldViews[idx];
             if (p.x < imv.frame.origin.x + imv.frame.size.width)
                 break;
@@ -466,33 +467,37 @@ ViewController* viewController;
     switch (buttonIndex) {
         case 0:
             attackButton.enabled=false;
-            confirmButton.enabled=true;
+            confirmButton.enabled=false;
             endturnButton.enabled=false;
             endGame();
             self->player = newGame();
             break;
         case 1:
-            for (unsigned int i=0;i<self->player->lands->size;i++) {
-                Permanent* p = self->player->lands->entries[i];
-                if (!p->is_tapped) {
-                    MTGPlayer_tap(self->player, p);
+            if (mode == NONE) {
+                for (unsigned int i=0;i<self->player->lands->size;i++) {
+                    Permanent* p = self->player->lands->entries[i];
+                    if (!p->is_tapped) {
+                        MTGPlayer_tap(self->player, p);
+                    }
                 }
+                displayLands(self->player->lands, true);
+                displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->mana, true);
             }
-            displayLands(self->player->lands, true);
-            displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->mana, true);
             break;
         case 2:
-            [self toggleHighlight:selfBattlefield];
-            mode=ATTACK;
-            attackButton.enabled=false;
-            confirmButton.enabled=true;
-            endturnButton.enabled=false;
-            for (int i=0;i<self->selfBattlefieldViews.count;i++) {
-                UIImageView* iv = self->selfBattlefieldViews[i];
-                Permanent* p = self->player->battlefield->entries[i];
-                if (!p->has_summoning_sickness && !p->is_tapped) {
-                    [self toggleCard:iv];
-                    p->has_attacked = true;
+            if (mode == NONE && attackButton.enabled==true) {
+                [self toggleHighlight:selfBattlefield];
+                mode=ATTACK;
+                attackButton.enabled=false;
+                confirmButton.enabled=true;
+                endturnButton.enabled=false;
+                for (int i=0;i<self->selfBattlefieldViews.count;i++) {
+                    UIImageView* iv = self->selfBattlefieldViews[i];
+                    Permanent* p = self->player->battlefield->entries[i];
+                    if (!p->has_summoning_sickness && !p->is_tapped) {
+                        [self toggleCard:iv];
+                        p->has_attacked = true;
+                    }
                 }
             }
             break;
@@ -503,12 +508,11 @@ ViewController* viewController;
 
 - (void) alertView:(UIAlertView*) alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (alertView == self->mulliganAlert) {
-        if (buttonIndex==1) {
+        if (buttonIndex==1 && self->player->hand->size > 0) {
             apply_mulligan(self->player);
-            if (self->player->hand->size > 0)
-                mulligan();
+            mulligan();
         } else {
-            
+            confirmButton.enabled = true;
             startGame();
         }
     }
