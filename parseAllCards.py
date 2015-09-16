@@ -135,6 +135,8 @@ for page in cards:
 				k_ = k.lower().replace(' ','_')
 				keywordSet.add(k_)
 				outFile.write('cd.'+variableName+'->is_'+k_+'=true; ')
+		if '{T}' in node['text']:
+			outFile.write('cd.'+variableName+'->has_tap=true; ')
 		if 'power' in node and node['power'].isnumeric():
 			outFile.write('cd.'+variableName+'->power='+node['power']+'; ')
 		if 'toughness' in node and node['toughness'].isnumeric():
@@ -174,5 +176,5 @@ for s in subtypes:
 	subtypeFile.write('bool is_'+s+';\\\n')
 for s in keywordSet:
 	subtypeFile.write('bool is_'+s+';\\\n')
-subtypeFile.write('bool has_multitype;\n')
+subtypeFile.write('bool has_tap;\n')
 subtypeFile.close()

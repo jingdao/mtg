@@ -3,6 +3,7 @@
 
 extern CardData cd;
 extern HashTable* cdt;
+extern MTGPlayer* myplayer;
 
 void displayHand(List* cards) {
 	for(unsigned int i=0;i<cards->size;i++) {
@@ -59,7 +60,11 @@ void discardToSeven(MTGPlayer* player) {
 }
 
 void startTurn(MTGPlayer* player) {
+	if (player == myplayer) {
 
+	} else {
+
+	}
 }
 
 void mulligan() {

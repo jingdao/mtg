@@ -12,6 +12,7 @@
 
 CardData cd;
 HashTable* cdt;
+MTGPlayer* myplayer;
 
 int main(int argc, const char * argv[]) {
 	srand(time(NULL));
