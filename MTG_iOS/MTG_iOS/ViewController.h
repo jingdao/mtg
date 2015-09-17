@@ -14,8 +14,9 @@ typedef enum {
     DISCARD,
     MANA,
     ATTACK,
-    TARGET,
-    WAIT
+    BLOCK,
+    WAIT,
+    WAITATTACK
 } Mode ;
 
 @interface ViewController : UIViewController<UIActionSheetDelegate> {
@@ -62,6 +63,10 @@ typedef enum {
     @public int manaBuffer[6];
     @public Mode mode;
     @public int pendingMana;
+    @public int block_index;
+    @public List* attackerList;
+    @public List* blockersList;
+    @public List* opponentPermanents;
 }
 
 @end

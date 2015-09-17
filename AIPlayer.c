@@ -13,11 +13,12 @@ void AI_getBlockers(List* attackerList, List* blockersList){
 		Permanent* p = aiplayer->battlefield->entries[i];
 		if (p->source->is_creature && !p->is_tapped) {
 			int j = rand() % attackerList->size;
-			Permanent* attacker = attackerList->entries[j];
+			//Permanent* attacker = attackerList->entries[j];
 			List* blockers = blockersList->entries[j];
-			AppendToList(blockersList,p);
+			AppendToList(blockers,p);
 		}
 	}
+
 }
 
 void AI_getAction() {
@@ -127,7 +128,6 @@ void AI_getAction() {
         }
         if (permanentList->size > 0) {
             resolveAttack(aiplayer, permanentList);
-            message("Opponent is attacking you");
         } else {
             state = (state + 1) % AI_NUMSTATES;
         }

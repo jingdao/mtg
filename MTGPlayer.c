@@ -116,7 +116,6 @@ void MTGPlayer_refresh(MTGPlayer* player) {
     player->playedLand = false;
     for (unsigned int i=0;i<player->battlefield->size;i++) {
         Permanent* p = player->battlefield->entries[i];
-        p->has_attacked = false;
         p->is_tapped = false;
         p->has_summoning_sickness = false;
     }
@@ -133,6 +132,8 @@ void MTGPlayer_restore(MTGPlayer* player) {
         if (p->source->is_creature) {
             p->power = p->source->power;
             p->toughness = p->source->toughness;
+            p->has_attacked = false;
+            p->has_blocked = false;
         }
     }
 }

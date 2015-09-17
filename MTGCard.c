@@ -12,6 +12,7 @@ Permanent* NewPermanent(MTGCard* source) {
     Permanent* p = (Permanent*) malloc(sizeof(Permanent));
     p->is_tapped = false;
     p->has_attacked = false;
+    p->has_blocked = false;
     if (source->is_planeswalker)
         p->loyalty = source->loyalty;
     else if (source->is_creature){

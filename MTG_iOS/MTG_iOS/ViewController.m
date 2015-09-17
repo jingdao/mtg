@@ -394,6 +394,15 @@ ViewController* viewController;
                 self->currentPermanent->has_attacked= !self->currentPermanent->has_attacked;
                 [self toggleCard:selfBattlefieldViews[idx]];
             }
+        } else if (mode==BLOCK) {
+            if (!self->currentPermanent->source->is_creature)
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s is not a creature!",self->currentPermanent->source->name]];
+            else if (self->currentPermanent->is_tapped || self->currentPermanent->has_blocked)
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot block!",self->currentPermanent->source->name]];
+            else {
+                self->currentPermanent->has_attacked= !self->currentPermanent->has_attacked;
+                [self toggleCard:selfBattlefieldViews[idx]];
+            }
         } else if (mode==NONE) {
             if (!self->currentPermanent->is_tapped)
                 MTGPlayer_tap(self->player, self->currentPermanent);
@@ -447,16 +456,56 @@ ViewController* viewController;
                 AppendToList(permanentList, p);
             }
         }
-        if (permanentList->size > 0)
+        if (permanentList->size > 0) {
             resolveAttack(self->player, permanentList);
-        else {
+            mode = WAITATTACK;
+            return;
+        } else {
             attackButton.enabled=true;
-            displayBattlefield(player->battlefield, self);
         }
+        displayBattlefield(player->battlefield, self);
         DeleteList(permanentList);
-    } else if (mode == WAIT) {
-        AI_getAction();
+    } else if (mode == BLOCK) {
+        int numBlockers = 0;
+        for (unsigned int i=0;i<viewController->player->battlefield->size;i++) {
+            Permanent* p = viewController->player->battlefield->entries[i];
+            if (p->source->is_creature && ! p->is_tapped)
+                numBlockers++;
+        }
+        if (numBlockers > 0) {
+            List* blockers = blockersList->entries[block_index];
+            for (unsigned int i=0;i<player->battlefield->size;i++) {
+                Permanent* p = player->battlefield->entries[i];
+                if (p->has_attacked) {
+                    p->has_blocked = true;
+                    p->has_attacked = false;
+                    AppendToList(blockers, p);
+                }
+            }
+        }
+        block_index++;
+        if (block_index >= attackerList->size) {
+            [self toggleHighlight:selfBattlefield];
+            mode = WAIT;
+            resolveBlock();
+        } else if (numBlockers > 0){
+            Permanent* p = attackerList->entries[block_index];
+            unsigned int i;
+            for (i=0;i<opponentPermanents->size;i++) {
+                Permanent* q = opponentPermanents->entries[i];
+                if (q == p)
+                    break;
+            }
+            UIImageView* iv = opponentBattlefieldViews[i];
+            [self toggleCard:iv];
+        }
         return;
+    } else if (mode == WAIT) {
+        resolveAI();
+        return;
+    } else if (mode == WAITATTACK) {
+        if (!resolveBlock(player))
+            return;
     }
     confirmButton.enabled=false;
     endturnButton.enabled=true;
@@ -647,6 +696,7 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
         currentImages = viewController->opponentBattlefieldImages;
         currentViews = viewController->opponentBattlefieldViews;
         currentLabels = viewController->opponentLabels;
+        viewController->opponentPermanents = permanents;
     }
     
     [currentImages removeAllObjects];
@@ -709,6 +759,32 @@ void selectMana(int* mana,int amount) {
     viewController->mode = MANA;
     [viewController.view addSubview:viewController->popupMask];
     [viewController.view addSubview:viewController->manaAlert];
+}
+
+void selectBlockers(List* permanentList,List* blockersList) {
+    viewController->attackerList = permanentList;
+    viewController->blockersList = blockersList;
+    viewController->block_index = 0;
+    viewController->mode = BLOCK;
+    
+    int numBlockers = 0;
+    for (unsigned int i=0;i<viewController->player->battlefield->size;i++) {
+        Permanent* p = viewController->player->battlefield->entries[i];
+        if (p->source->is_creature && ! p->is_tapped)
+            numBlockers++;
+    }
+    if (numBlockers > 0) {
+        [viewController toggleHighlight:viewController->selfBattlefield];
+        Permanent* p = viewController->attackerList->entries[viewController->block_index];
+        unsigned int i;
+        for (i=0;i<viewController->opponentPermanents->size;i++) {
+            Permanent* q = viewController->opponentPermanents->entries[i];
+            if (q == p)
+                break;
+        }
+        UIImageView* iv = viewController->opponentBattlefieldViews[i];
+        [viewController toggleCard:iv];
+    }
 }
 
 void saveDeck(char* name,List* cards){

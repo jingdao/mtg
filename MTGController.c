@@ -6,6 +6,10 @@ MTGPlayer* player1;
 MTGPlayer* player2;
 MTGPlayer* currentPlayer;
 
+List* blockersList = NULL;
+List* attackerList = NULL;
+int block_index;
+
 void loadCardDataTable() {
 	cdt = InitHashTable();
 	int numCards = sizeof(CardData) / sizeof(MTGCard*);
@@ -182,42 +186,89 @@ void apply_mulligan(MTGPlayer* p) {
 }
 
 void resolveAttack(MTGPlayer* attacker,List* permanentList) {
-    MTGPlayer* defender;
-	List* blockersList = InitList();
+	blockersList = InitList();
+    block_index = 0;
+    attackerList = InitList();
 	for (unsigned int i=0;i<permanentList->size;i++) {
+        Permanent* p = permanentList->entries[i];
+        AppendToList(attackerList, p);
 		List* blockers = InitList();
 		AppendToList(blockersList,blockers);
 	}
 	if (attacker==player1) {
-		defender = player2;
-		AI_getBlockers(permanentList,blockersList);
+		AI_getBlockers(attackerList,blockersList);
+        message("You launched an attack");
 	} else {
-		defender = player1;
-		selectBlockers(permanentList,blockersList);
+		selectBlockers(attackerList,blockersList);
+        message("Opponent launched an attack");
 	}
-    for(unsigned int i=0;i<permanentList->size;i++) {
-        Permanent* p = permanentList->entries[i];
-		List* blockers = blockersList->entries[i];
-		if (blockers->size == 0)
-        	defender->hp -= p->power;
-		else {
-			for (unsigned int j=0;j<blockers->size;j++) {
-				Permanent* q = blockers->entries[j];
-				p->toughness -= q->power;
-				q->toughness -= p->power;
-			}
-		}
+    
+    
+}
+
+bool resolveBlock() {
+    MTGPlayer* defender;
+    if (currentPlayer==player1) {
+        defender = player2;
+    } else {
+        defender = player1;
+    }
+    Permanent* p = attackerList->entries[block_index];
+    List* blockers = blockersList->entries[block_index];
+    char buffer[128];
+    if (blockers->size == 0) {
+        defender->hp -= p->power;
+        sprintf(buffer,"%s dealt %d damage to %s",p->source->name,p->power,defender==player1 ? "you" : "opponent");
+        message(buffer);
+    } else {
+        int k = sprintf(buffer,"%s is blocked by ",p->source->name);
+        for (unsigned int j=0;j<blockers->size;j++) {
+            Permanent* q = blockers->entries[j];
+            p->toughness -= q->power;
+            q->toughness -= p->power;
+            k += sprintf(buffer+k,"%s,",q->source->name);
+        }
+        message(buffer);
     }
     displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
     displayBattlefield(player1->battlefield, true);
     displayStats(player2->hp,player2->library->size,player2->hand->size, player2->mana,false);
     displayBattlefield(player2->battlefield, false);
+    block_index++;
+    if (block_index >= attackerList->size) {
+        endAttack();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void resolveAI() {
+    if (attackerList)
+        resolveBlock();
+    else
+        AI_getAction();
+}
+
+void endAttack() {
+    if (attackerList)
+        DeleteList(attackerList);
+    if (blockersList) {
+        for (unsigned int i=0;i<blockersList->size;i++) {
+            List* l = blockersList->entries[i];
+            DeleteList(l);
+        }
+        DeleteList(blockersList);
+    }
+    attackerList = NULL;
+    blockersList = NULL;
 }
 
 void newTurn() {
 
 	if (currentPlayer == player1) {
         MTGPlayer_restore(player1);
+        MTGPlayer_restore(player2);
         displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
         displayBattlefield(player1->battlefield, true);
         
@@ -230,6 +281,7 @@ void newTurn() {
         displayBattlefield(player2->battlefield, false);
         AI_getAction(player2);
 	} else {
+        MTGPlayer_restore(player1);
         MTGPlayer_restore(player2);
         displayStats(player2->hp,player2->library->size,player2->hand->size, player2->mana,false);
         displayBattlefield(player2->battlefield, false);
@@ -287,6 +339,7 @@ void startGame() {
 }
 
 void endGame() {
+    endAttack();
     DeleteMTGPlayer(player1);
     DeleteMTGPlayer(player2);
 }
