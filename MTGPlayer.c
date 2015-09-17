@@ -62,6 +62,14 @@ void MTGPlayer_discard(MTGPlayer* player,int cardIndex) {
     player->hand->size--;
 }
 
+void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex) {
+    AppendToList(player->graveyard, player->battlefield->entries[cardIndex]);
+    //remove card from battlefield
+    memmove(player->battlefield->entries+cardIndex,player->battlefield->entries+cardIndex+1,(player->battlefield->size-1-cardIndex)*sizeof(void*));
+    player->battlefield->size--;
+}
+
+
 void MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
     permanent->is_tapped = true;
     if (permanent->source == cd.Plains) player->mana[1]++;
@@ -102,11 +110,11 @@ bool MTGPlayer_payMana(MTGPlayer* player,MTGCard* card) {
                 }
             }
         } else { //one color
-            if (player->mana[cost->color1] == 0)
+            if (player->mana[cost->color1] < cost->num)
                 return false;
             else
-                player->mana[cost->color1]--;
-            player->mana[0]--;
+                player->mana[cost->color1] -= cost->num;
+            player->mana[0] -= cost->num;
         }
     }
     return true;

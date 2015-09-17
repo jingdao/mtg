@@ -11,6 +11,7 @@ void shuffleDeck(List* cards);
 void apply_mulligan(MTGPlayer* p);
 void resolveAttack(MTGPlayer* attacker,List* permanentList);
 bool resolveBlock();
+bool resolveLethalDamage();
 void resolveAI();
 void endAttack();
 void newTurn();

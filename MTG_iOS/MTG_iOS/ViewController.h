@@ -67,6 +67,7 @@ typedef enum {
     @public List* attackerList;
     @public List* blockersList;
     @public List* opponentPermanents;
+    @public bool cacheImages;
 }
 
 @end

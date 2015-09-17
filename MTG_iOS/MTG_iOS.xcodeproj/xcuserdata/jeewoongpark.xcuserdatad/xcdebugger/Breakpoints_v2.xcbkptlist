@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "464061354.205332"
+            timestampString = "464190203.221449"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "219"
-            endingLineNumber = "219"
+            startingLineNumber = "220"
+            endingLineNumber = "220"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "464154127.474867"
+            timestampString = "464190203.221449"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "422"
-            endingLineNumber = "422"
+            startingLineNumber = "431"
+            endingLineNumber = "431"
             landmarkName = "-onEndturn:"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "463974118.205795"
+            timestampString = "464190203.221449"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -72,11 +72,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "464156975.363959"
+            timestampString = "464190203.221449"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "662"
-            endingLineNumber = "662"
+            startingLineNumber = "672"
+            endingLineNumber = "672"
             landmarkName = "displayLands()"
             landmarkType = "7">
          </BreakpointContent>
@@ -88,11 +88,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "464061354.205332"
+            timestampString = "464190203.221449"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "371"
-            endingLineNumber = "371"
+            startingLineNumber = "380"
+            endingLineNumber = "380"
             landmarkName = "-longpress:"
             landmarkType = "5">
          </BreakpointContent>
@@ -152,11 +152,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "464156975.363959"
+            timestampString = "464190203.221449"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "750"
-            endingLineNumber = "750"
+            startingLineNumber = "764"
+            endingLineNumber = "764"
             landmarkName = "displayBattlefield()"
             landmarkType = "7">
          </BreakpointContent>
@@ -200,11 +200,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "464156975.363959"
+            timestampString = "464190203.221449"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "738"
-            endingLineNumber = "738"
+            startingLineNumber = "752"
+            endingLineNumber = "752"
             landmarkName = "displayBattlefield()"
             landmarkType = "7">
          </BreakpointContent>
@@ -216,11 +216,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "464156975.363959"
+            timestampString = "464190203.221449"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "758"
-            endingLineNumber = "758"
+            startingLineNumber = "772"
+            endingLineNumber = "772"
             landmarkName = "selectMana()"
             landmarkType = "7">
          </BreakpointContent>
@@ -264,11 +264,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MTG_iOS/ViewController.m"
-            timestampString = "464061354.205332"
+            timestampString = "464190203.221449"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "344"
-            endingLineNumber = "344"
+            startingLineNumber = "353"
+            endingLineNumber = "353"
             landmarkName = "-longpress:"
             landmarkType = "5">
          </BreakpointContent>
@@ -286,22 +286,6 @@
             startingLineNumber = "108"
             endingLineNumber = "108"
             landmarkName = "buildDeck()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../AIPlayer.c"
-            timestampString = "464063057.20825"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "11"
-            endingLineNumber = "11"
-            landmarkName = "AI_getBlockers()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

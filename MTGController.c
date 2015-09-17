@@ -182,7 +182,7 @@ void apply_mulligan(MTGPlayer* p) {
     shuffleDeck(p->library);
     MTGPlayer_drawCards(p, sz - 1);
     displayHand(p->hand);
-    displayStats(p->hp,p->library->size,p->hand->size, p->mana,true);
+    displayStats(p->hp,p->library->size,p->hand->size,p->graveyard->size, p->mana,true);
 }
 
 void resolveAttack(MTGPlayer* attacker,List* permanentList) {
@@ -207,6 +207,13 @@ void resolveAttack(MTGPlayer* attacker,List* permanentList) {
 }
 
 bool resolveBlock() {
+    if (block_index > attackerList->size) {
+        endAttack();
+        return true;
+    }
+    if (block_index >= attackerList->size) {
+        return resolveLethalDamage();
+    }
     MTGPlayer* defender;
     if (currentPlayer==player1) {
         defender = player2;
@@ -224,29 +231,61 @@ bool resolveBlock() {
         int k = sprintf(buffer,"%s is blocked by ",p->source->name);
         for (unsigned int j=0;j<blockers->size;j++) {
             Permanent* q = blockers->entries[j];
-            p->toughness -= q->power;
-            q->toughness -= p->power;
+            if (p->toughness > 0) {
+                int t = q->toughness;
+                p->toughness -= q->power;
+                q->toughness -= p->power;
+                p->power -= t;
+            }
             k += sprintf(buffer+k,"%s,",q->source->name);
         }
         message(buffer);
     }
-    displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
+    displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,player1->mana,true);
     displayBattlefield(player1->battlefield, true);
-    displayStats(player2->hp,player2->library->size,player2->hand->size, player2->mana,false);
+    displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size, player2->mana,false);
     displayBattlefield(player2->battlefield, false);
     block_index++;
-    if (block_index >= attackerList->size) {
+    return false;
+}
+
+bool resolveLethalDamage() {
+    char buffer[256];
+    int k = 0;
+    for (unsigned int j=0;j<player1->battlefield->size;j++) {
+        Permanent* q = player1->battlefield->entries[j];
+        if (q->toughness <= 0) {
+            MTGPlayer_discardFromBattlefield(player1, j--);
+            k += sprintf(buffer+k,"%s,",q->source->name);
+        }
+    }
+    for (unsigned int j=0;j<player2->battlefield->size;j++) {
+        Permanent* q = player2->battlefield->entries[j];
+        if (q->toughness <= 0) {
+            MTGPlayer_discardFromBattlefield(player2, j--);
+            k += sprintf(buffer+k,"%s,",q->source->name);
+        }
+    }
+    if (k > 0) {
+        sprintf(buffer+k," were sent to the graveyard");
+        message(buffer);
+        displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,player1->mana,true);
+        displayBattlefield(player1->battlefield, true);
+        displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size, player2->mana,false);
+        displayBattlefield(player2->battlefield, false);
+        block_index++;
+        return false;
+    } else {
         endAttack();
         return true;
-    } else {
-        return false;
     }
 }
 
 void resolveAI() {
-    if (attackerList)
-        resolveBlock();
-    else
+    if (attackerList) {
+        if (resolveBlock())
+            AI_getAction();
+    } else
         AI_getAction();
 }
 
@@ -269,21 +308,21 @@ void newTurn() {
 	if (currentPlayer == player1) {
         MTGPlayer_restore(player1);
         MTGPlayer_restore(player2);
-        displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
+        displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size, player1->mana,true);
         displayBattlefield(player1->battlefield, true);
         
 		currentPlayer = player2;
         MTGPlayer_refresh(player2);
         MTGPlayer_drawCards(player2, 1);
         startTurn(player2);
-        displayStats(player2->hp,player2->library->size,player2->hand->size, player2->mana,false);
+        displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size,  player2->mana,false);
         displayLands(player2->lands, false);
         displayBattlefield(player2->battlefield, false);
         AI_getAction(player2);
 	} else {
         MTGPlayer_restore(player1);
         MTGPlayer_restore(player2);
-        displayStats(player2->hp,player2->library->size,player2->hand->size, player2->mana,false);
+        displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size,  player2->mana,false);
         displayBattlefield(player2->battlefield, false);
         
 		currentPlayer = player1;
@@ -291,7 +330,7 @@ void newTurn() {
 		MTGPlayer_drawCards(player1, 1);
         startTurn(player1);
 		displayHand(player1->hand);
-		displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
+		displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,  player1->mana,true);
         displayLands(player1->lands, true);
         displayBattlefield(player1->battlefield, true);
 	}
@@ -315,10 +354,10 @@ MTGPlayer* newGame() {
 	MTGPlayer_drawCards(player2,7);
 
 	displayHand(player1->hand);
-    displayStats(player1->hp,player1->library->size,player1->hand->size, player1->mana,true);
+    displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,  player1->mana,true);
     displayLands(player1->lands, true);
     displayBattlefield(player1->battlefield, true);
-    displayStats(player2->hp,player2->library->size,player2->hand->size,player2->mana ,false);
+    displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size, player2->mana ,false);
     displayLands(player2->lands, false);
     displayBattlefield(player2->battlefield, false);
   

@@ -42,7 +42,7 @@ void AI_getAction() {
         }
         if (permanent) {
             sprintf(buffer,"Opponent played a %s",permanent->source->name);
-            displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->mana,false);
+            displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->graveyard->size,aiplayer->mana,false);
             displayLands(aiplayer->lands, false);
             displayHand(aiplayer->hand);
             message(buffer);
@@ -56,7 +56,7 @@ void AI_getAction() {
                 Permanent* p = aiplayer->lands->entries[i];
                 MTGPlayer_tap(aiplayer, p);
             }
-            displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->mana,false);
+            displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->graveyard->size,aiplayer->mana,false);
             displayLands(aiplayer->lands, false);
             message("Opponent tapped all lands");
         } else {
@@ -89,9 +89,9 @@ void AI_getAction() {
                         break;
                     }
                 } else {
-                    if (manaBuffer[cost->color1] > 0) {
-                        manaBuffer[cost->color1] --;
-                        manaBuffer[0]--;
+                    if (manaBuffer[cost->color1] > cost->num) {
+                        manaBuffer[cost->color1] -= cost->num;
+                        manaBuffer[0] -= cost->num;
                     } else
                         break;
                 }
@@ -109,7 +109,7 @@ void AI_getAction() {
         if (num_creature > 0) {
             sprintf(buffer,"Opponent played %d creatures",num_creature);
             message(buffer);
-            displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->mana,false);
+            displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->graveyard->size,aiplayer->mana,false);
             displayBattlefield(aiplayer->battlefield, false);
             displayHand(aiplayer->hand);
         } else {

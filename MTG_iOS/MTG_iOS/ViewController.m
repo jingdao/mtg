@@ -50,6 +50,7 @@ ViewController* viewController;
     self->buttonHeight = 30;
     self->stepperWidth = 100;
     self->stepperHeight = 35;
+    self->cacheImages = false;
     self->selfDeck = [[UIImageView alloc] initWithFrame:CGRectMake(width-margin*2-cardWidth-textWidth,height-margin-gridHeight*2-gridHeight2,cardWidth,cardHeight)];
     [self->selfDeck setImage: self->coverImage];
     self->selfDeck.userInteractionEnabled = YES;
@@ -258,6 +259,14 @@ ViewController* viewController;
     }];
 }
 
+- (UIImage*) loadImage: (NSString*)name cached: (BOOL) isCached {
+    if (isCached)
+        return [UIImage imageNamed:name];
+    else
+        //return [UIImage imageWithContentsOfFile:name];
+        return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:nil]];
+}
+
 - (void) toggleHighlight: (UIScrollView*) sv {
     if (sv.layer.borderWidth > 0) {
         sv.layer.borderWidth = 0;
@@ -354,7 +363,7 @@ ViewController* viewController;
         } else if (mode==NONE){
             if (MTGPlayer_playCard(self->player, (int)idx, self->buffer)) {
                 displayHand(self->player->hand);
-                displayStats(self->player->hp,self->player->library->size, self->player->hand->size, self->player->mana,true);
+                displayStats(self->player->hp,self->player->library->size, self->player->hand->size, self->player->graveyard->size,self->player->mana,true);
                 displayLands(self->player->lands, true);
                 displayBattlefield(self->player->battlefield, true);
             } else {
@@ -374,7 +383,7 @@ ViewController* viewController;
             if (!self->currentPermanent->is_tapped)
                 MTGPlayer_tap(self->player, self->currentPermanent);
             displayLands(self->player->lands, true);
-            displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->mana, self);
+            displayStats(self->player->hp, self->player->library->size, self->player->hand->size,self->player->graveyard->size ,self->player->mana, self);
         }
     } else if ([gesture view] == self->selfBattlefield && selfBattlefieldViews.count > 0) {
         for (idx=0;idx<self->selfBattlefieldViews.count;idx++) {
@@ -530,7 +539,7 @@ ViewController* viewController;
                     }
                 }
                 displayLands(self->player->lands, true);
-                displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->mana, true);
+                displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->graveyard->size,self->player->mana, true);
             }
             break;
         case 2:
@@ -583,7 +592,7 @@ ViewController* viewController;
     }
     if (pendingMana == 0) {
         memcpy(viewController->player->mana, mana, 6*sizeof(int));
-        displayStats(player->hp,player->library->size,player->hand->size,player->mana,true);
+        displayStats(player->hp,player->library->size,player->hand->size,player->graveyard->size,player->mana,true);
         self->mode = NONE;
         [self->manaAlert removeFromSuperview];
         [self->popupMask removeFromSuperview];
@@ -614,17 +623,18 @@ void displayHand(List* cards) {
         [viewController->views addObject:[[UIImageView alloc] initWithFrame:CGRectMake((viewController->margin+viewController->cardWidth)*i,viewController->margin, viewController->cardWidth, viewController->cardHeight)]];
         NSString* currentTag = [NSString stringWithUTF8String:tag];
         NSString* fileName = [currentTag stringByAppendingString:extension];
-        [viewController->images addObject:[UIImage imageNamed:fileName]];
+        //[viewController->images addObject:[UIImage imageNamed:fileName]];
+        [viewController->images addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
         [viewController->views[i] setImage: viewController->images[i]];
         [viewController->scrollView addSubview:viewController->views[i]];
     }
     
 }
 
-void displayStats(int hp,int librarySize,int handSize,int* mana, bool selfOrOpponent) {
+void displayStats(int hp,int librarySize,int handSize,int graveyardSize,int* mana, bool selfOrOpponent) {
     NSString* hpString = [NSString stringWithFormat:
-            @"HP: %d\nLibrary: %d\nHand: %d\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d\nTotal: %d\n",
-            hp,librarySize,handSize,mana[1],mana[2],mana[3],mana[4],mana[5],mana[0]];
+            @"HP: %d\nLibrary: %d\nHand: %d\nGraveyard: %d\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d\nTotal: %d\n",
+            hp,librarySize,handSize,graveyardSize,mana[1],mana[2],mana[3],mana[4],mana[5],mana[0]];
     if (selfOrOpponent) {
         [viewController->selfHP setText:hpString];
     } else {
@@ -667,13 +677,15 @@ void displayLands(List* permanents, bool selfOrOpponent) {
         NSString* fileName = [currentTag stringByAppendingString:extension];
         if (p->is_tapped) {
             [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x,tappedMargin, viewController->cardHeight2, viewController->cardWidth2)]];
-            UIImage * portrait = [UIImage imageNamed: fileName];
+            //UIImage * portrait = [UIImage imageNamed: fileName];
+            UIImage* portrait = [viewController loadImage:fileName cached:viewController->cacheImages];
             UIImage * landscape = [[UIImage alloc] initWithCGImage: portrait.CGImage scale: 1.0 orientation: UIImageOrientationRight];
             [currentImages addObject:landscape];
             x += viewController->cardHeight2 + viewController->margin;
         } else {
             [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x,viewController->margin, viewController->cardWidth2, viewController->cardHeight2)]];
-            [currentImages addObject:[UIImage imageNamed:fileName]];
+            //[currentImages addObject:[UIImage imageNamed:fileName]];
+            [currentImages addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
             x += viewController->cardWidth2 + viewController->margin;
         }
         [currentViews[i] setImage: currentImages[i]];
@@ -724,13 +736,15 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
         NSString* fileName = [currentTag stringByAppendingString:extension];
         if (p->is_tapped) {
             [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x,tappedMargin, viewController->cardHeight, viewController->cardWidth)]];
-            UIImage * portrait = [UIImage imageNamed: fileName];
+            //UIImage * portrait = [UIImage imageNamed: fileName];
+            UIImage* portrait = [viewController loadImage:fileName cached:viewController->cacheImages];
             UIImage * landscape = [[UIImage alloc] initWithCGImage: portrait.CGImage scale: 1.0 orientation: UIImageOrientationRight];
             [currentImages addObject:landscape];
             x += viewController->cardHeight + viewController->margin;
         } else {
             [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x,viewController->margin, viewController->cardWidth, viewController->cardHeight)]];
-            [currentImages addObject:[UIImage imageNamed:fileName]];
+            //[currentImages addObject:[UIImage imageNamed:fileName]];
+            [currentImages addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
             x += viewController->cardWidth + viewController->margin;
         }
         UILabel* lb = [[UILabel alloc] init];
