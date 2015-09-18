@@ -51,6 +51,7 @@ keywords=[
 'First strike',
 'Flash',
 #'Flashback',
+'Flying',
 #'Forbidden',
 #'Fuse',
 'Haste',
@@ -58,6 +59,7 @@ keywords=[
 #'Hidden agenda',
 'Indestructible',
 'Infect',
+'Intimidate',
 #'Kicker',
 #'Landhome',
 'Lifelink',
@@ -95,6 +97,7 @@ headerFile.write('#include "MTGCard.h"\n')
 headerFile.write('typedef struct {\n')
 outFile = open('CardData.c','w')
 outFile.write('#include "CardData.h"\n\n')
+outFile.write('Ability* ab;\n')
 outFile.write('CardData loadCardData() {\n')
 outFile.write('CardData cd;\n')
 for page in cards:
@@ -135,7 +138,25 @@ for page in cards:
 				k_ = k.lower().replace(' ','_')
 				keywordSet.add(k_)
 				outFile.write('cd.'+variableName+'->is_'+k_+'=true; ')
-		outFile.write('cd.'+variableName+'->num_tapAbility='+str(node['text'].count('{T}'))+'; ')
+		has_instant_ability = False
+		for s in node['text'].split('\n'):
+			if re.search(r'\{[\w\{\}, ]*\}',s):
+				outFile.write('ab=NewAbility(); ')
+				req = re.search(r'\{[\w\{\}, ]*\}',s).group(0)
+				is_instant = True
+				for r in req:
+					if r.isnumeric():
+						outFile.write('AppendToList(ab->manaCost,colorlessMana('+r+')); ')
+					elif r=='T':
+						outFile.write('ab->needs_tap=true; ')
+						is_instant = False
+					elif r.isalpha():
+						outFile.write('AppendToList(ab->manaCost,'+r+'_Mana(1)); ')
+				if is_instant:
+					has_instant_ability = True
+				outFile.write('AppendToList(cd.'+variableName+'->abilities,ab); ')
+		if has_instant_ability:
+			outFile.write('cd.'+variableName+'->has_instant=true; ')
 		if 'power' in node and node['power'].isnumeric():
 			outFile.write('cd.'+variableName+'->power='+node['power']+'; ')
 		if 'toughness' in node and node['toughness'].isnumeric():
@@ -175,5 +196,5 @@ for s in subtypes:
 	subtypeFile.write('bool is_'+s+';\\\n')
 for s in keywordSet:
 	subtypeFile.write('bool is_'+s+';\\\n')
-subtypeFile.write('int num_tapAbility;\n')
+subtypeFile.write('bool has_instant;\n')
 subtypeFile.close()

@@ -1,6 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #define INITIAL_LIST_SIZE 8
@@ -13,6 +14,9 @@ typedef struct {
 
 List* InitList();
 void DeleteList(List* ls);
-int AppendToList(List* ls, void* entry);
+bool AppendToList(List* ls, void* entry);
 void* GetListItem(List* ls, unsigned int index);
+void* RemoveListIndex(List* ls,unsigned int index);
+bool RemoveListObject(List* ls,void* obj);
+
 List* IntersectList(List* lsa, List* lsb);

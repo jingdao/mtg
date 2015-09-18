@@ -2,6 +2,24 @@
 
 extern CardData cd;
 
+Permanent* NewPermanent(MTGCard* source,MTGPlayer* own) {
+    Permanent* p = (Permanent*) malloc(sizeof(Permanent));
+    p->is_tapped = false;
+    p->has_attacked = false;
+    p->has_blocked = false;
+    if (source->is_planeswalker)
+        p->loyalty = source->loyalty;
+    else if (source->is_creature){
+        p->power = source->power;
+        p->toughness = source->toughness;
+        p->has_summoning_sickness = true;
+    }
+    p->source = source;
+    p->owner = own;
+    p->controller = own;
+    return p;
+}
+
 MTGPlayer* InitMTGPlayer() {
 	MTGPlayer* p = (MTGPlayer*)malloc(sizeof(MTGPlayer));
 	p->library=InitList();
@@ -38,7 +56,7 @@ bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     }
     
     //create permanent
-    Permanent* permanent = NewPermanent(card);
+    Permanent* permanent = NewPermanent(card,player);
         
     //apply card effects
     if (card->is_land) {
@@ -49,8 +67,7 @@ bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     }
     
     //remove card from hand
-    memmove(player->hand->entries+cardIndex,player->hand->entries+cardIndex+1,(player->hand->size-1-cardIndex)*sizeof(void*));
-    player->hand->size--;
+    RemoveListIndex(player->hand,cardIndex);
     
     return true;
 }
@@ -58,15 +75,13 @@ bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
 void MTGPlayer_discard(MTGPlayer* player,int cardIndex) {
     AppendToList(player->graveyard, player->hand->entries[cardIndex]);
     //remove card from hand
-    memmove(player->hand->entries+cardIndex,player->hand->entries+cardIndex+1,(player->hand->size-1-cardIndex)*sizeof(void*));
-    player->hand->size--;
+    RemoveListIndex(player->hand, cardIndex);
 }
 
 void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex) {
     AppendToList(player->graveyard, player->battlefield->entries[cardIndex]);
     //remove card from battlefield
-    memmove(player->battlefield->entries+cardIndex,player->battlefield->entries+cardIndex+1,(player->battlefield->size-1-cardIndex)*sizeof(void*));
-    player->battlefield->size--;
+    RemoveListIndex(player->battlefield, cardIndex);
 }
 
 

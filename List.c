@@ -26,8 +26,8 @@ void DeleteList(List* ls) {
 	}
 }
 
-int AppendToList(List* ls, void* entry) {
-	if (!ls) return 0;
+bool AppendToList(List* ls, void* entry) {
+	if (!ls) return false;
 	if (ls->maxSize==ls->size) {
 		//printf("Now doubling size of list\n");
 		void** newEntries = (void**)realloc(ls->entries,ls->maxSize*2*sizeof(void*));
@@ -41,13 +41,31 @@ int AppendToList(List* ls, void* entry) {
 	}
 	ls->entries[ls->size]=entry;
 	ls->size++;
-	return 1;
+	return true;
 }
 
 void* GetListItem(List* ls, unsigned int index) {
 	if (!ls||index>=ls->size) return NULL;
 	return ls->entries[index];
 }
+
+void* RemoveListIndex(List* ls,unsigned int index) {
+    void* obj = ls->entries[index];
+    memmove(ls->entries+index,ls->entries+index+1,(ls->size-1-index)*sizeof(void*));
+    ls->size--;
+    return obj;
+}
+
+bool RemoveListObject(List* ls,void* obj) {
+    for (unsigned int i=0;i<ls->size;i++) {
+        if (ls->entries[i] == obj) {
+            RemoveListIndex(ls, i);
+            return true;
+        }
+    }
+    return false;
+}
+
 
 List* IntersectList(List* lsa, List* lsb) {
 	if (!lsa||!lsb) {

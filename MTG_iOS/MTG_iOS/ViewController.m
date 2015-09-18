@@ -199,6 +199,7 @@ ViewController* viewController;
     [self->opponentLands addGestureRecognizer:recog13];
     
     self->mulliganAlert = [[UIAlertView alloc] initWithTitle:nil message:@"Mulligan?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes",nil];
+    self->winnerAlert = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:viewController cancelButtonTitle:@"New Game" otherButtonTitles:nil];
     self->manaAlert = [[UIView alloc] initWithFrame: CGRectMake((width-stepperWidth*2-margin*2)/2, (height-margin*4-stepperHeight*5)/2, margin*4+stepperWidth*2, margin*4+stepperHeight*5)];
     manaAlert.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
     manaAlert.layer.cornerRadius = 10.0;
@@ -404,18 +405,36 @@ ViewController* viewController;
                 [self toggleCard:selfBattlefieldViews[idx]];
             }
         } else if (mode==BLOCK) {
+            Permanent* attacker = attackerList->entries[block_index];
             if (!self->currentPermanent->source->is_creature)
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s is not a creature!",self->currentPermanent->source->name]];
             else if (self->currentPermanent->is_tapped || self->currentPermanent->has_blocked)
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot block!",self->currentPermanent->source->name]];
-            else {
-                self->currentPermanent->has_attacked= !self->currentPermanent->has_attacked;
+            else if (attacker->source->is_flying && !currentPermanent->source->is_flying && !currentPermanent->source->is_reach)
+                [self displayToastWithMessage:@"Can only block with creatures with flying/reach!"];
+            else if (currentPermanent->has_attacked) {
+                currentPermanent->has_attacked = false;
+                List* blockers = blockersList->entries[block_index];
+                RemoveListObject(blockers, player->battlefield->entries[idx]);
                 [self toggleCard:selfBattlefieldViews[idx]];
+            } else {
+                self->currentPermanent->has_attacked= true;
+                [self toggleCard:selfBattlefieldViews[idx]];
+                List* blockers = blockersList->entries[block_index];
+                AppendToList(blockers, player->battlefield->entries[idx]);
+            }
+        } else if (mode==WAIT) {
+            if (!currentPermanent->is_tapped && currentPermanent->source->has_instant) {
+                MTGPlayer_tap(self->player, self->currentPermanent);
+                displayBattlefield(self->player->battlefield, true);
             }
         } else if (mode==NONE) {
-            if (!self->currentPermanent->is_tapped)
+            if (currentPermanent->has_summoning_sickness && !currentPermanent->source->has_instant)
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->source->name]];
+            else if (!currentPermanent->is_tapped && currentPermanent->source->abilities->size > 0) {
                 MTGPlayer_tap(self->player, self->currentPermanent);
-            displayBattlefield(self->player->battlefield, true);
+                displayBattlefield(self->player->battlefield, true);
+            }
         }
     }
 }
@@ -482,13 +501,11 @@ ViewController* viewController;
                 numBlockers++;
         }
         if (numBlockers > 0) {
-            List* blockers = blockersList->entries[block_index];
             for (unsigned int i=0;i<player->battlefield->size;i++) {
                 Permanent* p = player->battlefield->entries[i];
                 if (p->has_attacked) {
                     p->has_blocked = true;
                     p->has_attacked = false;
-                    AppendToList(blockers, p);
                 }
             }
         }
@@ -573,6 +590,12 @@ ViewController* viewController;
             confirmButton.enabled = true;
             startGame();
         }
+    } else if (alertView == self->winnerAlert) {
+        attackButton.enabled=false;
+        confirmButton.enabled=false;
+        endturnButton.enabled=false;
+        endGame();
+        self->player = newGame();
     }
 }
 
@@ -764,6 +787,14 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
         [currentViews[i] setImage: currentImages[i]];
         [currentScrollView addSubview:currentViews[i]];
     }
+}
+
+void displayWinner(MTGPlayer* winner) {
+    if (winner==viewController->player)
+        [viewController->winnerAlert setMessage:@"You won the game!"];
+    else
+        [viewController->winnerAlert setMessage:@"Opponent won the game!"];
+    [viewController->winnerAlert show];
 }
 
 void selectMana(int* mana,int amount) {

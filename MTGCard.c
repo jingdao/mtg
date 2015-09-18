@@ -5,23 +5,15 @@ MTGCard* NewMTGCard(const char* s,int cost) {
 	m->name = s;
 	m->cmc = cost;
 	m->manaCost = InitList();
+    m->abilities = InitList();
 	return m;
 }
 
-Permanent* NewPermanent(MTGCard* source) {
-    Permanent* p = (Permanent*) malloc(sizeof(Permanent));
-    p->is_tapped = false;
-    p->has_attacked = false;
-    p->has_blocked = false;
-    if (source->is_planeswalker)
-        p->loyalty = source->loyalty;
-    else if (source->is_creature){
-        p->power = source->power;
-        p->toughness = source->toughness;
-        p->has_summoning_sickness = true;
-    }
-    p->source = source;
-    return p;
+Ability* NewAbility() {
+    Ability* ab = (Ability*) malloc(sizeof(Ability));
+    ab->manaCost = InitList();
+    ab->needs_tap = false;
+    return ab;
 }
 
 Manacost* colorlessMana(int n) {
@@ -74,6 +66,15 @@ Manacost* X_Mana(int n) {
 }
 
 void DeleteMTGCard(MTGCard* card) {
+    for (unsigned int i=0;i<card->abilities->size;i++) {
+        Ability* a = card->abilities->entries[i];
+        for (unsigned int j=0;j<a->manaCost->size;j++) {
+            free(a->manaCost->entries[j]);
+        }
+        DeleteList(a->manaCost);
+        free(a);
+    }
+    DeleteList(card->abilities);
 	for (unsigned int i=0;i<card->manaCost->size;i++)
 		free(card->manaCost->entries[i]);
 	DeleteList(card->manaCost);

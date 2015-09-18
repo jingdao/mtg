@@ -301,6 +301,10 @@ void endAttack() {
     }
     attackerList = NULL;
     blockersList = NULL;
+    if (player1->hp <= 0 )
+        displayWinner(player2);
+    else if (player2->hp <= 0)
+        displayWinner(player1);
 }
 
 void newTurn() {

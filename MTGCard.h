@@ -16,9 +16,15 @@ typedef struct {
 	bool hasOption;
 } Manacost;
 
+typedef struct {
+    List* manaCost;
+    bool needs_tap;
+} Ability;
+
 typedef struct  {
 	const char* name;
 	List* manaCost;
+    List* abilities;
 	int cmc;
 	bool is_white;
 	bool is_blue;
@@ -44,19 +50,10 @@ typedef struct  {
 	int loyalty;
 } MTGCard;
 
-typedef struct {
-    bool is_tapped;
-    bool has_attacked;
-    bool has_blocked;
-    bool has_summoning_sickness;
-    int power;
-    int toughness;
-    int loyalty;
-    MTGCard* source;
-} Permanent;
 
+Ability* NewAbility();
 MTGCard* NewMTGCard(const char* s,int cost);
-Permanent* NewPermanent(MTGCard* source);
+
 Manacost* colorlessMana(int n);
 Manacost* W_Mana(int n);
 Manacost* U_Mana(int n);

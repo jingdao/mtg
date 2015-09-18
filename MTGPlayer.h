@@ -16,6 +16,21 @@ typedef struct {
     bool playedLand;
 } MTGPlayer;
 
+typedef struct {
+    bool is_tapped;
+    bool has_attacked;
+    bool has_blocked;
+    bool has_summoning_sickness;
+    int power;
+    int toughness;
+    int loyalty;
+    MTGCard* source;
+    MTGPlayer* owner;
+    MTGPlayer* controller;
+} Permanent;
+
+Permanent* NewPermanent(MTGCard* source,MTGPlayer* own);
+
 MTGPlayer* InitMTGPlayer();
 bool MTGPlayer_drawCards(MTGPlayer* p,int num);
 bool MTGPlayer_playCard(MTGPlayer* p,int cardIndex,char* err);

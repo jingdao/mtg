@@ -52,6 +52,7 @@ typedef enum {
     @public UITextView* selfHP;
     @public UITextView* opponentHP;
     @public UIAlertView* mulliganAlert;
+    @public UIAlertView* winnerAlert;
     @public UIView* manaAlert;
     @public UIButton* endturnButton;
     @public UIButton* attackButton;

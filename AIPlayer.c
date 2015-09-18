@@ -12,10 +12,17 @@ void AI_getBlockers(List* attackerList, List* blockersList){
 	for (unsigned int i=0;i<aiplayer->battlefield->size;i++) {
 		Permanent* p = aiplayer->battlefield->entries[i];
 		if (p->source->is_creature && !p->is_tapped) {
-			int j = rand() % attackerList->size;
-			//Permanent* attacker = attackerList->entries[j];
-			List* blockers = blockersList->entries[j];
-			AppendToList(blockers,p);
+            for (unsigned int k=0;k<attackerList->size;k++) {
+                int j = rand() % attackerList->size;
+                Permanent* attacker = attackerList->entries[j];
+                if (!attacker->source->is_flying || p->source->is_flying || p->source->is_reach) {
+                    if (p->toughness > attacker->power || rand() % 2) {
+                        List* blockers = blockersList->entries[j];
+                        AppendToList(blockers,p);
+                        break;
+                    }
+                }
+            }
 		}
 	}
 
@@ -32,11 +39,10 @@ void AI_getAction() {
         for (unsigned int i=0;i<aiplayer->hand->size;i++) {
             MTGCard* card = aiplayer->hand->entries[i];
             if (card->is_land) {
-                permanent = NewPermanent(card);
+                permanent = NewPermanent(card,aiplayer);
                 AppendToList(aiplayer->lands, permanent);
                 aiplayer->playedLand = true;
-                memmove(aiplayer->hand->entries+i,aiplayer->hand->entries+i+1,(aiplayer->hand->size-1-i)*sizeof(void*));
-                aiplayer->hand->size--;
+                RemoveListIndex(aiplayer->hand, i);
                 break;
             }
         }
@@ -89,7 +95,7 @@ void AI_getAction() {
                         break;
                     }
                 } else {
-                    if (manaBuffer[cost->color1] > cost->num) {
+                    if (manaBuffer[cost->color1] >= cost->num) {
                         manaBuffer[cost->color1] -= cost->num;
                         manaBuffer[0] -= cost->num;
                     } else
@@ -99,10 +105,9 @@ void AI_getAction() {
             if (j<0) {
                 memcpy(aiplayer->mana, manaBuffer, 6*sizeof(int));
                 num_creature ++;
-                Permanent* p = NewPermanent(card);
+                Permanent* p = NewPermanent(card,aiplayer);
                 AppendToList(aiplayer->battlefield, p);
-                memmove(aiplayer->hand->entries+i,aiplayer->hand->entries+i+1,(aiplayer->hand->size-1-i)*sizeof(void*));
-                aiplayer->hand->size--;
+                RemoveListIndex(aiplayer->hand, i);
                 i--;
             }
         }
@@ -120,7 +125,7 @@ void AI_getAction() {
         List* permanentList = InitList();
         for (unsigned int i=0;i<aiplayer->battlefield->size;i++) {
             Permanent* p = aiplayer->battlefield->entries[i];
-            if (!p->has_summoning_sickness && !p->is_tapped) {
+            if (!p->has_summoning_sickness && !p->is_tapped && p->power>0 && (rand()%4)) {
                 p->has_attacked = true;
                 p->is_tapped = true;
                 AppendToList(permanentList, p);
