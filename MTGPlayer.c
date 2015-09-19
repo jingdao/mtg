@@ -7,9 +7,10 @@ Permanent* NewPermanent(MTGCard* source,MTGPlayer* own) {
     p->is_tapped = false;
     p->has_attacked = false;
     p->has_blocked = false;
-    if (source->is_planeswalker)
+    p->subtypes = source->subtypes;
+    if (source->subtypes.is_planeswalker)
         p->loyalty = source->loyalty;
-    else if (source->is_creature){
+    else if (source->subtypes.is_creature){
         p->power = source->power;
         p->toughness = source->toughness;
         p->has_summoning_sickness = true;
@@ -18,6 +19,14 @@ Permanent* NewPermanent(MTGCard* source,MTGPlayer* own) {
     p->owner = own;
     p->controller = own;
     return p;
+}
+
+bool Permanent_sameColor(Permanent* p,Permanent* q) {
+    return (p->subtypes.is_white && q->subtypes.is_white) ||
+        (p->subtypes.is_blue && q->subtypes.is_blue) ||
+        (p->subtypes.is_black && q->subtypes.is_black) ||
+        (p->subtypes.is_red && q->subtypes.is_red) ||
+        (p->subtypes.is_green && q->subtypes.is_blue);
 }
 
 MTGPlayer* InitMTGPlayer() {
@@ -50,7 +59,7 @@ bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
         sprintf(err,"Not enough mana to play %s (%d/%d)",card->name,player->mana[0],card->cmc);
         return false;
     }
-    if (card->is_land && player->playedLand) {
+    if (card->subtypes.is_land && player->playedLand) {
         sprintf(err,"You can only play one Land per turn");
         return false;
     }
@@ -59,10 +68,10 @@ bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     Permanent* permanent = NewPermanent(card,player);
         
     //apply card effects
-    if (card->is_land) {
+    if (card->subtypes.is_land) {
         player->playedLand = true;
         AppendToList(player->lands, permanent);
-    } else if (card->is_creature || card->is_planeswalker) {
+    } else if (card->subtypes.is_creature || card->subtypes.is_planeswalker) {
         AppendToList(player->battlefield, permanent);
     }
     
@@ -152,7 +161,7 @@ void MTGPlayer_restore(MTGPlayer* player) {
     memset(player->mana,0,6 * sizeof(int));
     for (unsigned int i=0;i<player->battlefield->size;i++) {
         Permanent* p = player->battlefield->entries[i];
-        if (p->source->is_creature) {
+        if (p->subtypes.is_creature) {
             p->power = p->source->power;
             p->toughness = p->source->toughness;
             p->has_attacked = false;

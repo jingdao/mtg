@@ -396,22 +396,26 @@ ViewController* viewController;
             idx = self->selfBattlefieldViews.count - 1;
         self->currentPermanent = self->player->battlefield->entries[idx];
         if (mode==ATTACK) {
-            if (self->currentPermanent->has_summoning_sickness)
+            if (self->currentPermanent->has_summoning_sickness && !currentPermanent->subtypes.is_haste)
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->source->name]];
             else if (self->currentPermanent->is_tapped)
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot attack while tapped!",self->currentPermanent->source->name]];
+            else if (self->currentPermanent->subtypes.is_defender)
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s is defender!",currentPermanent->source->name]];
             else {
                 self->currentPermanent->has_attacked= !self->currentPermanent->has_attacked;
                 [self toggleCard:selfBattlefieldViews[idx]];
             }
         } else if (mode==BLOCK) {
             Permanent* attacker = attackerList->entries[block_index];
-            if (!self->currentPermanent->source->is_creature)
+            if (!self->currentPermanent->subtypes.is_creature)
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s is not a creature!",self->currentPermanent->source->name]];
             else if (self->currentPermanent->is_tapped || self->currentPermanent->has_blocked)
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot block!",self->currentPermanent->source->name]];
-            else if (attacker->source->is_flying && !currentPermanent->source->is_flying && !currentPermanent->source->is_reach)
+            else if (attacker->subtypes.is_flying && !currentPermanent->subtypes.is_flying && !currentPermanent->subtypes.is_reach)
                 [self displayToastWithMessage:@"Can only block with creatures with flying/reach!"];
+            else if (attacker->subtypes.is_intimidate && !currentPermanent->subtypes.is_artifact && !Permanent_sameColor(attacker, currentPermanent))
+                [self displayToastWithMessage:@"Blocking creature must be artifact or share a color!"];
             else if (currentPermanent->has_attacked) {
                 currentPermanent->has_attacked = false;
                 List* blockers = blockersList->entries[block_index];
@@ -424,12 +428,12 @@ ViewController* viewController;
                 AppendToList(blockers, player->battlefield->entries[idx]);
             }
         } else if (mode==WAIT) {
-            if (!currentPermanent->is_tapped && currentPermanent->source->has_instant) {
+            if (!currentPermanent->is_tapped && currentPermanent->subtypes.has_instant) {
                 MTGPlayer_tap(self->player, self->currentPermanent);
                 displayBattlefield(self->player->battlefield, true);
             }
         } else if (mode==NONE) {
-            if (currentPermanent->has_summoning_sickness && !currentPermanent->source->has_instant)
+            if (currentPermanent->has_summoning_sickness && !currentPermanent->subtypes.has_instant && !currentPermanent->subtypes.is_haste)
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->source->name]];
             else if (!currentPermanent->is_tapped && currentPermanent->source->abilities->size > 0) {
                 MTGPlayer_tap(self->player, self->currentPermanent);
@@ -480,7 +484,8 @@ ViewController* viewController;
         for (unsigned int i=0;i<player->battlefield->size;i++) {
             Permanent* p = player->battlefield->entries[i];
             if (p->has_attacked) {
-                p->is_tapped = true;
+                if (!p->subtypes.is_vigilance)
+                    p->is_tapped = true;
                 AppendToList(permanentList, p);
             }
         }
@@ -497,7 +502,7 @@ ViewController* viewController;
         int numBlockers = 0;
         for (unsigned int i=0;i<viewController->player->battlefield->size;i++) {
             Permanent* p = viewController->player->battlefield->entries[i];
-            if (p->source->is_creature && ! p->is_tapped)
+            if (p->subtypes.is_creature && ! p->is_tapped)
                 numBlockers++;
         }
         if (numBlockers > 0) {
@@ -569,7 +574,7 @@ ViewController* viewController;
                 for (int i=0;i<self->selfBattlefieldViews.count;i++) {
                     UIImageView* iv = self->selfBattlefieldViews[i];
                     Permanent* p = self->player->battlefield->entries[i];
-                    if (!p->has_summoning_sickness && !p->is_tapped) {
+                    if ((p->subtypes.is_haste||!p->has_summoning_sickness) && !p->is_tapped && !p->subtypes.is_defender) {
                         [self toggleCard:iv];
                         p->has_attacked = true;
                     }
@@ -773,7 +778,7 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
         UILabel* lb = [[UILabel alloc] init];
         UIImageView* iv = currentViews[i];
         [currentLabels addObject:lb] ;
-        if (p->source->is_planeswalker)
+        if (p->subtypes.is_planeswalker)
             lb.text = [NSString stringWithFormat:@"%d",p->loyalty];
         else
             lb.text = [NSString stringWithFormat:@"%d/%d",p->power,p->toughness];
@@ -815,7 +820,7 @@ void selectBlockers(List* permanentList,List* blockersList) {
     int numBlockers = 0;
     for (unsigned int i=0;i<viewController->player->battlefield->size;i++) {
         Permanent* p = viewController->player->battlefield->entries[i];
-        if (p->source->is_creature && ! p->is_tapped)
+        if (p->subtypes.is_creature && ! p->is_tapped)
             numBlockers++;
     }
     if (numBlockers > 0) {

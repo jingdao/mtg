@@ -17,6 +17,7 @@ typedef struct {
 } MTGPlayer;
 
 typedef struct {
+    Subtypes subtypes;
     bool is_tapped;
     bool has_attacked;
     bool has_blocked;
@@ -30,6 +31,7 @@ typedef struct {
 } Permanent;
 
 Permanent* NewPermanent(MTGCard* source,MTGPlayer* own);
+bool Permanent_sameColor(Permanent* p,Permanent* q);
 
 MTGPlayer* InitMTGPlayer();
 bool MTGPlayer_drawCards(MTGPlayer* p,int num);

@@ -22,12 +22,11 @@ void loadCardDataTable() {
 
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
-		for (int i=0;i<10;i++) AppendToList(cards,cd.SelflessCathar);
-		for (int i=0;i<10;i++) AppendToList(cards,cd.OreskosSwiftclaw);
-		for (int i=0;i<10;i++) AppendToList(cards,cd.RazorfootGriffin);
-		for (int i=0;i<10;i++) AppendToList(cards,cd.Plains);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.ChildofNight);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.IroassChampion);
+		for (int i=0;i<10;i++) AppendToList(cards,cd.Mountain);
 		for (int i=0;i<10;i++) AppendToList(cards,cd.Swamp);
-		for (int i=0;i<10;i++) AppendToList(cards,cd.Forest);
+		for (int i=0;i<10;i++) AppendToList(cards,cd.Plains);
 	} else if (index == 1) {
 		for (int i=0;i<2;i++) AppendToList(cards,cd.Ornithopter);
 		for (int i=0;i<3;i++) AppendToList(cards,cd.BronzeSable);
@@ -223,21 +222,53 @@ bool resolveBlock() {
     Permanent* p = attackerList->entries[block_index];
     List* blockers = blockersList->entries[block_index];
     char buffer[128];
+    int k;
     if (blockers->size == 0) {
         defender->hp -= p->power;
-        sprintf(buffer,"%s dealt %d damage to %s",p->source->name,p->power,defender==player1 ? "you" : "opponent");
+        k = sprintf(buffer,"%s dealt %d damage to %s",p->source->name,p->power,defender==player1 ? "you" : "opponent");
+        if (p->subtypes.is_lifelink) {
+            currentPlayer->hp += p->power;
+            sprintf(buffer+k," (lifelink=%d)",p->power);
+        }
         message(buffer);
     } else {
-        int k = sprintf(buffer,"%s is blocked by ",p->source->name);
+        k = sprintf(buffer,"%s is blocked by ",p->source->name);
+        int p_lifelink = 0;
+        int q_lifelink = 0;
         for (unsigned int j=0;j<blockers->size;j++) {
             Permanent* q = blockers->entries[j];
-            if (p->toughness > 0) {
-                int t = q->toughness;
-                p->toughness -= q->power;
-                q->toughness -= p->power;
-                p->power -= t;
+            int initialToughness = q->toughness;
+            if ((p->subtypes.is_first_strike||p->subtypes.is_double_strike) && p->power > 0 && p->toughness > 0) {
+                q->toughness = p->subtypes.is_deathtouch ? 0 : q->toughness - p->power;
+                if (p->subtypes.is_lifelink) p_lifelink += p->power;
             }
+            if ((q->subtypes.is_first_strike||q->subtypes.is_double_strike) && q->power > 0) {
+                p->toughness = q->subtypes.is_deathtouch ? 0 : p->toughness - q->power;
+                if (q->subtypes.is_lifelink) q_lifelink += q->power;
+            }
+            int currentToughness = q->toughness;
+            if (!p->subtypes.is_first_strike && p->power > 0 && p->toughness > 0) {
+                q->toughness = p->subtypes.is_deathtouch ? 0 : q->toughness - p->power;
+                if (p->subtypes.is_lifelink) p_lifelink += p->power;
+            }
+            if (!q->subtypes.is_first_strike && q->power > 0 && currentToughness > 0) {
+                p->toughness = q->subtypes.is_deathtouch ? 0 : p->toughness - q->power;
+                if (q->subtypes.is_lifelink) q_lifelink += p->power;
+            }
+            p->power -= initialToughness;
             k += sprintf(buffer+k,"%s,",q->source->name);
+        }
+        if (p->subtypes.is_trample && p->power > 0) {
+            defender->hp -= p->power;
+            k += sprintf(buffer+k," (trample=%d)",p->power);
+        }
+        if (p_lifelink > 0) {
+            currentPlayer->hp += p_lifelink;
+            k += sprintf(buffer+k," (lifelink=%d)",p_lifelink);
+        }
+        if (q_lifelink) {
+            defender->hp += q_lifelink;
+            k += sprintf(buffer+k," (lifelink=%d)",q_lifelink);
         }
         message(buffer);
     }
@@ -254,14 +285,14 @@ bool resolveLethalDamage() {
     int k = 0;
     for (unsigned int j=0;j<player1->battlefield->size;j++) {
         Permanent* q = player1->battlefield->entries[j];
-        if (q->toughness <= 0) {
+        if (q->toughness <= 0 && !q->subtypes.is_indestructible) {
             MTGPlayer_discardFromBattlefield(player1, j--);
             k += sprintf(buffer+k,"%s,",q->source->name);
         }
     }
     for (unsigned int j=0;j<player2->battlefield->size;j++) {
         Permanent* q = player2->battlefield->entries[j];
-        if (q->toughness <= 0) {
+        if (q->toughness <= 0 && !q->subtypes.is_indestructible) {
             MTGPlayer_discardFromBattlefield(player2, j--);
             k += sprintf(buffer+k,"%s,",q->source->name);
         }
@@ -351,7 +382,7 @@ MTGPlayer* newGame() {
 
 	player2 = InitMTGPlayer();
     AI_init(player2);
-	buildDeck(player2->library,rand() % 6);
+	buildDeck(player2->library,0);
 	shuffleDeck(player2->library);
 
 	MTGPlayer_drawCards(player1,7);

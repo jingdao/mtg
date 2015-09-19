@@ -11,11 +11,12 @@ void AI_init(MTGPlayer* player) {
 void AI_getBlockers(List* attackerList, List* blockersList){
 	for (unsigned int i=0;i<aiplayer->battlefield->size;i++) {
 		Permanent* p = aiplayer->battlefield->entries[i];
-		if (p->source->is_creature && !p->is_tapped) {
+		if (p->subtypes.is_creature && !p->is_tapped) {
             for (unsigned int k=0;k<attackerList->size;k++) {
                 int j = rand() % attackerList->size;
                 Permanent* attacker = attackerList->entries[j];
-                if (!attacker->source->is_flying || p->source->is_flying || p->source->is_reach) {
+                if ((!attacker->subtypes.is_flying || p->subtypes.is_flying || p->subtypes.is_reach) &&
+                    (!attacker->subtypes.is_intimidate || p->subtypes.is_artifact || Permanent_sameColor(attacker, p))) {
                     if (p->toughness > attacker->power || rand() % 2) {
                         List* blockers = blockersList->entries[j];
                         AppendToList(blockers,p);
@@ -38,7 +39,7 @@ void AI_getAction() {
         Permanent* permanent = NULL;
         for (unsigned int i=0;i<aiplayer->hand->size;i++) {
             MTGCard* card = aiplayer->hand->entries[i];
-            if (card->is_land) {
+            if (card->subtypes.is_land) {
                 permanent = NewPermanent(card,aiplayer);
                 AppendToList(aiplayer->lands, permanent);
                 aiplayer->playedLand = true;
@@ -75,7 +76,7 @@ void AI_getAction() {
         for (unsigned int i=0;i<aiplayer->hand->size;i++) {
             memcpy(manaBuffer,aiplayer->mana,6*sizeof(int));
             MTGCard* card = aiplayer->hand->entries[i];
-            if (!card->is_creature)
+            if (!card->subtypes.is_creature)
                 continue;
             int j;
             for (j=card->manaCost->size - 1;j>=0;j--) {
@@ -125,9 +126,10 @@ void AI_getAction() {
         List* permanentList = InitList();
         for (unsigned int i=0;i<aiplayer->battlefield->size;i++) {
             Permanent* p = aiplayer->battlefield->entries[i];
-            if (!p->has_summoning_sickness && !p->is_tapped && p->power>0 && (rand()%4)) {
+            if ((p->subtypes.is_haste||!p->has_summoning_sickness) && !p->is_tapped && !p->subtypes.is_defender && p->power>0 && (rand()%4)) {
                 p->has_attacked = true;
-                p->is_tapped = true;
+                if (!p->subtypes.is_vigilance)
+                    p->is_tapped = true;
                 AppendToList(permanentList, p);
             }
         }

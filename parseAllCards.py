@@ -45,7 +45,7 @@ keywords=[
 #'Devour',
 'Double strike',
 #'Dredge',
-'Enchant',
+#'Enchant',
 #'Entwine',
 #'Fading',
 'First strike',
@@ -58,7 +58,7 @@ keywords=[
 'Hexproof',
 #'Hidden agenda',
 'Indestructible',
-'Infect',
+#'Infect',
 'Intimidate',
 #'Kicker',
 #'Landhome',
@@ -68,7 +68,7 @@ keywords=[
 #'Offering',
 #'Overload',
 #'Phasing',
-'Protection',
+#'Protection',
 #'Prowl',
 'Reach',
 #'Retrace',
@@ -122,22 +122,22 @@ for page in cards:
 			os.system('curl "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid='+str(multiverse_id)+'&type=card" -o images/'+variableName+'.jpg')
 		if 'colors' in node:
 			for color in node['colors']:
-				outFile.write('cd.'+variableName+'->is_'+color+'=true; ')
+				outFile.write('cd.'+variableName+'->subtypes.is_'+color+'=true; ')
 		if 'types' in node:
 			for t in node['types']:
 				if t in types:
-					outFile.write('cd.'+variableName+'->is_'+t+'=true; ')
+					outFile.write('cd.'+variableName+'->subtypes.is_'+t+'=true; ')
 				else:
 					print t
 		if 'subtypes' in node:
 			for t in node['subtypes']:
 				subtypes.add(t)
-				outFile.write('cd.'+variableName+'->is_'+t+'=true; ')
+				outFile.write('cd.'+variableName+'->subtypes.is_'+t+'=true; ')
 		for k in keywords:
 			if k in node['text']:
 				k_ = k.lower().replace(' ','_')
 				keywordSet.add(k_)
-				outFile.write('cd.'+variableName+'->is_'+k_+'=true; ')
+				outFile.write('cd.'+variableName+'->subtypes.is_'+k_+'=true; ')
 		has_instant_ability = False
 		for s in node['text'].split('\n'):
 			if re.search(r'\{[\w\{\}, ]*\}',s):
@@ -156,7 +156,7 @@ for page in cards:
 					has_instant_ability = True
 				outFile.write('AppendToList(cd.'+variableName+'->abilities,ab); ')
 		if has_instant_ability:
-			outFile.write('cd.'+variableName+'->has_instant=true; ')
+			outFile.write('cd.'+variableName+'->subtypes.has_instant=true; ')
 		if 'power' in node and node['power'].isnumeric():
 			outFile.write('cd.'+variableName+'->power='+node['power']+'; ')
 		if 'toughness' in node and node['toughness'].isnumeric():
