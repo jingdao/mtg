@@ -15,6 +15,6 @@ bool resolveLethalDamage();
 void resolveAI();
 void endAttack();
 void newTurn();
-MTGPlayer* newGame();
+MTGPlayer* newGame(int deck_index);
 void startGame();
 void endGame();

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5327EEA81BAF3076003D2B7F /* DeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5327EEA71BAF3076003D2B7F /* DeckController.m */; };
 		535C2FBD1B9E1B73006D3888 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 535C2FBC1B9E1B73006D3888 /* main.m */; };
 		535C2FC01B9E1B73006D3888 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 535C2FBF1B9E1B73006D3888 /* AppDelegate.m */; };
 		535C2FC61B9E1B73006D3888 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 535C2FC41B9E1B73006D3888 /* Main.storyboard */; };
@@ -554,6 +555,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5327EEA71BAF3076003D2B7F /* DeckController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeckController.m; sourceTree = "<group>"; };
+		5327EEA91BAF3093003D2B7F /* DeckController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeckController.h; sourceTree = "<group>"; };
 		535C2FB71B9E1B73006D3888 /* MTG_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MTG_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535C2FBB1B9E1B73006D3888 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		535C2FBC1B9E1B73006D3888 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -1165,6 +1168,8 @@
 				535C2FBF1B9E1B73006D3888 /* AppDelegate.m */,
 				535C2FC11B9E1B73006D3888 /* ViewController.h */,
 				5393F76D1BA7B3680016234F /* ViewController.m */,
+				5327EEA91BAF3093003D2B7F /* DeckController.h */,
+				5327EEA71BAF3076003D2B7F /* DeckController.m */,
 				535C2FC41B9E1B73006D3888 /* Main.storyboard */,
 				535C2FC71B9E1B73006D3888 /* Images.xcassets */,
 				535C2FC91B9E1B73006D3888 /* LaunchScreen.xib */,
@@ -2353,6 +2358,7 @@
 				5393F76E1BA7B3680016234F /* ViewController.m in Sources */,
 				535C2FC01B9E1B73006D3888 /* AppDelegate.m in Sources */,
 				5393F56A1B9E4F760016234F /* MTGController.c in Sources */,
+				5327EEA81BAF3076003D2B7F /* DeckController.m in Sources */,
 				535C2FBD1B9E1B73006D3888 /* main.m in Sources */,
 				535C2FEB1B9E1D4A006D3888 /* MTGCard.c in Sources */,
 				535C2FE91B9E1D4A006D3888 /* CardData.c in Sources */,

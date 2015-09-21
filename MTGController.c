@@ -2,6 +2,7 @@
 
 extern CardData cd;
 extern HashTable* cdt;
+extern List* categories;
 MTGPlayer* player1;
 MTGPlayer* player2;
 MTGPlayer* currentPlayer;
@@ -11,13 +12,43 @@ List* attackerList = NULL;
 int block_index;
 
 void loadCardDataTable() {
+    categories = InitList();
+    for (int i=0;i<14;i++) {
+        List* l = InitList();
+        AppendToList(categories, l);
+    }
+    
 	cdt = InitHashTable();
 	int numCards = sizeof(CardData) / sizeof(MTGCard*);
 	MTGCard** cardArray = & cd.AbbotofKeralKeep;
 	for (int i=0;i<numCards;i++) {
-		HashTable_insertVar(cdt,(void*)(*cardArray)->name, (int) strlen((*cardArray)->name), *cardArray);
+        MTGCard* card = *cardArray;
+		HashTable_insertVar(cdt,(void*)card->name, (int) strlen(card->name), card);
+        List* l;
+        int k=0;
+        if (card->subtypes.is_plains||card->subtypes.is_island||card->subtypes.is_swamp||card->subtypes.is_mountain||card->subtypes.is_forest)
+            k = 13;
+        else if (card->subtypes.is_land) k = 12;
+        else if (card->subtypes.is_white + card->subtypes.is_blue + card->subtypes.is_black + card->subtypes.is_red + card->subtypes.is_green == 1) {
+            if (card->subtypes.is_white) k += 0;
+            else if (card->subtypes.is_blue) k += 2;
+            else if (card->subtypes.is_black) k += 4;
+            else if (card->subtypes.is_red) k += 6;
+            else if (card->subtypes.is_green) k += 8;
+            if (!card->subtypes.is_creature) k++;
+        } else {
+            k += 10;
+            if (!card->subtypes.is_creature) k++;
+        }
+        l = categories->entries[k];
+        AppendToList(l, card);
 		cardArray++;
 	}
+    
+    for (int i=0;i<14;i++) {
+        List* l = categories->entries[i];
+        qsort(l->entries,l->size,sizeof(MTGCard*),MTGCard_compare);
+    }
 }
 
 void buildDeck(List* cards,int index) {
@@ -372,13 +403,17 @@ void newTurn() {
 
 }
 
-MTGPlayer* newGame() {
+MTGPlayer* newGame(int deck_index) {
     player1 = InitMTGPlayer();
-	loadDeck("deck.txt",player1->library);
-    if (player1->library->size <= 0)
-        buildDeck(player1->library,rand() % 6);
+	//loadDeck("deck.txt",player1->library);
+    //if (player1->library->size <= 0)
+    //    buildDeck(player1->library,rand() % 6);
+    if (deck_index < 0)
+        buildDeck(player1->library, rand() % 6);
+    else
+        buildDeck(player1->library, deck_index);
 	shuffleDeck(player1->library);
-	saveDeck("deck.txt",player1->library);
+	//saveDeck("deck.txt",player1->library);
 
 	player2 = InitMTGPlayer();
     AI_init(player2);

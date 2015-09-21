@@ -58,6 +58,7 @@ typedef struct  {
 Ability* NewAbility();
 MTGCard* NewMTGCard(const char* s,int cost);
 
+int MTGCard_compare(const void* c1,const void* c2);
 Manacost* colorlessMana(int n);
 Manacost* W_Mana(int n);
 Manacost* U_Mana(int n);

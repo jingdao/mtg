@@ -15,6 +15,7 @@
 
 CardData cd;
 HashTable* cdt;
+List* categories;
 ViewController* viewController;
 
 @implementation ViewController
@@ -32,8 +33,8 @@ ViewController* viewController;
     self->topmargin = 27;
     self->numColumn = 6;
     self->maxColumns = 12;
-    CGFloat coverWidth = self->coverImage.size.width;
-    CGFloat coverHeight = self->coverImage.size.height;
+    self->coverWidth = self->coverImage.size.width;
+    self->coverHeight = self->coverImage.size.height;
     self->gridHeight = (height-margin-topmargin)/16 * 3;
     self->cardHeight = self->gridHeight - margin*2;
     self->cardWidth = cardHeight/coverHeight*coverWidth;
@@ -51,6 +52,7 @@ ViewController* viewController;
     self->stepperWidth = 100;
     self->stepperHeight = 35;
     self->cacheImages = false;
+    self->deck_index = 0;
     self->selfDeck = [[UIImageView alloc] initWithFrame:CGRectMake(width-margin*2-cardWidth-textWidth,height-margin-gridHeight*2-gridHeight2,cardWidth,cardHeight)];
     [self->selfDeck setImage: self->coverImage];
     self->selfDeck.userInteractionEnabled = YES;
@@ -71,6 +73,7 @@ ViewController* viewController;
     self->selfLandsImages = [[NSMutableArray alloc] init];
     self->views = [[NSMutableArray alloc] init];
     self->images = [[NSMutableArray alloc] init];
+
 
     self->opponentLands = [[UIScrollView alloc] initWithFrame:CGRectMake(margin*3+cardWidth+textWidth,topmargin, width-margin*5-cardWidth-textWidth-buttonWidth, gridHeight2)];
     self->opponentLands.contentSize = CGSizeMake((cardHeight2+margin)*maxColumns,gridHeight2);
@@ -109,6 +112,8 @@ ViewController* viewController;
     //[self->scrollView setBackgroundColor:[UIColor greenColor]];
     //self->scrollView.layer.borderColor = [UIColor blueColor].CGColor;
     //self->scrollView.layer.borderWidth = 3.0;
+    
+   
     
     self->popupMask = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     self->popupMask.alpha = 0.5;
@@ -215,9 +220,21 @@ ViewController* viewController;
         [manaAlert addSubview:stepper];
     }
     
+    deckSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Custom",@"Dragon's Hoard", @"Hit the Ground Running",@"Infernal Intervention",@"Price of Glory",@"Will of the Masses",nil];
+    self.deckController = [[DeckController alloc]init];
+    self.deckController->coverWidth = self->coverWidth;
+    self.deckController->coverHeight = self->coverHeight;
+    self.deckController->buttonWidth = self->buttonWidth;
+    self.deckController->buttonHeight = self->buttonHeight;
+    self.deckController->cacheImages = self->cacheImages;
+    self.deckController->deck_index = self->deck_index;
+    self.deckPopover = [[UIPopoverController alloc] initWithContentViewController:self.deckController];
+    self.deckPopover.popoverContentSize = CGSizeMake(width-margin*2,coverHeight*2 + margin*6 + buttonHeight);
+    self.deckPopover.delegate = self;
+    
     cd = loadCardData();
     loadCardDataTable();
-    self->player = newGame();
+    self->player = newGame(deck_index);
 
 }
 
@@ -456,7 +473,7 @@ ViewController* viewController;
 }
 
 - (void) onPause:(id)sender {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"New Game",@"Tap All Lands", @"Attack All",nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"New Game",@"Tap All Lands", @"Attack All",@"Change Deck",@"Edit Deck",nil];
     [sheet showInView:self.view];
 }
 
@@ -544,15 +561,30 @@ ViewController* viewController;
 }
 
 - (void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    switch (buttonIndex) {
-        case 0:
+    if (actionSheet == self->deckSheet) {
+        [self->popupMask removeFromSuperview];
+        if (buttonIndex >= 0) {
+            deck_index = (int)buttonIndex;
             attackButton.enabled=false;
             confirmButton.enabled=false;
             endturnButton.enabled=false;
             endGame();
-            self->player = newGame();
+            self->player = newGame(deck_index);
+        }
+        return;
+    }
+    switch (buttonIndex) {
+        case 0:
+        {
+            attackButton.enabled=false;
+            confirmButton.enabled=false;
+            endturnButton.enabled=false;
+            endGame();
+            self->player = newGame(deck_index);
             break;
+        }
         case 1:
+        {
             if (mode == NONE) {
                 for (unsigned int i=0;i<self->player->lands->size;i++) {
                     Permanent* p = self->player->lands->entries[i];
@@ -564,7 +596,9 @@ ViewController* viewController;
                 displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->graveyard->size,self->player->mana, true);
             }
             break;
+        }
         case 2:
+        {
             if (mode == NONE && attackButton.enabled==true) {
                 [self toggleHighlight:selfBattlefield];
                 mode=ATTACK;
@@ -581,6 +615,33 @@ ViewController* viewController;
                 }
             }
             break;
+        }
+        case 3:
+        {
+            [self.view addSubview:self->popupMask];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC / 4)), dispatch_get_main_queue(), ^{
+                [self->deckSheet showInView:self.view];
+            });
+            break;
+        }
+        case 4: {
+//            if (self.deckController->deck_index != self->deck_index) {
+//                [self.deckController freeImages];
+//                self.deckController->deck_index = self->deck_index;
+//                [self.deckController showDeck];
+//            }
+            self.deckController->deck_index = self->deck_index;
+            if (self.deckController.view) {
+                [self.deckController showDeck];
+                [self.deckController showStock];
+                [self.deckController showCounts];
+            }
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC / 2)), dispatch_get_main_queue(), ^{
+                [self.deckPopover presentPopoverFromRect:CGRectMake(0, 0, self->width,0) inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUnknown animated:YES];
+            });
+            
+            break;
+        }
         default:
             break;
     }
@@ -600,7 +661,7 @@ ViewController* viewController;
         confirmButton.enabled=false;
         endturnButton.enabled=false;
         endGame();
-        self->player = newGame();
+        self->player = newGame(deck_index);
     }
 }
 
@@ -628,6 +689,11 @@ ViewController* viewController;
         theStepper.tag = theStepper.value * 10 + index;
         self->manaLabel.text = [NSString stringWithFormat:@"Select mana\n(%d remaining)\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d",viewController->pendingMana,mana[1],mana[2],mana[3],mana[4],mana[5]];
     }
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    [self.deckController freeImages];
+    [self.deckController freeStockImages];
 }
 
 @end
@@ -891,7 +957,7 @@ void discardToSeven(MTGPlayer* player){
 
 void mulligan() {
     viewController->mode=WAIT;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC / 2)), dispatch_get_main_queue(), ^{
         [viewController->mulliganAlert show];
     });
 }

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #include "MTGController.h"
+#include "DeckController.h"
 
 typedef enum {
     NONE,
@@ -19,11 +20,11 @@ typedef enum {
     WAITATTACK
 } Mode ;
 
-@interface ViewController : UIViewController<UIActionSheetDelegate> {
+@interface ViewController : UIViewController<UIActionSheetDelegate, UIPopoverControllerDelegate> {
     @public int width,height,margin,topmargin,numColumn,maxColumns;
     @public int popupWidth,popupHeight,textWidth,textHeight,buttonWidth,buttonHeight;
     @public int gridHeight,gridHeight2, labelWidth,labelHeight, stepperWidth, stepperHeight;
-    @public CGFloat cardWidth,cardHeight,cardWidth2,cardHeight2;
+    @public CGFloat coverWidth,coverHeight,cardWidth,cardHeight,cardWidth2,cardHeight2;
     @public UIImageView* selfDeck;
     @public UIImageView* opponentDeck;
     @public UIImage* coverImage;
@@ -41,12 +42,14 @@ typedef enum {
     @public NSMutableArray* selfBattlefieldImages;
     @public NSMutableArray* selfLabels;
     @public NSMutableArray* opponentLabels;
+
     @public UIScrollView* opponentLands;
     @public UIScrollView* opponentBattlefield;
     @public UIScrollView* stack;
     @public UIScrollView* selfBattlefield;
     @public UIScrollView* selfLands;
     @public UIScrollView* scrollView;
+    
     @public UIImageView* popupImage;
     @public UIView* popupMask;
     @public UITextView* selfHP;
@@ -58,6 +61,7 @@ typedef enum {
     @public UIButton* attackButton;
     @public UIButton* confirmButton;
     @public UITextView* manaLabel;
+    @public UIActionSheet* deckSheet;
     @public MTGPlayer* player;
     @public Permanent* currentPermanent;
     @public char buffer[128];
@@ -65,11 +69,15 @@ typedef enum {
     @public Mode mode;
     @public int pendingMana;
     @public int block_index;
+    @public int deck_index;
     @public List* attackerList;
     @public List* blockersList;
     @public List* opponentPermanents;
     @public bool cacheImages;
 }
+
+@property (nonatomic, strong) DeckController* deckController;
+@property (nonatomic,strong) UIPopoverController* deckPopover;
 
 @end
 
