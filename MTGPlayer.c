@@ -95,13 +95,18 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex) {
 
 
 void MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
+    if (permanent->source->subtypes.is_land) {
+        if (permanent->source == cd.Plains) player->mana[1]++;
+        else if (permanent->source == cd.Island) player->mana[2]++;
+        else if (permanent->source == cd.Swamp) player->mana[3]++;
+        else if (permanent->source == cd.Mountain) player->mana[4]++;
+        else if (permanent->source == cd.Forest) player->mana[5]++;
+        player->mana[0]++;
+    } else {
+        if (permanent->source == cd.Soulmender)
+            Event_gainLife(player, 1);
+    }
     permanent->is_tapped = true;
-    if (permanent->source == cd.Plains) player->mana[1]++;
-    else if (permanent->source == cd.Island) player->mana[2]++;
-    else if (permanent->source == cd.Swamp) player->mana[3]++;
-    else if (permanent->source == cd.Mountain) player->mana[4]++;
-    else if (permanent->source == cd.Forest) player->mana[5]++;
-    player->mana[0]++;
 }
 
 bool MTGPlayer_payMana(MTGPlayer* player,MTGCard* card) {

@@ -91,7 +91,7 @@ extern List* categories;
         lb.textColor = [UIColor whiteColor];
         lb.backgroundColor = [UIColor blackColor];
         lb.textAlignment = NSTextAlignmentCenter;
-        lb.frame = CGRectMake(iv.frame.size.width-labelWidth, iv.frame.size.height-labelHeight,labelWidth,labelHeight);
+        lb.frame = CGRectMake(0, iv.frame.size.height-labelHeight,labelWidth,labelHeight);
         lb.layer.cornerRadius = 10;
         lb.layer.masksToBounds = YES;
         

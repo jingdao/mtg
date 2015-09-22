@@ -54,7 +54,7 @@ void loadCardDataTable() {
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
         for (int i=0;i<10;i++) AppendToList(cards,cd.ChildofNight);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.IroassChampion);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.Soulmender);
 		for (int i=0;i<10;i++) AppendToList(cards,cd.Mountain);
 		for (int i=0;i<10;i++) AppendToList(cards,cd.Swamp);
 		for (int i=0;i<10;i++) AppendToList(cards,cd.Plains);
@@ -294,11 +294,13 @@ bool resolveBlock() {
             k += sprintf(buffer+k," (trample=%d)",p->power);
         }
         if (p_lifelink > 0) {
-            currentPlayer->hp += p_lifelink;
+            //currentPlayer->hp += p_lifelink;
+            Event_gainLife(currentPlayer,p_lifelink);
             k += sprintf(buffer+k," (lifelink=%d)",p_lifelink);
         }
         if (q_lifelink) {
-            defender->hp += q_lifelink;
+            //defender->hp += q_lifelink;
+            Event_gainLife(defender,q_lifelink);
             k += sprintf(buffer+k," (lifelink=%d)",q_lifelink);
         }
         message(buffer);

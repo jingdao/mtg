@@ -13,12 +13,13 @@
 CardData cd;
 HashTable* cdt;
 MTGPlayer* myplayer;
+List* categories;
 
 int main(int argc, const char * argv[]) {
 	srand(time(NULL));
 	cd = loadCardData();
 	loadCardDataTable();
-	newGame();
+	newGame(0);
 	startGame();
 	endGame();
 	freeCardData(&cd);

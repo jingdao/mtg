@@ -31,6 +31,10 @@ void displayStats(int hp,int librarySize,int handSize,int graveyardSize, int* ma
 	}
 }
 
+void displayWinner(MTGPlayer* winner) {
+
+}
+
 void selectMana(int* mana,int amount) {
 
 }

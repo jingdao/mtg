@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include "CardData.h"
 
-void selectMana(int* mana,int amount);
-
 typedef struct {
 	List* hand;
 	List* library;
@@ -43,3 +41,6 @@ void MTGPlayer_restore(MTGPlayer* player);
 void MTGPlayer_tap(MTGPlayer* player,Permanent* perm);
 bool MTGPlayer_payMana(MTGPlayer* player,MTGCard* card);
 void DeleteMTGPlayer(MTGPlayer* p);
+
+void selectMana(int* mana,int amount);
+void Event_gainLife(MTGPlayer* player,int num);

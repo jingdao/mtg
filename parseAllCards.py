@@ -140,9 +140,9 @@ for page in cards:
 				outFile.write('cd.'+variableName+'->subtypes.is_'+k_+'=true; ')
 		has_instant_ability = False
 		for s in node['text'].split('\n'):
-			if re.search(r'\{[\w\{\}, ]*\}',s):
+			if re.match(r'\{[\w\{\}, ]*\}',s):
 				outFile.write('ab=NewAbility(); ')
-				req = re.search(r'\{[\w\{\}, ]*\}',s).group(0)
+				req = re.match(r'\{[\w\{\}, ]*\}',s).group(0)
 				is_instant = True
 				for r in req:
 					if r.isnumeric():

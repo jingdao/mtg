@@ -1,9 +1,10 @@
 #pragma once
 #include <stdio.h>
 #include <stdlib.h>
-#include "ViewInterface.h"
-#include "MTGPlayer.h"
+#include "EventHandler.h"
 #include "AIPlayer.h"
+
+void Event_gainLife(MTGPlayer* player,int num);
 
 void loadCardDataTable();
 void buildDeck(List* cards,int index);
