@@ -53,11 +53,11 @@ void loadCardDataTable() {
 
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
-        for (int i=0;i<10;i++) AppendToList(cards,cd.ChildofNight);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.Soulmender);
-		for (int i=0;i<10;i++) AppendToList(cards,cd.Mountain);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.AjanisPridemate);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.WallofEssence);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.KinsbaileSkirmisher);
 		for (int i=0;i<10;i++) AppendToList(cards,cd.Swamp);
-		for (int i=0;i<10;i++) AppendToList(cards,cd.Plains);
+		for (int i=0;i<20;i++) AppendToList(cards,cd.Plains);
 	} else if (index == 1) {
 		for (int i=0;i<2;i++) AppendToList(cards,cd.Ornithopter);
 		for (int i=0;i<3;i++) AppendToList(cards,cd.BronzeSable);
@@ -270,21 +270,21 @@ bool resolveBlock() {
             Permanent* q = blockers->entries[j];
             int initialToughness = q->toughness;
             if ((p->subtypes.is_first_strike||p->subtypes.is_double_strike) && p->power > 0 && p->toughness > 0) {
-                q->toughness = p->subtypes.is_deathtouch ? 0 : q->toughness - p->power;
+                Event_damage(p, q, p->power);
                 if (p->subtypes.is_lifelink) p_lifelink += p->power;
             }
             if ((q->subtypes.is_first_strike||q->subtypes.is_double_strike) && q->power > 0) {
-                p->toughness = q->subtypes.is_deathtouch ? 0 : p->toughness - q->power;
+                Event_damage(q, p, q->power);
                 if (q->subtypes.is_lifelink) q_lifelink += q->power;
             }
             int currentToughness = q->toughness;
             if (!p->subtypes.is_first_strike && p->power > 0 && p->toughness > 0) {
-                q->toughness = p->subtypes.is_deathtouch ? 0 : q->toughness - p->power;
+                Event_damage(p, q, p->power);
                 if (p->subtypes.is_lifelink) p_lifelink += p->power;
             }
             if (!q->subtypes.is_first_strike && q->power > 0 && currentToughness > 0) {
-                p->toughness = q->subtypes.is_deathtouch ? 0 : p->toughness - q->power;
-                if (q->subtypes.is_lifelink) q_lifelink += p->power;
+                Event_damage(q, p, q->power);
+                if (q->subtypes.is_lifelink) q_lifelink += q->power;
             }
             p->power -= initialToughness;
             k += sprintf(buffer+k,"%s,",q->source->name);
@@ -406,6 +406,7 @@ void newTurn() {
 }
 
 MTGPlayer* newGame(int deck_index) {
+    initEvents();
     player1 = InitMTGPlayer();
 	//loadDeck("deck.txt",player1->library);
     //if (player1->library->size <= 0)
@@ -451,6 +452,7 @@ void startGame() {
 
 void endGame() {
     endAttack();
+    DeleteEvents();
     DeleteMTGPlayer(player1);
     DeleteMTGPlayer(player2);
 }

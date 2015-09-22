@@ -73,6 +73,7 @@ ViewController* viewController;
     self->selfLandsImages = [[NSMutableArray alloc] init];
     self->views = [[NSMutableArray alloc] init];
     self->images = [[NSMutableArray alloc] init];
+    self->messageQueue = [[NSMutableArray alloc] init];
 
 
     self->opponentLands = [[UIScrollView alloc] initWithFrame:CGRectMake(margin*3+cardWidth+textWidth,topmargin, width-margin*5-cardWidth-textWidth-buttonWidth, gridHeight2)];
@@ -243,11 +244,12 @@ ViewController* viewController;
     // Dispose of any resources that can be recreated.
 }
 
-- (void)displayToastWithMessage:(NSString *)toastMessage
-{
+- (void)showToast {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
         UIWindow * keyWindow = [[UIApplication sharedApplication] keyWindow];
         UILabel *toastView = [[UILabel alloc] init];
+        NSString* toastMessage = messageQueue[0];
+        [messageQueue removeObjectAtIndex:0];
         toastView.text = toastMessage;
         //toastView.font = [MYUIStyles getToastHeaderFont];
         //toastView.textColor = [MYUIStyles getToastTextColor];
@@ -264,7 +266,7 @@ ViewController* viewController;
         
         [keyWindow addSubview:toastView];
         
-        [UIView animateWithDuration: 3.0f
+        [UIView animateWithDuration: 2.0f
                               delay: 0.0
                             options: UIViewAnimationOptionCurveEaseOut
                          animations: ^{
@@ -272,9 +274,19 @@ ViewController* viewController;
                          }
                          completion: ^(BOOL finished) {
                              [toastView removeFromSuperview];
+                             if (messageQueue.count > 0)
+                                 [self showToast];
                          }
          ];
     }];
+}
+
+- (void)displayToastWithMessage:(NSString *)toastMessage
+{
+    [viewController->messageQueue addObject:toastMessage];
+    if (viewController->messageQueue.count == 1)
+        [self showToast];
+    
 }
 
 - (UIImage*) loadImage: (NSString*)name cached: (BOOL) isCached {

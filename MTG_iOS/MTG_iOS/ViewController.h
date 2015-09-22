@@ -42,6 +42,7 @@ typedef enum {
     @public NSMutableArray* selfBattlefieldImages;
     @public NSMutableArray* selfLabels;
     @public NSMutableArray* opponentLabels;
+    @public NSMutableArray* messageQueue;
 
     @public UIScrollView* opponentLands;
     @public UIScrollView* opponentBattlefield;

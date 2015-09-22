@@ -22,6 +22,8 @@ typedef struct {
     bool has_summoning_sickness;
     int power;
     int toughness;
+    int bonusPower;
+    int bonusToughness;
     int loyalty;
     MTGCard* source;
     MTGPlayer* owner;

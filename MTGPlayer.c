@@ -1,6 +1,7 @@
 #include "MTGPlayer.h"
 
 extern CardData cd;
+extern List* gainLifeSubscribers;
 
 Permanent* NewPermanent(MTGCard* source,MTGPlayer* own) {
     Permanent* p = (Permanent*) malloc(sizeof(Permanent));
@@ -15,6 +16,8 @@ Permanent* NewPermanent(MTGCard* source,MTGPlayer* own) {
         p->toughness = source->toughness;
         p->has_summoning_sickness = true;
     }
+    p->bonusPower = 0;
+    p->bonusToughness = 0;
     p->source = source;
     p->owner = own;
     p->controller = own;
@@ -71,8 +74,10 @@ bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     if (card->subtypes.is_land) {
         player->playedLand = true;
         AppendToList(player->lands, permanent);
-    } else if (card->subtypes.is_creature || card->subtypes.is_planeswalker) {
+    } else if (card->subtypes.is_creature || card->subtypes.is_planeswalker || card->subtypes.is_enchantment || card->subtypes.is_artifact) {
         AppendToList(player->battlefield, permanent);
+        if (card == cd.AjanisPridemate)
+            AppendToList(gainLifeSubscribers,permanent);
     }
     
     //remove card from hand
@@ -88,7 +93,12 @@ void MTGPlayer_discard(MTGPlayer* player,int cardIndex) {
 }
 
 void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex) {
-    AppendToList(player->graveyard, player->battlefield->entries[cardIndex]);
+    Permanent* p = player->battlefield->entries[cardIndex];
+    if (p->source == cd.AjanisPridemate) {
+        RemoveListObject(gainLifeSubscribers, p);
+    }
+    free(p);
+    AppendToList(player->graveyard,p->source);
     //remove card from battlefield
     RemoveListIndex(player->battlefield, cardIndex);
 }
@@ -167,8 +177,8 @@ void MTGPlayer_restore(MTGPlayer* player) {
     for (unsigned int i=0;i<player->battlefield->size;i++) {
         Permanent* p = player->battlefield->entries[i];
         if (p->subtypes.is_creature) {
-            p->power = p->source->power;
-            p->toughness = p->source->toughness;
+            p->power = p->source->power + p->bonusPower;
+            p->toughness = p->source->toughness + p->bonusToughness;
             p->has_attacked = false;
             p->has_blocked = false;
         }
