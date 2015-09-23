@@ -4,11 +4,14 @@
 void displayHand(List* cards);
 void displayLands(List* permanents, bool selfOrOpponent);
 void displayBattlefield(List* permanents, bool selfOrOpponent);
-void displayStats(int hp,int librarySize,int handSize, int graveyardSize, int* mana,bool selfOrOpponent);
+void displayStack(List* stack);
+void displayStats(int hp,int librarySize,int handSize, int graveyardSize, int exileSize,int* mana,bool selfOrOpponent);
 void displayWinner(MTGPlayer* winner);
 void discardToSeven(MTGPlayer* player);
 void selectMana(int* mana,int amount);
 void selectBlockers(List* permanentList,List* blockersList);
+void selectCallback(void (*callback)(Permanent*),char* allowedTargets);
+void selectTarget(Permanent* source,char* allowedTargets);
 void saveDeck(char* name,List* cards);
 void loadDeck(char* name,List* cards);
 void startTurn(MTGPlayer* player);

@@ -288,6 +288,7 @@
 		535C32071B9E27F1006D3888 /* YisantheWandererBard.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30FA1B9E27F1006D3888 /* YisantheWandererBard.jpg */; };
 		535C32081B9E27F1006D3888 /* ZofShade.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 535C30FB1B9E27F1006D3888 /* ZofShade.jpg */; };
 		53647D1B1BB0F3DF00351558 /* EventHandler.c in Sources */ = {isa = PBXBuildFile; fileRef = 53647D191BB0F3DF00351558 /* EventHandler.c */; };
+		53647D1E1BB19E7B00351558 /* Callback.c in Sources */ = {isa = PBXBuildFile; fileRef = 53647D1C1BB19E7B00351558 /* Callback.c */; };
 		5393F56A1B9E4F760016234F /* MTGController.c in Sources */ = {isa = PBXBuildFile; fileRef = 5393F5671B9E4F760016234F /* MTGController.c */; };
 		5393F6651B9E504C0016234F /* AbbotofKeralKeep.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5393F56B1B9E504A0016234F /* AbbotofKeralKeep.jpg */; };
 		5393F6661B9E504C0016234F /* AcolyteoftheInferno.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5393F56C1B9E504A0016234F /* AcolyteoftheInferno.jpg */; };
@@ -849,6 +850,8 @@
 		535C30FB1B9E27F1006D3888 /* ZofShade.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ZofShade.jpg; path = ../../images/ZofShade.jpg; sourceTree = "<group>"; };
 		53647D191BB0F3DF00351558 /* EventHandler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = EventHandler.c; path = ../../EventHandler.c; sourceTree = "<group>"; };
 		53647D1A1BB0F3DF00351558 /* EventHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventHandler.h; path = ../../EventHandler.h; sourceTree = "<group>"; };
+		53647D1C1BB19E7B00351558 /* Callback.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Callback.c; path = ../../Callback.c; sourceTree = "<group>"; };
+		53647D1D1BB19E7B00351558 /* Callback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Callback.h; path = ../../Callback.h; sourceTree = "<group>"; };
 		5393F5671B9E4F760016234F /* MTGController.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MTGController.c; path = ../../MTGController.c; sourceTree = "<group>"; };
 		5393F5681B9E4F760016234F /* MTGController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTGController.h; path = ../../MTGController.h; sourceTree = "<group>"; };
 		5393F5691B9E4F760016234F /* ViewInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewInterface.h; path = ../../ViewInterface.h; sourceTree = "<group>"; };
@@ -1161,6 +1164,8 @@
 				5393F5681B9E4F760016234F /* MTGController.h */,
 				53647D191BB0F3DF00351558 /* EventHandler.c */,
 				53647D1A1BB0F3DF00351558 /* EventHandler.h */,
+				53647D1C1BB19E7B00351558 /* Callback.c */,
+				53647D1D1BB19E7B00351558 /* Callback.h */,
 				5393F5691B9E4F760016234F /* ViewInterface.h */,
 				535C2FEC1B9E1D7B006D3888 /* MTGCard.h */,
 				535C2FE81B9E1D4A006D3888 /* MTGCard.c */,
@@ -2363,6 +2368,7 @@
 				5393F76E1BA7B3680016234F /* ViewController.m in Sources */,
 				535C2FC01B9E1B73006D3888 /* AppDelegate.m in Sources */,
 				5393F56A1B9E4F760016234F /* MTGController.c in Sources */,
+				53647D1E1BB19E7B00351558 /* Callback.c in Sources */,
 				53647D1B1BB0F3DF00351558 /* EventHandler.c in Sources */,
 				5327EEA81BAF3076003D2B7F /* DeckController.m in Sources */,
 				535C2FBD1B9E1B73006D3888 /* main.m in Sources */,

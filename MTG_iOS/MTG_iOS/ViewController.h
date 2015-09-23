@@ -16,6 +16,9 @@ typedef enum {
     MANA,
     ATTACK,
     BLOCK,
+    SELECT,
+    SELECT_TARGET,
+    STACK,
     WAIT,
     WAITATTACK
 } Mode ;
@@ -65,15 +68,18 @@ typedef enum {
     @public UIActionSheet* deckSheet;
     @public MTGPlayer* player;
     @public Permanent* currentPermanent;
+    @public Permanent* currentEquipment;
     @public char buffer[128];
     @public int manaBuffer[6];
     @public Mode mode;
+    @public void (*creature_callback)(Permanent*);
     @public int pendingMana;
     @public int block_index;
     @public int deck_index;
     @public List* attackerList;
     @public List* blockersList;
     @public List* opponentPermanents;
+    @public bool canAttack;
     @public bool cacheImages;
 }
 

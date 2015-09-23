@@ -1,7 +1,7 @@
 #include "MTGPlayer.h"
 
 extern CardData cd;
-extern List* gainLifeSubscribers;
+extern List* stack;
 
 Permanent* NewPermanent(MTGCard* source,MTGPlayer* own) {
     Permanent* p = (Permanent*) malloc(sizeof(Permanent));
@@ -9,15 +9,18 @@ Permanent* NewPermanent(MTGCard* source,MTGPlayer* own) {
     p->has_attacked = false;
     p->has_blocked = false;
     p->subtypes = source->subtypes;
+    p->equipment = NULL;
     if (source->subtypes.is_planeswalker)
         p->loyalty = source->loyalty;
     else if (source->subtypes.is_creature){
         p->power = source->power;
         p->toughness = source->toughness;
         p->has_summoning_sickness = true;
+        p->equipment = InitList();
     }
     p->bonusPower = 0;
     p->bonusToughness = 0;
+    p->target = NULL;
     p->source = source;
     p->owner = own;
     p->controller = own;
@@ -56,15 +59,15 @@ bool MTGPlayer_drawCards(MTGPlayer* p,int num) {
     return true;
 }
 
-bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
+Permanent* MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     MTGCard* card = (MTGCard*)player->hand->entries[cardIndex];
     if (! MTGPlayer_payMana(player, card)) {
         sprintf(err,"Not enough mana to play %s (%d/%d)",card->name,player->mana[0],card->cmc);
-        return false;
+        return NULL;
     }
     if (card->subtypes.is_land && player->playedLand) {
         sprintf(err,"You can only play one Land per turn");
-        return false;
+        return NULL;
     }
     
     //create permanent
@@ -74,16 +77,18 @@ bool MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     if (card->subtypes.is_land) {
         player->playedLand = true;
         AppendToList(player->lands, permanent);
+    } else if (card->subtypes.is_enchantment || card->subtypes.is_sorcery || card->subtypes.is_instant) {
+        AppendToList(stack, permanent);
+        
     } else if (card->subtypes.is_creature || card->subtypes.is_planeswalker || card->subtypes.is_enchantment || card->subtypes.is_artifact) {
-        AppendToList(player->battlefield, permanent);
-        if (card == cd.AjanisPridemate)
-            AppendToList(gainLifeSubscribers,permanent);
+        if (!card->subtypes.is_aura) 
+            AppendToList(player->battlefield, permanent);
     }
     
     //remove card from hand
     RemoveListIndex(player->hand,cardIndex);
     
-    return true;
+    return permanent;
 }
 
 void MTGPlayer_discard(MTGPlayer* player,int cardIndex) {
@@ -92,17 +97,30 @@ void MTGPlayer_discard(MTGPlayer* player,int cardIndex) {
     RemoveListIndex(player->hand, cardIndex);
 }
 
-void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex) {
-    Permanent* p = player->battlefield->entries[cardIndex];
-    if (p->source == cd.AjanisPridemate) {
-        RemoveListObject(gainLifeSubscribers, p);
+void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,bool exile) {
+    Permanent* p = MTGPlayer_getBattlefieldPermanent(player, cardIndex);
+    Event_onDestroy(p);
+    if (p->equipment) {
+        for (unsigned int j=0;j<p->equipment->size;j++) {
+            Permanent* q = p->equipment->entries[j];
+            if (q->subtypes.is_equipment)
+                AppendToList(player->battlefield, q);
+            else {
+                AppendToList(player->graveyard, q->source);
+                free(q);
+            }
+        }
+        DeleteList(p->equipment);
     }
+    
+    AppendToList(exile?player->exile:player->graveyard,p->source);
     free(p);
-    AppendToList(player->graveyard,p->source);
     //remove card from battlefield
-    RemoveListIndex(player->battlefield, cardIndex);
+    if (p->target)
+        RemoveListObject(p->target->equipment, p);
+    else
+        RemoveListObject(player->battlefield, p);
 }
-
 
 void MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
     if (permanent->source->subtypes.is_land) {
@@ -113,8 +131,7 @@ void MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
         else if (permanent->source == cd.Forest) player->mana[5]++;
         player->mana[0]++;
     } else {
-        if (permanent->source == cd.Soulmender)
-            Event_gainLife(player, 1);
+        Event_tapAbility(permanent, 0);
     }
     permanent->is_tapped = true;
 }
@@ -159,6 +176,24 @@ bool MTGPlayer_payMana(MTGPlayer* player,MTGCard* card) {
     return true;
 }
 
+Permanent* MTGPlayer_getBattlefieldPermanent(MTGPlayer* player,unsigned int index) {
+    unsigned int i,j=0;
+    Permanent* p = NULL;
+    for (i=0;i<player->battlefield->size;i++) {
+        p = player->battlefield->entries[i];
+        if (j==index)
+            return p;
+        j++;
+        if (p->equipment) {
+            if (j+p->equipment->size > index)
+                return p->equipment->entries[index-j];
+            else
+                j+=p->equipment->size;
+        }
+    }
+    return p;
+}
+
 void MTGPlayer_refresh(MTGPlayer* player) {
     player->playedLand = false;
     for (unsigned int i=0;i<player->battlefield->size;i++) {
@@ -176,6 +211,7 @@ void MTGPlayer_restore(MTGPlayer* player) {
     memset(player->mana,0,6 * sizeof(int));
     for (unsigned int i=0;i<player->battlefield->size;i++) {
         Permanent* p = player->battlefield->entries[i];
+        p->subtypes = p->source->subtypes;
         if (p->subtypes.is_creature) {
             p->power = p->source->power + p->bonusPower;
             p->toughness = p->source->toughness + p->bonusToughness;
@@ -190,11 +226,19 @@ void DeleteMTGPlayer(MTGPlayer* p) {
 	DeleteList(p->hand);
     DeleteList(p->graveyard);
     DeleteList(p->exile);
-    for (unsigned int i=0;i<p->lands->size;i++)
+    for (unsigned int i=0;i<p->lands->size;i++) {
         free(p->lands->entries[i]);
+    }
 	DeleteList(p->lands);
-    for (unsigned int i=0;i<p->battlefield->size;i++)
-        free(p->battlefield->entries[i]);
+    for (unsigned int i=0;i<p->battlefield->size;i++) {
+        Permanent* q = p->battlefield->entries[i];
+        if (q->equipment) {
+            for (unsigned int j=0;j<q->equipment->size;j++)
+                free(q->equipment->entries[j]);
+            DeleteList(q->equipment);
+        }
+        free(q);
+    }
 	DeleteList(p->battlefield);
 	free(p);
 }

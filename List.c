@@ -66,6 +66,15 @@ bool RemoveListObject(List* ls,void* obj) {
     return false;
 }
 
+bool ListContains(List* ls,void* obj) {
+    for (unsigned int i=0;i<ls->size;i++) {
+        if (ls->entries[i] == obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 List* IntersectList(List* lsa, List* lsb) {
 	if (!lsa||!lsb) {

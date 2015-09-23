@@ -129,7 +129,7 @@ ViewController* viewController;
     selfHP.layer.cornerRadius = 5;
     selfHP.clipsToBounds = YES;
     selfHP.editable = NO;
-    [selfHP setFont: [UIFont boldSystemFontOfSize:15]];
+    [selfHP setFont: [UIFont boldSystemFontOfSize:12]];
     [self.view addSubview:selfHP];
     self->opponentHP= [[UITextView alloc] initWithFrame:CGRectMake(margin*2+cardWidth,topmargin, textWidth, textHeight)];
     [opponentHP.layer setBorderColor:col];
@@ -137,7 +137,7 @@ ViewController* viewController;
     opponentHP.layer.cornerRadius = 5;
     opponentHP.clipsToBounds = YES;
     opponentHP.editable = NO;
-    [opponentHP setFont: [UIFont boldSystemFontOfSize:15]];
+    [opponentHP setFont: [UIFont boldSystemFontOfSize:12]];
     [self.view addSubview:opponentHP];
     
     UIButton* pauseButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -239,6 +239,44 @@ ViewController* viewController;
 
 }
 
+- (void)changeMode: (Mode) m {
+    switch (m) {
+        case ATTACK:
+            attackButton.enabled = false;
+            endturnButton.enabled = false;
+            confirmButton.enabled = true;
+            break;
+        case SELECT:
+            attackButton.enabled = false;
+            endturnButton.enabled = false;
+            confirmButton.enabled = true;
+            break;
+        case SELECT_TARGET:
+            attackButton.enabled = false;
+            endturnButton.enabled = false;
+            confirmButton.enabled = true;
+            break;
+        case STACK:
+            attackButton.enabled = false;
+            endturnButton.enabled = false;
+            confirmButton.enabled = true;
+            break;
+        case WAIT:
+            attackButton.enabled = false;
+            endturnButton.enabled = false;
+            confirmButton.enabled = true;
+            break;
+        case NONE:
+            attackButton.enabled = canAttack;
+            endturnButton.enabled = true;
+            confirmButton.enabled = false;
+            break;
+        default:
+            break;
+    }
+    mode = m;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -266,18 +304,21 @@ ViewController* viewController;
         
         [keyWindow addSubview:toastView];
         
-        [UIView animateWithDuration: 2.0f
-                              delay: 0.0
-                            options: UIViewAnimationOptionCurveEaseOut
-                         animations: ^{
-                             toastView.alpha = 0.0;
-                         }
-                         completion: ^(BOOL finished) {
-                             [toastView removeFromSuperview];
-                             if (messageQueue.count > 0)
-                                 [self showToast];
-                         }
-         ];
+        if (messageQueue.count > 0)
+            [UIView animateWithDuration: 0.5f delay: 0.0 options: UIViewAnimationOptionCurveEaseOut
+                             animations: ^{    toastView.alpha = 0.0;}
+                             completion: ^(BOOL finished) {
+                                 [toastView removeFromSuperview];
+                                 if (messageQueue.count > 0) [self showToast];
+                             }
+             ];
+        else
+            [UIView animateWithDuration: 2.0f delay: 0.0 options: UIViewAnimationOptionCurveEaseOut
+                             animations: ^{    toastView.alpha = 0.0;}
+                             completion: ^(BOOL finished) {
+                                 [toastView removeFromSuperview];
+                             }
+             ];
     }];
 }
 
@@ -390,12 +431,28 @@ ViewController* viewController;
             idx = self->images.count - 1;
         if (mode==DISCARD) {
             [self toggleCard:self->views[idx]];
+        } else if (mode==STACK) {
+            MTGCard* card = player->hand->entries[idx];
+            if (card->subtypes.is_instant) {
+                currentPermanent = MTGPlayer_playCard(self->player, (int)idx, self->buffer);
+                if (currentPermanent) {
+                    displayHand(self->player->hand);
+                    displayStats(self->player->hp,self->player->library->size, self->player->hand->size, self->player->graveyard->size,self->player->exile->size,self->player->mana,true);
+                    if (pendingMana==0) {
+                        Event_onPlay(currentPermanent);
+                    }
+                } else message(buffer);
+            }
         } else if (mode==NONE){
-            if (MTGPlayer_playCard(self->player, (int)idx, self->buffer)) {
+            currentPermanent = MTGPlayer_playCard(self->player, (int)idx, self->buffer);
+            if (currentPermanent) {
                 displayHand(self->player->hand);
-                displayStats(self->player->hp,self->player->library->size, self->player->hand->size, self->player->graveyard->size,self->player->mana,true);
+                displayStats(self->player->hp,self->player->library->size, self->player->hand->size, self->player->graveyard->size,self->player->exile->size,self->player->mana,true);
                 displayLands(self->player->lands, true);
                 displayBattlefield(self->player->battlefield, true);
+                if (pendingMana == 0)
+                    if (Event_onPlay(currentPermanent))
+                        [self changeMode:STACK];
             } else {
                 message(self->buffer);
             }
@@ -413,7 +470,7 @@ ViewController* viewController;
             if (!self->currentPermanent->is_tapped)
                 MTGPlayer_tap(self->player, self->currentPermanent);
             displayLands(self->player->lands, true);
-            displayStats(self->player->hp, self->player->library->size, self->player->hand->size,self->player->graveyard->size ,self->player->mana, self);
+            displayStats(self->player->hp, self->player->library->size, self->player->hand->size,self->player->graveyard->size ,self->player->exile->size ,self->player->mana, self);
         }
     } else if ([gesture view] == self->selfBattlefield && selfBattlefieldViews.count > 0) {
         for (idx=0;idx<self->selfBattlefieldViews.count;idx++) {
@@ -423,7 +480,7 @@ ViewController* viewController;
         }
         if (idx >= self->selfBattlefieldViews.count)
             idx = self->selfBattlefieldViews.count - 1;
-        self->currentPermanent = self->player->battlefield->entries[idx];
+        currentPermanent = MTGPlayer_getBattlefieldPermanent(player, (unsigned int)idx);
         if (mode==ATTACK) {
             if (self->currentPermanent->has_summoning_sickness && !currentPermanent->subtypes.is_haste)
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->source->name]];
@@ -454,8 +511,18 @@ ViewController* viewController;
                 self->currentPermanent->has_attacked= true;
                 [self toggleCard:selfBattlefieldViews[idx]];
                 List* blockers = blockersList->entries[block_index];
-                AppendToList(blockers, player->battlefield->entries[idx]);
+                AppendToList(blockers, currentPermanent);
             }
+        } else if (mode==SELECT) {
+            creature_callback(currentPermanent);
+            displayBattlefield(player->battlefield, true);
+            displayBattlefield(opponentPermanents, false);
+            [self changeMode:NONE];
+        } else if (mode==SELECT_TARGET) {
+            [self toggleHighlight:selfBattlefield];
+            [self toggleHighlight:opponentBattlefield];
+            currentEquipment->target = currentPermanent;
+            [self changeMode:STACK];
         } else if (mode==WAIT) {
             if (!currentPermanent->is_tapped && currentPermanent->subtypes.has_instant) {
                 MTGPlayer_tap(self->player, self->currentPermanent);
@@ -469,6 +536,26 @@ ViewController* viewController;
                 displayBattlefield(self->player->battlefield, true);
             }
         }
+    } else if ([gesture view] == self->opponentBattlefield && opponentBattlefieldViews.count > 0) {
+        for (idx=0;idx<self->opponentBattlefieldViews.count;idx++) {
+            UIImageView *imv = self->opponentBattlefieldViews[idx];
+            if (p.x < imv.frame.origin.x + imv.frame.size.width)
+                break;
+        }
+        if (idx >= self->opponentBattlefieldViews.count)
+            idx = self->opponentBattlefieldViews.count - 1;
+        self->currentPermanent = self->opponentPermanents->entries[idx];
+        if (mode==SELECT) {
+            creature_callback(currentPermanent);
+            displayBattlefield(player->battlefield, true);
+            displayBattlefield(opponentPermanents, false);
+            [self changeMode:NONE];
+        } else if (mode==SELECT_TARGET) {
+            [self toggleHighlight:selfBattlefield];
+            [self toggleHighlight:opponentBattlefield];
+            currentEquipment->target = currentPermanent;
+            [self changeMode:STACK];
+        }
     }
 }
 
@@ -476,10 +563,7 @@ ViewController* viewController;
     if (player->hand->size > 7)
         discardToSeven(player);
     else {
-        attackButton.enabled=false;
-        confirmButton.enabled=true;
-        endturnButton.enabled=false;
-        mode = WAIT;
+        [self changeMode:WAIT];
         newTurn();
     }
 }
@@ -491,10 +575,7 @@ ViewController* viewController;
 
 - (void) onAttack: (id)sender {
     [self toggleHighlight:selfBattlefield];
-    mode=ATTACK;
-    attackButton.enabled=false;
-    confirmButton.enabled=true;
-    endturnButton.enabled=false;
+    [self changeMode:ATTACK];
 }
 
 - (void) onConfirm: (id)sender {
@@ -520,10 +601,9 @@ ViewController* viewController;
         }
         if (permanentList->size > 0) {
             resolveAttack(self->player, permanentList);
+            canAttack = false;
             mode = WAITATTACK;
             return;
-        } else {
-            attackButton.enabled=true;
         }
         displayBattlefield(player->battlefield, self);
         DeleteList(permanentList);
@@ -546,7 +626,7 @@ ViewController* viewController;
         block_index++;
         if (block_index >= attackerList->size) {
             [self toggleHighlight:selfBattlefield];
-            mode = WAIT;
+            [self changeMode:WAIT];
             resolveBlock();
         } else if (numBlockers > 0){
             Permanent* p = attackerList->entries[block_index];
@@ -560,6 +640,17 @@ ViewController* viewController;
             [self toggleCard:iv];
         }
         return;
+    } else if (mode == SELECT) {
+        [self toggleHighlight:selfBattlefield];
+        [self toggleHighlight:opponentBattlefield];
+    } else if (mode == SELECT_TARGET) {
+        [self toggleHighlight:selfBattlefield];
+        [self toggleHighlight:opponentBattlefield];
+        mode = STACK;
+        return;
+    } else if (mode == STACK) {
+        if (!resolveStack())
+            return;
     } else if (mode == WAIT) {
         resolveAI();
         return;
@@ -567,9 +658,7 @@ ViewController* viewController;
         if (!resolveBlock(player))
             return;
     }
-    confirmButton.enabled=false;
-    endturnButton.enabled=true;
-    mode=NONE;
+    [self changeMode:NONE];
 }
 
 - (void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -605,7 +694,7 @@ ViewController* viewController;
                     }
                 }
                 displayLands(self->player->lands, true);
-                displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->graveyard->size,self->player->mana, true);
+                displayStats(self->player->hp, self->player->library->size, self->player->hand->size, self->player->graveyard->size,self->player->exile->size ,self->player->mana, true);
             }
             break;
         }
@@ -613,10 +702,7 @@ ViewController* viewController;
         {
             if (mode == NONE && attackButton.enabled==true) {
                 [self toggleHighlight:selfBattlefield];
-                mode=ATTACK;
-                attackButton.enabled=false;
-                confirmButton.enabled=true;
-                endturnButton.enabled=false;
+                [self changeMode:ATTACK];
                 for (int i=0;i<self->selfBattlefieldViews.count;i++) {
                     UIImageView* iv = self->selfBattlefieldViews[i];
                     Permanent* p = self->player->battlefield->entries[i];
@@ -693,10 +779,12 @@ ViewController* viewController;
     }
     if (pendingMana == 0) {
         memcpy(viewController->player->mana, mana, 6*sizeof(int));
-        displayStats(player->hp,player->library->size,player->hand->size,player->graveyard->size,player->mana,true);
+        displayStats(player->hp,player->library->size,player->hand->size,player->graveyard->size,player->exile->size,player->mana,true);
         self->mode = NONE;
         [self->manaAlert removeFromSuperview];
         [self->popupMask removeFromSuperview];
+        if (Event_onPlay(currentPermanent))
+            [self changeMode:STACK];
     } else {
         theStepper.tag = theStepper.value * 10 + index;
         self->manaLabel.text = [NSString stringWithFormat:@"Select mana\n(%d remaining)\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d",viewController->pendingMana,mana[1],mana[2],mana[3],mana[4],mana[5]];
@@ -737,10 +825,10 @@ void displayHand(List* cards) {
     
 }
 
-void displayStats(int hp,int librarySize,int handSize,int graveyardSize,int* mana, bool selfOrOpponent) {
+void displayStats(int hp,int librarySize,int handSize,int graveyardSize,int exileSize,int* mana, bool selfOrOpponent) {
     NSString* hpString = [NSString stringWithFormat:
-            @"HP: %d\nLibrary: %d\nHand: %d\nGraveyard: %d\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d\nTotal: %d\n",
-            hp,librarySize,handSize,graveyardSize,mana[1],mana[2],mana[3],mana[4],mana[5],mana[0]];
+            @"HP: %d\nLibrary: %d\nHand: %d\nGraveyard: %d\nExile: %d\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d\nTotal: %d\n",
+            hp,librarySize,handSize,graveyardSize,exileSize,mana[1],mana[2],mana[3],mana[4],mana[5],mana[0]];
     if (selfOrOpponent) {
         [viewController->selfHP setText:hpString];
     } else {
@@ -829,7 +917,6 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
     currentScrollView.layer.borderWidth=0;
     
     int numCards = permanents->size > viewController->maxColumns ? viewController->maxColumns : permanents->size;
-    currentScrollView.contentSize = CGSizeMake((viewController->cardHeight+viewController->margin)*numCards,viewController->cardHeight);
     
     NSString* extension = @".jpg";
     CGFloat x = 0;
@@ -853,22 +940,63 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
             [currentImages addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
             x += viewController->cardWidth + viewController->margin;
         }
-        UILabel* lb = [[UILabel alloc] init];
-        UIImageView* iv = currentViews[i];
-        [currentLabels addObject:lb] ;
-        if (p->subtypes.is_planeswalker)
-            lb.text = [NSString stringWithFormat:@"%d",p->loyalty];
-        else
-            lb.text = [NSString stringWithFormat:@"%d/%d",p->power,p->toughness];
-        lb.textColor = [UIColor whiteColor];
-        lb.backgroundColor = [UIColor blackColor];
-        lb.textAlignment = NSTextAlignmentCenter;
-        lb.frame = CGRectMake(iv.frame.size.width-viewController->labelWidth, iv.frame.size.height-viewController->labelHeight, viewController->labelWidth, viewController->labelHeight);
-        lb.layer.cornerRadius = 10;
-        lb.layer.masksToBounds = YES;
-        [iv addSubview:lb];
-        [currentViews[i] setImage: currentImages[i]];
-        [currentScrollView addSubview:currentViews[i]];
+        if (p->subtypes.is_planeswalker || p->subtypes.is_creature) {
+            UILabel* lb = [[UILabel alloc] init];
+            UIImageView* iv = currentViews.lastObject;
+            [currentLabels addObject:lb] ;
+            if (p->subtypes.is_planeswalker)
+                lb.text = [NSString stringWithFormat:@"%d",p->loyalty];
+            else if (p->subtypes.is_creature)
+                lb.text = [NSString stringWithFormat:@"%d/%d",p->power,p->toughness];
+            lb.textColor = [UIColor whiteColor];
+            lb.backgroundColor = [UIColor blackColor];
+            lb.textAlignment = NSTextAlignmentCenter;
+            lb.frame = CGRectMake(iv.frame.size.width-viewController->labelWidth, iv.frame.size.height-viewController->labelHeight, viewController->labelWidth, viewController->labelHeight);
+            lb.layer.cornerRadius = 10;
+            lb.layer.masksToBounds = YES;
+            [iv addSubview:lb];
+        }
+        [currentViews.lastObject setImage: currentImages.lastObject];
+        [currentScrollView addSubview:currentViews.lastObject];
+        
+        if (p->equipment) {
+            for (unsigned int j=0;j<p->equipment->size;j++) {
+                Permanent* q = p->equipment->entries[j];
+                NSString* fileName = [[NSString stringWithUTF8String:q->source->name] stringByAppendingString:@".jpg"];
+                [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x-viewController->margin,viewController->margin, viewController->cardWidth, viewController->cardHeight)]];
+                [currentImages addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
+                x += viewController->cardWidth;
+                [currentViews.lastObject setImage: currentImages.lastObject];
+                [currentScrollView addSubview:currentViews.lastObject];
+            }
+        }
+    }
+    
+    currentScrollView.contentSize = CGSizeMake(x,viewController->cardHeight);
+}
+
+void displayStack(List* stack) {
+    [viewController->stackImages removeAllObjects];
+    for (UIImageView* iv in viewController->stackViews) {
+        [iv removeFromSuperview];
+    }
+    [viewController->stackViews removeAllObjects];
+    viewController->stack.layer.borderWidth=0;
+    
+    int numCards = stack->size > viewController->maxColumns ? viewController->maxColumns : stack->size;
+    viewController->scrollView.contentSize = CGSizeMake((viewController->cardWidth+viewController->margin)*numCards,viewController->cardHeight);
+    
+    for (unsigned int i=0;i<numCards;i++) {
+        Permanent* p = stack->entries[i];
+        MTGCard* card = p->source;
+        const char* tag = card->name;
+        [viewController->stackViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake((viewController->margin+viewController->cardWidth)*i,viewController->margin, viewController->cardWidth, viewController->cardHeight)]];
+        NSString* currentTag = [NSString stringWithUTF8String:tag];
+        NSString* fileName = [currentTag stringByAppendingString:@".jpg"];
+
+        [viewController->stackImages addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
+        [viewController->stackViews[i] setImage: viewController->stackImages[i]];
+        [viewController->stack addSubview:viewController->stackViews[i]];
     }
 }
 
@@ -915,6 +1043,22 @@ void selectBlockers(List* permanentList,List* blockersList) {
     }
 }
 
+void selectCallback(void (*callback)(Permanent*),char* allowedTargets) {
+    [viewController displayToastWithMessage:[NSString stringWithFormat:@"Select target %s",allowedTargets]];
+    [viewController toggleHighlight:viewController->selfBattlefield];
+    [viewController toggleHighlight:viewController->opponentBattlefield];
+    [viewController changeMode:SELECT];
+    viewController->creature_callback = callback;
+}
+
+void selectTarget(Permanent* source,char* allowedTargets) {
+    [viewController displayToastWithMessage:[NSString stringWithFormat:@"Select target %s",allowedTargets]];
+    [viewController toggleHighlight:viewController->selfBattlefield];
+    [viewController toggleHighlight:viewController->opponentBattlefield];
+    [viewController changeMode:SELECT_TARGET];
+    viewController->currentEquipment = source;
+}
+
 void saveDeck(char* name,List* cards){
     NSArray *paths = NSSearchPathForDirectoriesInDomains
     (NSDocumentDirectory, NSUserDomainMask, YES);
@@ -946,10 +1090,8 @@ void loadDeck(char* name,List* cards) {
 
 void startTurn(MTGPlayer* player) {
     if (player == viewController->player) {
-        viewController->attackButton.enabled=true;
-        viewController->confirmButton.enabled=false;
-        viewController->endturnButton.enabled=true;
-        viewController->mode=NONE;
+        viewController->canAttack=true;
+        [viewController changeMode:NONE];
         [viewController displayToastWithMessage:@"Your turn"];
     } else {
         [viewController displayToastWithMessage:@"Opponent's Turn"];

@@ -21,14 +21,18 @@ void displayLands(List* permanents, bool selfOrOpponent) {
 
 }
 
-void displayStats(int hp,int librarySize,int handSize,int graveyardSize, int* mana,bool selfOrOpponent) {
+void displayStats(int hp,int librarySize,int handSize,int graveyardSize,int exileSize, int* mana,bool selfOrOpponent) {
 	if (selfOrOpponent) {
-		printf("Your HP: %d Library: %d Hand: %d\nGraveyard: %d\n",hp,librarySize,handSize,graveyardSize);
+		printf("Your HP: %d Library: %d Hand: %d\nGraveyard: %d\nExile: %d\n",hp,librarySize,handSize,graveyardSize,exileSize);
 		printf("W: %d U: %d B: %d G: %d R: %d\n",mana[1],mana[2],mana[3],mana[4],mana[5]);
 	} else {
 		printf("Opponent's HP: %d Library: %d Hand: %d\nGraveyard: %d\n",hp,librarySize,handSize,graveyardSize);
 		printf("W: %d U: %d B: %d G: %d R: %d\n",mana[1],mana[2],mana[3],mana[4],mana[5]);
 	}
+}
+
+void displayStack(List* stack) {
+
 }
 
 void displayWinner(MTGPlayer* winner) {
@@ -40,6 +44,12 @@ void selectMana(int* mana,int amount) {
 }
 
 void selectBlockers(List* permanentList,List* blockersList) {
+}
+
+void selectCallback(void (*callback)(Permanent*),char* allowedTargets) {
+}
+
+void selectTarget(Permanent* source,char* allowedTargets) {
 }
 
 void saveDeck(char* name,List* cards) {
