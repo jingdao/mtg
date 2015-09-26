@@ -16,8 +16,8 @@ typedef enum {
     MANA,
     ATTACK,
     BLOCK,
-    SELECT,
     SELECT_TARGET,
+    SELECT_PLAYER,
     STACK,
     WAIT,
     WAITATTACK
@@ -72,7 +72,6 @@ typedef enum {
     @public char buffer[128];
     @public int manaBuffer[6];
     @public Mode mode;
-    @public void (*creature_callback)(Permanent*);
     @public int pendingMana;
     @public int block_index;
     @public int deck_index;

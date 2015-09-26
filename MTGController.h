@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "EventHandler.h"
-#include "AIPlayer.h"
+
 
 void Event_gainLife(Permanent* source, MTGPlayer* player,int num);
 

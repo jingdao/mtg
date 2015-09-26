@@ -54,12 +54,10 @@ void loadCardDataTable() {
 
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
-        for (int i=0;i<10;i++) AppendToList(cards,cd.SolemnOffering);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.DivineFavor);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.ChildofNight);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.PillarofLight);
-		for (int i=0;i<10;i++) AppendToList(cards,cd.Swamp);
-		for (int i=0;i<20;i++) AppendToList(cards,cd.Plains);
+        for (int i=0;i<0;i++) AppendToList(cards,cd.BloodHost);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.WallofLimbs);
+        for (int i=0;i<20;i++) AppendToList(cards,cd.CripplingBlight);
+		for (int i=0;i<30;i++) AppendToList(cards,cd.Swamp);
 	} else if (index == 1) {
 		for (int i=0;i<2;i++) AppendToList(cards,cd.Ornithopter);
 		for (int i=0;i<3;i++) AppendToList(cards,cd.BronzeSable);
@@ -238,12 +236,13 @@ void resolveAttack(MTGPlayer* attacker,List* permanentList) {
 
 
 bool resolveBlock() {
-    if (block_index > attackerList->size) {
+    if (block_index >= attackerList->size) {
+        displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,player1->exile->size,player1->mana,true);
+        displayBattlefield(player1->battlefield, true);
+        displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size,player2->exile->size, player2->mana,false);
+        displayBattlefield(player2->battlefield, false);
         endAttack();
         return true;
-    }
-    if (block_index >= attackerList->size) {
-        return resolveLethalDamage();
     }
     MTGPlayer* defender;
     if (currentPlayer==player1) {
@@ -256,15 +255,17 @@ bool resolveBlock() {
     char buffer[128];
     int k;
     if (blockers->size == 0) {
-        defender->hp -= p->power;
-        k = sprintf(buffer,"%s dealt %d damage to %s",p->source->name,p->power,defender==player1 ? "you" : "opponent");
+        Event_loseLife(p, defender, p->power);
         if (p->subtypes.is_lifelink) {
-            currentPlayer->hp += p->power;
-            sprintf(buffer+k," (lifelink=%d)",p->power);
+            Event_gainLife(p, currentPlayer, p->power);
+        }
+    } else {
+        k = sprintf(buffer,"%s is blocked by ",p->name);
+        for (unsigned int j=0;j<blockers->size;j++) {
+            Permanent* q = blockers->entries[j];
+            k += sprintf(buffer+k,"%s,",q->name);
         }
         message(buffer);
-    } else {
-        k = sprintf(buffer,"%s is blocked by ",p->source->name);
         int p_lifelink = 0;
         int q_lifelink = 0;
         for (unsigned int j=0;j<blockers->size;j++) {
@@ -288,23 +289,17 @@ bool resolveBlock() {
                 if (q->subtypes.is_lifelink) q_lifelink += q->power;
             }
             p->power -= initialToughness;
-            k += sprintf(buffer+k,"%s,",q->source->name);
+            
         }
         if (p->subtypes.is_trample && p->power > 0) {
-            defender->hp -= p->power;
-            k += sprintf(buffer+k," (trample=%d)",p->power);
+            Event_loseLife(p,defender, p->power);
         }
         if (p_lifelink > 0) {
-            //currentPlayer->hp += p_lifelink;
-            Event_gainLife(NULL,currentPlayer,p_lifelink);
-            k += sprintf(buffer+k," (lifelink=%d)",p_lifelink);
+            Event_gainLife(p,currentPlayer,p_lifelink);
         }
         if (q_lifelink) {
-            //defender->hp += q_lifelink;
             Event_gainLife(NULL,defender,q_lifelink);
-            k += sprintf(buffer+k," (lifelink=%d)",q_lifelink);
         }
-        message(buffer);
     }
     displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,player1->exile->size,player1->mana,true);
     displayBattlefield(player1->battlefield, true);
@@ -314,40 +309,11 @@ bool resolveBlock() {
     return false;
 }
 
-bool resolveLethalDamage() {
-    char buffer[256];
-    int k = 0;
-    for (unsigned int j=0;j<player1->battlefield->size;j++) {
-        Permanent* q = player1->battlefield->entries[j];
-        if (q->toughness <= 0 && !q->subtypes.is_indestructible) {
-            MTGPlayer_discardFromBattlefield(player1, j--,false);
-            k += sprintf(buffer+k,"%s,",q->source->name);
-        }
-    }
-    for (unsigned int j=0;j<player2->battlefield->size;j++) {
-        Permanent* q = player2->battlefield->entries[j];
-        if (q->toughness <= 0 && !q->subtypes.is_indestructible) {
-            MTGPlayer_discardFromBattlefield(player2, j--,false);
-            k += sprintf(buffer+k,"%s,",q->source->name);
-        }
-    }
-    if (k > 0) {
-        sprintf(buffer+k," were sent to the graveyard");
-        message(buffer);
-        displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,player1->exile->size,player1->mana,true);
-        displayBattlefield(player1->battlefield, true);
-        displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size,player2->exile->size, player2->mana,false);
-        displayBattlefield(player2->battlefield, false);
-        block_index++;
-        return false;
-    } else {
-        endAttack();
-        return true;
-    }
-}
-
 void resolveAI() {
-    if (attackerList) {
+    if (stack->size > 0) {
+        if (resolveStack())
+            AI_getAction();
+    } else if (attackerList) {
         if (resolveBlock())
             AI_getAction();
     } else
@@ -357,17 +323,24 @@ void resolveAI() {
 bool resolveStack() {
     Permanent* permanent = stack->entries[stack->size-1];
     stack->size--;
-
-    Event_onResolve(permanent);
     
-    if ((permanent->subtypes.is_aura || permanent->subtypes.is_equipment) && permanent->target) {
-        AppendToList(permanent->target->equipment,permanent);
+    if ((permanent->subtypes.is_aura || permanent->subtypes.is_equipment)) {
+        if (permanent->target)
+            AppendToList(permanent->target->equipment,permanent);
+        else {
+            AppendToList(permanent->owner->graveyard,permanent->source);
+            free(permanent);
+        }
+    } else if (permanent->subtypes.is_enchantment || permanent->subtypes.is_creature || permanent->subtypes.is_planeswalker || permanent->subtypes.is_artifact) {
+        AppendToList(permanent->owner->battlefield,permanent);
     } else {
         AppendToList(permanent->owner->graveyard,permanent->source);
         free(permanent);
     }
+    Event_onResolve(permanent);
     
     displayStack(stack);
+    displayHand(player1->hand);
     displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,player1->exile->size,  player1->mana,true);
     displayLands(player1->lands, true);
     displayBattlefield(player1->battlefield, true);
@@ -392,10 +365,7 @@ void endAttack() {
     }
     attackerList = NULL;
     blockersList = NULL;
-    if (player1->hp <= 0 )
-        displayWinner(player2);
-    else if (player2->hp <= 0)
-        displayWinner(player1);
+
 }
 
 void newTurn() {
@@ -408,6 +378,7 @@ void newTurn() {
         
 		currentPlayer = player2;
         MTGPlayer_refresh(player2);
+        Event_onUpkeep(player2);
         MTGPlayer_drawCards(player2, 1);
         startTurn(player2);
         displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size, player2->exile->size, player2->mana,false);
@@ -422,6 +393,7 @@ void newTurn() {
         
 		currentPlayer = player1;
 		MTGPlayer_refresh(player1);
+        Event_onUpkeep(player1);
 		MTGPlayer_drawCards(player1, 1);
         startTurn(player1);
 		displayHand(player1->hand);
@@ -449,7 +421,7 @@ MTGPlayer* newGame(int deck_index) {
 
 	player2 = InitMTGPlayer();
     AI_init(player2);
-	buildDeck(player2->library,rand() % 6);
+	buildDeck(player2->library,4);
 	shuffleDeck(player2->library);
 
 	MTGPlayer_drawCards(player1,7);

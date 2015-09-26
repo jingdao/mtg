@@ -59,7 +59,9 @@ ViewController* viewController;
     [self.view addSubview:self->selfDeck];
     self->opponentDeck = [[UIImageView alloc] initWithFrame:CGRectMake(margin,topmargin,cardWidth,cardHeight)];
     [self->opponentDeck setImage: self->coverImage];
+    self->opponentDeck.userInteractionEnabled = YES;
     [self.view addSubview:self->opponentDeck];
+    self.view.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0];
     
     self->opponentBattlefieldViews = [[NSMutableArray alloc] init];
     self->opponentBattlefieldImages = [[NSMutableArray alloc] init];
@@ -71,6 +73,8 @@ ViewController* viewController;
     self->selfBattlefieldImages = [[NSMutableArray alloc] init];
     self->selfLandsViews = [[NSMutableArray alloc] init];
     self->selfLandsImages = [[NSMutableArray alloc] init];
+    self->selfLabels = [[NSMutableArray alloc]init];
+    self->opponentLabels = [[NSMutableArray alloc]init];
     self->views = [[NSMutableArray alloc] init];
     self->images = [[NSMutableArray alloc] init];
     self->messageQueue = [[NSMutableArray alloc] init];
@@ -169,16 +173,14 @@ ViewController* viewController;
     UITapGestureRecognizer *recog1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
     recog1.numberOfTapsRequired = 2;
     [self->scrollView addGestureRecognizer:recog1];
-    
     UITapGestureRecognizer *recog2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(exitTap:)];
     [self->popupMask addGestureRecognizer:recog2];
-    
     UILongPressGestureRecognizer *recog3 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpress:)];
     [self->scrollView addGestureRecognizer:recog3];
     
-    //UITapGestureRecognizer *recog4 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDeck:)];
-    //[self->selfDeck addGestureRecognizer:recog4];
-    
+    UITapGestureRecognizer *recog4 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    recog4.numberOfTapsRequired = 2;
+    [self->stack addGestureRecognizer:recog4];
     UITapGestureRecognizer *recog5 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
     recog5.numberOfTapsRequired = 2;
     [self->opponentLands addGestureRecognizer:recog5];
@@ -203,6 +205,10 @@ ViewController* viewController;
     [self->opponentBattlefield addGestureRecognizer:recog12];
     UILongPressGestureRecognizer *recog13 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpress:)];
     [self->opponentLands addGestureRecognizer:recog13];
+    UILongPressGestureRecognizer *recog14 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpress:)];
+    [self->opponentDeck addGestureRecognizer:recog14];
+    UILongPressGestureRecognizer *recog15 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpress:)];
+    [self->selfDeck addGestureRecognizer:recog15];
     
     self->mulliganAlert = [[UIAlertView alloc] initWithTitle:nil message:@"Mulligan?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes",nil];
     self->winnerAlert = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:viewController cancelButtonTitle:@"New Game" otherButtonTitles:nil];
@@ -246,12 +252,12 @@ ViewController* viewController;
             endturnButton.enabled = false;
             confirmButton.enabled = true;
             break;
-        case SELECT:
+        case SELECT_TARGET:
             attackButton.enabled = false;
             endturnButton.enabled = false;
             confirmButton.enabled = true;
             break;
-        case SELECT_TARGET:
+        case SELECT_PLAYER:
             attackButton.enabled = false;
             endturnButton.enabled = false;
             confirmButton.enabled = true;
@@ -305,7 +311,7 @@ ViewController* viewController;
         [keyWindow addSubview:toastView];
         
         if (messageQueue.count > 0)
-            [UIView animateWithDuration: 0.5f delay: 0.0 options: UIViewAnimationOptionCurveEaseOut
+            [UIView animateWithDuration: 1.0f delay: 0.0 options: UIViewAnimationOptionCurveEaseOut
                              animations: ^{    toastView.alpha = 0.0;}
                              completion: ^(BOOL finished) {
                                  [toastView removeFromSuperview];
@@ -359,13 +365,12 @@ ViewController* viewController;
 - (void) doubleTap: (UITapGestureRecognizer*) gesture {
     unsigned long idx;
     CGPoint p = [gesture locationInView:[gesture view]];
+    UIImage* im = NULL;
     if ([gesture view] == self->scrollView && player->hand->size > 0) {
         idx = p.x / (self->cardWidth + self->margin);
         if (idx >= self->images.count)
             idx = self->images.count - 1;
-        [self->popupImage setImage:self->images[idx]];
-        [self.view addSubview:self->popupMask];
-        [self.view addSubview:self->popupImage];
+        im=images[idx];
     } else if ([gesture view] == self->selfLands && selfLandsViews.count > 0) {
         for (idx=0;idx<self->selfLandsViews.count;idx++) {
             UIImageView *imv = self->selfLandsViews[idx];
@@ -374,9 +379,7 @@ ViewController* viewController;
         }
         if (idx >= self->selfLandsViews.count)
             idx = self->selfLandsViews.count - 1;
-        [self->popupImage setImage:self->selfLandsImages[idx]];
-        [self.view addSubview:self->popupMask];
-        [self.view addSubview:self->popupImage];
+        im=selfLandsImages[idx];
     } else if ([gesture view] == self->selfBattlefield && selfBattlefieldViews.count > 0) {
         for (idx=0;idx<self->selfBattlefieldViews.count;idx++) {
             UIImageView *imv = self->selfBattlefieldViews[idx];
@@ -385,9 +388,7 @@ ViewController* viewController;
         }
         if (idx >= self->selfBattlefieldViews.count)
             idx = self->selfBattlefieldViews.count - 1;
-        [self->popupImage setImage:self->selfBattlefieldImages[idx]];
-        [self.view addSubview:self->popupMask];
-        [self.view addSubview:self->popupImage];
+        im=selfBattlefieldImages[idx];
     } else if ([gesture view] == self->opponentLands && opponentLandsViews.count > 0) {
         for (idx=0;idx<self->opponentLandsViews.count;idx++) {
             UIImageView *imv = self->opponentLandsViews[idx];
@@ -396,9 +397,7 @@ ViewController* viewController;
         }
         if (idx >= self->opponentLandsViews.count)
             idx = self->opponentLandsViews.count - 1;
-        [self->popupImage setImage:self->opponentLandsImages[idx]];
-        [self.view addSubview:self->popupMask];
-        [self.view addSubview:self->popupImage];
+        im=opponentLandsImages[idx];
     } else if ([gesture view] == self->opponentBattlefield && opponentBattlefieldViews.count > 0) {
         for (idx=0;idx<self->opponentBattlefieldViews.count;idx++) {
             UIImageView *imv = self->opponentBattlefieldViews[idx];
@@ -407,7 +406,19 @@ ViewController* viewController;
         }
         if (idx >= self->opponentBattlefieldViews.count)
             idx = self->opponentBattlefieldViews.count - 1;
-        [self->popupImage setImage:self->opponentBattlefieldImages[idx]];
+        im = self->opponentBattlefieldImages[idx];
+    } else if ([gesture view] == stack && stackViews.count > 0) {
+        for (idx=0;idx<self->stackViews.count;idx++) {
+            UIImageView *imv = self->stackViews[idx];
+            if (p.x < imv.frame.origin.x + imv.frame.size.width)
+                break;
+        }
+        if (idx >= self->stackViews.count)
+            idx = self->stackViews.count - 1;
+        im = self->stackImages[idx];
+    }
+    if (im && ![im isEqual:[NSNull null]]) {
+        [self->popupImage setImage:im];
         [self.view addSubview:self->popupMask];
         [self.view addSubview:self->popupImage];
     }
@@ -480,14 +491,14 @@ ViewController* viewController;
         }
         if (idx >= self->selfBattlefieldViews.count)
             idx = self->selfBattlefieldViews.count - 1;
-        currentPermanent = MTGPlayer_getBattlefieldPermanent(player, (unsigned int)idx);
+        currentPermanent = MTGPlayer_getBattlefieldPermanent(player->battlefield, (unsigned int)idx);
         if (mode==ATTACK) {
-            if (self->currentPermanent->has_summoning_sickness && !currentPermanent->subtypes.is_haste)
-                [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->source->name]];
-            else if (self->currentPermanent->is_tapped)
-                [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot attack while tapped!",self->currentPermanent->source->name]];
-            else if (self->currentPermanent->subtypes.is_defender)
-                [self displayToastWithMessage:[NSString stringWithFormat:@"%s is defender!",currentPermanent->source->name]];
+            if (!self->currentPermanent->subtypes.is_creature)
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s is not a creature!",self->currentPermanent->name]];
+            else if (self->currentPermanent->has_summoning_sickness && !currentPermanent->subtypes.is_haste)
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->name]];
+            else if (self->currentPermanent->is_tapped || currentPermanent->subtypes.is_defender || ! currentPermanent->canAttack)
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot attack!",self->currentPermanent->name]];
             else {
                 self->currentPermanent->has_attacked= !self->currentPermanent->has_attacked;
                 [self toggleCard:selfBattlefieldViews[idx]];
@@ -495,9 +506,9 @@ ViewController* viewController;
         } else if (mode==BLOCK) {
             Permanent* attacker = attackerList->entries[block_index];
             if (!self->currentPermanent->subtypes.is_creature)
-                [self displayToastWithMessage:[NSString stringWithFormat:@"%s is not a creature!",self->currentPermanent->source->name]];
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s is not a creature!",self->currentPermanent->name]];
             else if (self->currentPermanent->is_tapped || self->currentPermanent->has_blocked)
-                [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot block!",self->currentPermanent->source->name]];
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot block!",self->currentPermanent->name]];
             else if (attacker->subtypes.is_flying && !currentPermanent->subtypes.is_flying && !currentPermanent->subtypes.is_reach)
                 [self displayToastWithMessage:@"Can only block with creatures with flying/reach!"];
             else if (attacker->subtypes.is_intimidate && !currentPermanent->subtypes.is_artifact && !Permanent_sameColor(attacker, currentPermanent))
@@ -513,11 +524,6 @@ ViewController* viewController;
                 List* blockers = blockersList->entries[block_index];
                 AppendToList(blockers, currentPermanent);
             }
-        } else if (mode==SELECT) {
-            creature_callback(currentPermanent);
-            displayBattlefield(player->battlefield, true);
-            displayBattlefield(opponentPermanents, false);
-            [self changeMode:NONE];
         } else if (mode==SELECT_TARGET) {
             [self toggleHighlight:selfBattlefield];
             [self toggleHighlight:opponentBattlefield];
@@ -530,7 +536,7 @@ ViewController* viewController;
             }
         } else if (mode==NONE) {
             if (currentPermanent->has_summoning_sickness && !currentPermanent->subtypes.has_instant && !currentPermanent->subtypes.is_haste)
-                [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->source->name]];
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->name]];
             else if (!currentPermanent->is_tapped && currentPermanent->source->abilities->size > 0) {
                 MTGPlayer_tap(self->player, self->currentPermanent);
                 displayBattlefield(self->player->battlefield, true);
@@ -544,18 +550,23 @@ ViewController* viewController;
         }
         if (idx >= self->opponentBattlefieldViews.count)
             idx = self->opponentBattlefieldViews.count - 1;
-        self->currentPermanent = self->opponentPermanents->entries[idx];
-        if (mode==SELECT) {
-            creature_callback(currentPermanent);
-            displayBattlefield(player->battlefield, true);
-            displayBattlefield(opponentPermanents, false);
-            [self changeMode:NONE];
-        } else if (mode==SELECT_TARGET) {
+        currentPermanent = MTGPlayer_getBattlefieldPermanent(opponentPermanents, (unsigned int)idx);
+        if (mode==SELECT_TARGET) {
             [self toggleHighlight:selfBattlefield];
             [self toggleHighlight:opponentBattlefield];
             currentEquipment->target = currentPermanent;
             [self changeMode:STACK];
         }
+    } else if ([gesture view] == selfDeck && mode==SELECT_PLAYER) {
+        currentEquipment->target = player->marker;
+        [self toggleCard:selfDeck];
+        [self toggleCard:opponentDeck];
+        [self changeMode:STACK];
+    } else if ([gesture view] == opponentDeck && mode==SELECT_PLAYER) {
+        currentEquipment->target = NULL;
+        [self toggleCard:selfDeck];
+        [self toggleCard:opponentDeck];
+        [self changeMode:STACK];
     }
 }
 
@@ -615,6 +626,11 @@ ViewController* viewController;
                 numBlockers++;
         }
         if (numBlockers > 0) {
+            List* blockers = blockersList->entries[block_index];
+            if (!MTGPlayer_block(attackerList->entries[block_index],blockers, buffer)) {
+                message(buffer);
+                return;
+            }
             for (unsigned int i=0;i<player->battlefield->size;i++) {
                 Permanent* p = player->battlefield->entries[i];
                 if (p->has_attacked) {
@@ -631,21 +647,19 @@ ViewController* viewController;
         } else if (numBlockers > 0){
             Permanent* p = attackerList->entries[block_index];
             unsigned int i;
-            for (i=0;i<opponentPermanents->size;i++) {
-                Permanent* q = opponentPermanents->entries[i];
-                if (q == p)
-                    break;
-            }
+            findTarget(p, &i);
             UIImageView* iv = opponentBattlefieldViews[i];
             [self toggleCard:iv];
         }
         return;
-    } else if (mode == SELECT) {
-        [self toggleHighlight:selfBattlefield];
-        [self toggleHighlight:opponentBattlefield];
     } else if (mode == SELECT_TARGET) {
         [self toggleHighlight:selfBattlefield];
         [self toggleHighlight:opponentBattlefield];
+        mode = STACK;
+        return;
+    } else if (mode == SELECT_PLAYER) {
+        [self toggleCard:selfDeck];
+        [self toggleCard:opponentDeck];
         mode = STACK;
         return;
     } else if (mode == STACK) {
@@ -705,8 +719,8 @@ ViewController* viewController;
                 [self changeMode:ATTACK];
                 for (int i=0;i<self->selfBattlefieldViews.count;i++) {
                     UIImageView* iv = self->selfBattlefieldViews[i];
-                    Permanent* p = self->player->battlefield->entries[i];
-                    if ((p->subtypes.is_haste||!p->has_summoning_sickness) && !p->is_tapped && !p->subtypes.is_defender) {
+                    Permanent* p = MTGPlayer_getBattlefieldPermanent(player->battlefield, i);
+                    if (p->subtypes.is_creature&&(p->subtypes.is_haste||!p->has_summoning_sickness) && !p->is_tapped && !p->subtypes.is_defender) {
                         [self toggleCard:iv];
                         p->has_attacked = true;
                     }
@@ -924,21 +938,40 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
     for (unsigned int i=0;i<numCards;i++) {
         Permanent* p = permanents->entries[i];
         MTGCard* card = p->source;
-        const char* tag = card->name;
-        NSString* currentTag = [NSString stringWithUTF8String:tag];
-        NSString* fileName = [currentTag stringByAppendingString:extension];
-        if (p->is_tapped) {
-            [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x,tappedMargin, viewController->cardHeight, viewController->cardWidth)]];
-            //UIImage * portrait = [UIImage imageNamed: fileName];
-            UIImage* portrait = [viewController loadImage:fileName cached:viewController->cacheImages];
-            UIImage * landscape = [[UIImage alloc] initWithCGImage: portrait.CGImage scale: 1.0 orientation: UIImageOrientationRight];
-            [currentImages addObject:landscape];
-            x += viewController->cardHeight + viewController->margin;
+        if (card) {
+            const char* tag = card->name;
+            NSString* currentTag = [NSString stringWithUTF8String:tag];
+            NSString* fileName = [currentTag stringByAppendingString:extension];
+            if (p->is_tapped) {
+                [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x,tappedMargin, viewController->cardHeight, viewController->cardWidth)]];
+                UIImage* portrait = [viewController loadImage:fileName cached:viewController->cacheImages];
+                UIImage * landscape = [[UIImage alloc] initWithCGImage: portrait.CGImage scale: 1.0 orientation: UIImageOrientationRight];
+                [currentImages addObject:landscape];
+                x += viewController->cardHeight + viewController->margin;
+            } else {
+                [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x,viewController->margin, viewController->cardWidth, viewController->cardHeight)]];
+                //[currentImages addObject:[UIImage imageNamed:fileName]];
+                [currentImages addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
+                x += viewController->cardWidth + viewController->margin;
+            }
+            [currentViews.lastObject setImage: currentImages.lastObject];
         } else {
-            [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x,viewController->margin, viewController->cardWidth, viewController->cardHeight)]];
-            //[currentImages addObject:[UIImage imageNamed:fileName]];
-            [currentImages addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
-            x += viewController->cardWidth + viewController->margin;
+            UIImageView* iv;
+            if (p->is_tapped) {
+                iv = [[UIImageView alloc] initWithFrame:CGRectMake(x,tappedMargin, viewController->cardHeight, viewController->cardWidth)];
+                x += viewController->cardHeight + viewController->margin;
+            } else {
+                iv = [[UIImageView alloc] initWithFrame:CGRectMake(x,viewController->margin, viewController->cardWidth, viewController->cardHeight)];
+                x += viewController->cardWidth + viewController->margin;
+            }
+            if (p->subtypes.is_white) [iv setBackgroundColor:[UIColor whiteColor]];
+            else if (p->subtypes.is_blue) [iv setBackgroundColor:[UIColor blueColor]];
+            else if (p->subtypes.is_black)[iv setBackgroundColor:[UIColor blackColor]];
+            else if (p->subtypes.is_red) [iv setBackgroundColor:[UIColor redColor]];
+            else if (p->subtypes.is_green) [iv setBackgroundColor:[UIColor greenColor]];
+            iv.layer.cornerRadius = 5;
+            [currentViews addObject:iv];
+            [currentImages addObject:[NSNull null]];
         }
         if (p->subtypes.is_planeswalker || p->subtypes.is_creature) {
             UILabel* lb = [[UILabel alloc] init];
@@ -956,13 +989,12 @@ void displayBattlefield(List* permanents, bool selfOrOpponent) {
             lb.layer.masksToBounds = YES;
             [iv addSubview:lb];
         }
-        [currentViews.lastObject setImage: currentImages.lastObject];
         [currentScrollView addSubview:currentViews.lastObject];
         
         if (p->equipment) {
             for (unsigned int j=0;j<p->equipment->size;j++) {
                 Permanent* q = p->equipment->entries[j];
-                NSString* fileName = [[NSString stringWithUTF8String:q->source->name] stringByAppendingString:@".jpg"];
+                NSString* fileName = [[NSString stringWithUTF8String:q->name] stringByAppendingString:@".jpg"];
                 [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x-viewController->margin,viewController->margin, viewController->cardWidth, viewController->cardHeight)]];
                 [currentImages addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
                 x += viewController->cardWidth;
@@ -1033,22 +1065,10 @@ void selectBlockers(List* permanentList,List* blockersList) {
         [viewController toggleHighlight:viewController->selfBattlefield];
         Permanent* p = viewController->attackerList->entries[viewController->block_index];
         unsigned int i;
-        for (i=0;i<viewController->opponentPermanents->size;i++) {
-            Permanent* q = viewController->opponentPermanents->entries[i];
-            if (q == p)
-                break;
-        }
+        findTarget(p, &i);
         UIImageView* iv = viewController->opponentBattlefieldViews[i];
         [viewController toggleCard:iv];
     }
-}
-
-void selectCallback(void (*callback)(Permanent*),char* allowedTargets) {
-    [viewController displayToastWithMessage:[NSString stringWithFormat:@"Select target %s",allowedTargets]];
-    [viewController toggleHighlight:viewController->selfBattlefield];
-    [viewController toggleHighlight:viewController->opponentBattlefield];
-    [viewController changeMode:SELECT];
-    viewController->creature_callback = callback;
 }
 
 void selectTarget(Permanent* source,char* allowedTargets) {
@@ -1056,6 +1076,14 @@ void selectTarget(Permanent* source,char* allowedTargets) {
     [viewController toggleHighlight:viewController->selfBattlefield];
     [viewController toggleHighlight:viewController->opponentBattlefield];
     [viewController changeMode:SELECT_TARGET];
+    viewController->currentEquipment = source;
+}
+
+void selectPlayer(Permanent* source) {
+    [viewController displayToastWithMessage:[NSString stringWithFormat:@"Select target player"]];
+    [viewController toggleCard:viewController->selfDeck];
+    [viewController toggleCard:viewController->opponentDeck];
+    [viewController changeMode:SELECT_PLAYER];
     viewController->currentEquipment = source;
 }
 

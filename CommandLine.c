@@ -52,6 +52,10 @@ void selectCallback(void (*callback)(Permanent*),char* allowedTargets) {
 void selectTarget(Permanent* source,char* allowedTargets) {
 }
 
+void selectPlayer(Permanent* source) {
+
+}
+
 void saveDeck(char* name,List* cards) {
 	FILE* file = fopen(name,"w");
 	for (unsigned int i=0;i<cards->size;i++) {
