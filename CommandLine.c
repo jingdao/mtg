@@ -56,6 +56,10 @@ void selectPlayer(Permanent* source) {
 
 }
 
+void selectAbility(Permanent* source) {
+
+}
+
 void saveDeck(char* name,List* cards) {
 	FILE* file = fopen(name,"w");
 	for (unsigned int i=0;i<cards->size;i++) {
@@ -78,7 +82,7 @@ void loadDeck(char* name,List* cards) {
 	
 }
 
-void discardToSeven(MTGPlayer* player) {
+void discardCards(MTGPlayer* player,int num) {
 
 }
 

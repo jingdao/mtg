@@ -60,6 +60,7 @@ keywords=[
 'Indestructible',
 #'Infect',
 'Intimidate',
+'Islandwalk',
 #'Kicker',
 #'Landhome',
 'Lifelink',
@@ -143,17 +144,14 @@ for page in cards:
 			if re.match(r'\{[\w\{\}, ]*\}',s):
 				outFile.write('ab=NewAbility(); ')
 				req = re.match(r'\{[\w\{\}, ]*\}',s).group(0)
-				is_instant = True
 				for r in req:
 					if r.isnumeric():
 						outFile.write('AppendToList(ab->manaCost,colorlessMana('+r+')); ')
 					elif r=='T':
 						outFile.write('ab->needs_tap=true; ')
-						is_instant = False
 					elif r.isalpha():
 						outFile.write('AppendToList(ab->manaCost,'+r+'_Mana(1)); ')
-				if is_instant:
-					has_instant_ability = True
+				has_instant_ability = True
 				outFile.write('AppendToList(cd.'+variableName+'->abilities,ab); ')
 		if has_instant_ability:
 			outFile.write('cd.'+variableName+'->subtypes.has_instant=true; ')

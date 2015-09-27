@@ -99,6 +99,9 @@ void Event_damage(Permanent* attacker, Permanent* defender,int num) {
 }
 
 bool Event_onPlay(Permanent* permanent) {
+    if (permanent->selectedAbility)
+        return Event_onPlayAbility(permanent);
+    
     MTGCard* card = permanent->source;
     for (unsigned int i=0;i<castSpellSubscribers->size;i++) {
         Permanent* p = castSpellSubscribers->entries[i];
@@ -112,6 +115,7 @@ bool Event_onPlay(Permanent* permanent) {
     if (card->subtypes.is_land)
         return false;
     
+    permanent->controller->hasCastSpell = true;
     displayStack(stack);
     void (*chooseTarget)(Permanent* source,char* allowedTargets);
     void (*choosePlayer)(Permanent* source);
@@ -120,7 +124,7 @@ bool Event_onPlay(Permanent* permanent) {
     
     if (card == cd.KinsbaileSkirmisher || card == cd.DivineFavor)
         chooseTarget(permanent,"creature (+ve)");
-    else if (card == cd.PillarofLight || card == cd.CripplingBlight || card == cd.Ulcerate)
+    else if (card == cd.PillarofLight || card == cd.CripplingBlight || card == cd.Ulcerate || card==cd.FrostLynx)
         chooseTarget(permanent,"creature (-ve)");
     else if (card == cd.SolemnOffering)
         chooseTarget(permanent, "artifact or enchantment (-ve)");
@@ -132,7 +136,26 @@ bool Event_onPlay(Permanent* permanent) {
     return false;
 }
 
+bool Event_onPlayAbility(Permanent* permanent) {
+    MTGCard* card = permanent->source;
+    displayStack(stack);
+    void (*chooseTarget)(Permanent* source,char* allowedTargets);
+    void (*choosePlayer)(Permanent* source);
+    chooseTarget = permanent->controller==player1 ? selectTarget : AI_selectTarget;
+    choosePlayer = permanent->controller==player1 ? selectPlayer : AI_selectPlayer;
+    
+    if (card == cd.BloodHost)
+        chooseTarget(permanent,"creature (+ve)");
+    else return true;
+    return false;
+}
+
 void Event_onResolve(Permanent* permanent) {
+    if (permanent->selectedAbility) {
+        Event_onAbility(permanent);
+        return;
+    }
+    
     char buffer[64];
     unsigned int index;
     MTGPlayer* targetPlayer;
@@ -230,9 +253,25 @@ void Event_onResolve(Permanent* permanent) {
             message(buffer);
             Event_loseLife(permanent, permanent->controller, 3);
             Event_damage(NULL, permanent->target, 3);
-            permanent->target->power--;
-            permanent->target->bonusPower--;
-            permanent->target->bonusToughness--;         
+            permanent->target->power-=3;
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+    } else if (permanent->source == cd.CoralBarrier) {
+        Permanent* token = NewCreatureToken(permanent->controller,1,1,"Squid Token");
+        token->subtypes.is_blue = true;
+        token->subtypes.is_squid = true;
+        token->subtypes.is_islandwalk = true;
+        AppendToList(permanent->controller->battlefield,token);
+        sprintf(buffer,"A blue Squid is summoned (%s)",permanent->name);
+        message(buffer);
+    } else if (permanent->source == cd.FrostLynx) {
+        if (permanent->target && findTarget(permanent->target, &index) && permanent->target->subtypes.is_creature) {
+            sprintf(buffer,"%s is tapped (%s)",permanent->target->name,permanent->name);
+            message(buffer);
+            permanent->target->is_tapped=true;
+            permanent->target->is_untap_blocked=true;
         } else {
             sprintf(buffer,"Invalid target for %s",permanent->name);
             message(buffer);
@@ -240,9 +279,47 @@ void Event_onResolve(Permanent* permanent) {
     }
 }
 
-void Event_tapAbility(Permanent* permanent,int index) {
+void Event_onAbility(Permanent* permanent) {
+    char buffer[64];
+    unsigned int index;
+    MTGPlayer* player;
     if (permanent->source == cd.Soulmender)
         Event_gainLife(permanent,permanent->controller, 1);
+    else if (permanent->source == cd.WallofLimbs) {
+        sprintf(buffer,"WallofLimbs is sacrificed");
+        message(buffer);
+        Event_loseLife(permanent, permanent->controller==player1?player2:player1, permanent->power);
+        player = findTarget(permanent, &index);
+        MTGPlayer_discardFromBattlefield(player, index, false);
+    } else if (permanent->source == cd.BloodHost) {
+        if (permanent->target && (player=findTarget(permanent->target, &index)) && permanent->target->subtypes.is_creature && permanent->controller==permanent->target->controller) {
+            sprintf(buffer,"%s is sacrificed,%s gets +1/+1",permanent->target->name,permanent->name);
+            message(buffer);
+            MTGPlayer_discardFromBattlefield(player, index, false);
+            Event_gainLife(permanent, permanent->controller, 2);
+            permanent->toughness++;
+            permanent->power++;
+            permanent->bonusPower++;
+            permanent->bonusToughness++;
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+    } else if (permanent->source == cd.ShadowcloakVampire) {
+        Event_loseLife(permanent, permanent->controller, 2);
+        sprintf(buffer,"%s gains flying",permanent->name);
+        message(buffer);
+        permanent->subtypes.is_flying=true;
+    } else if (permanent->source == cd.ResearchAssistant) {
+        sprintf(buffer,"%s draw and discard one card",permanent->controller==player1?"You":"Opponent");
+        message(buffer);
+        MTGPlayer_drawCards(permanent->controller, 1);
+        if (permanent->controller == player1)
+            discardCards(player1,1);
+        else
+            AI_discard(1);
+    }
+    permanent->selectedAbility = 0;
 }
 
 void Event_onDestroy(Permanent* p) {

@@ -52,12 +52,17 @@ void loadCardDataTable() {
     }
 }
 
+void loadAbilities() {
+    cd.ShadowcloakVampire->subtypes.has_instant = true;
+}
+
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
-        for (int i=0;i<0;i++) AppendToList(cards,cd.BloodHost);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.WallofLimbs);
-        for (int i=0;i<20;i++) AppendToList(cards,cd.CripplingBlight);
-		for (int i=0;i<30;i++) AppendToList(cards,cd.Swamp);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.ResearchAssistant);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.MercurialPretender);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.KapshoKitefins);
+		for (int i=0;i<15;i++) AppendToList(cards,cd.Island);
+        for (int i=0;i<15;i++) AppendToList(cards,cd.Forest);
 	} else if (index == 1) {
 		for (int i=0;i<2;i++) AppendToList(cards,cd.Ornithopter);
 		for (int i=0;i<3;i++) AppendToList(cards,cd.BronzeSable);
@@ -234,7 +239,6 @@ void resolveAttack(MTGPlayer* attacker,List* permanentList) {
 	}
 }
 
-
 bool resolveBlock() {
     if (block_index >= attackerList->size) {
         displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,player1->exile->size,player1->mana,true);
@@ -323,30 +327,37 @@ void resolveAI() {
 bool resolveStack() {
     Permanent* permanent = stack->entries[stack->size-1];
     stack->size--;
+    bool destroyed = false;
+    bool untarget = false;
     
     if ((permanent->subtypes.is_aura || permanent->subtypes.is_equipment)) {
         if (permanent->target)
             AppendToList(permanent->target->equipment,permanent);
         else {
             AppendToList(permanent->owner->graveyard,permanent->source);
-            free(permanent);
+            destroyed = true;
         }
     } else if (permanent->subtypes.is_enchantment || permanent->subtypes.is_creature || permanent->subtypes.is_planeswalker || permanent->subtypes.is_artifact) {
         AppendToList(permanent->owner->battlefield,permanent);
+        untarget = true;
     } else {
         AppendToList(permanent->owner->graveyard,permanent->source);
-        free(permanent);
+        destroyed = true;
     }
     Event_onResolve(permanent);
     
     displayStack(stack);
-    displayHand(player1->hand);
+    displayHand(currentPlayer->hand);
     displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,player1->exile->size,  player1->mana,true);
     displayLands(player1->lands, true);
     displayBattlefield(player1->battlefield, true);
     displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size,player2->exile->size, player2->mana ,false);
     displayLands(player2->lands, false);
     displayBattlefield(player2->battlefield, false);
+    if (untarget)
+        permanent->target = NULL;
+    if (destroyed)
+        free(permanent);
     if (stack->size == 0)
         return true;
     else

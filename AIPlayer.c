@@ -37,12 +37,12 @@ void AI_getBlockers(List* attackerList, List* blockersList){
     }
 }
 
-bool AI_payMana(MTGCard* card) {
+bool AI_payMana(List* manaCost) {
     int manaBuffer[6];
     memcpy(manaBuffer,aiplayer->mana,6*sizeof(int));
     int j;
-    for (j=card->manaCost->size - 1;j>=0;j--) {
-        Manacost* cost = card->manaCost->entries[j];
+    for (j=manaCost->size - 1;j>=0;j--) {
+        Manacost* cost = manaCost->entries[j];
         if (cost->color1 == COLORLESS) {
             if (cost->num <= manaBuffer[0]) {
                 int pendingMana = cost->num;
@@ -69,6 +69,13 @@ bool AI_payMana(MTGCard* card) {
         memcpy(aiplayer->mana, manaBuffer, 6*sizeof(int));
         return true;
     } else return false;
+}
+
+void AI_discard(int num) {
+    for (int i=0;i<num;i++) {
+        int k = rand() % aiplayer->hand->size;
+        MTGPlayer_discard(aiplayer, k);
+    }
 }
 
 void AI_selectTarget(Permanent* source,char* allowedTargets) {
@@ -142,6 +149,10 @@ void AI_selectPlayer(Permanent* source) {
     source->target = targetPlayer->marker;
 }
 
+void AI_selectAbility(Permanent* permanent) {
+    permanent->selectedAbility = rand() % permanent->source->abilities->size + 1;
+}
+
 void AI_getAction() {
     char buffer[128];
     state = (state + 1) % AI_NUMSTATES;
@@ -208,12 +219,14 @@ void AI_getAction() {
     }
     if (state == AI_SORCERY) {
         Permanent* p = NULL;
-        for (unsigned int i=0;i<aiplayer->hand->size;i++) {
-            MTGCard* card = aiplayer->hand->entries[i];
-            if (card->subtypes.is_enchantment || card->subtypes.is_sorcery || card->subtypes.is_instant || card->subtypes.is_artifact) {
-                if ((p  = MTGPlayer_playCard(aiplayer, i, buffer))) {
-                    Event_onPlay(p);
-                    break;
+        if (aiplayer->battlefield->size>0 || player1->battlefield->size>0) {
+            for (unsigned int i=0;i<aiplayer->hand->size;i++) {
+                MTGCard* card = aiplayer->hand->entries[i];
+                if (card->subtypes.is_enchantment || card->subtypes.is_sorcery || card->subtypes.is_instant || card->subtypes.is_artifact) {
+                    if ((p  = MTGPlayer_playCard(aiplayer, i, buffer))) {
+                        Event_onPlay(p);
+                        break;
+                    }
                 }
             }
         }
@@ -225,6 +238,31 @@ void AI_getAction() {
             displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->graveyard->size,aiplayer->exile->size,aiplayer->mana,false);
             displayHand(aiplayer->hand);
             state--;
+        } else {
+            state = (state+1) % AI_NUMSTATES;
+        }
+    }
+    if (state == AI_ABILITY) {
+        bool used_ability=false;
+        Permanent* p = NULL;
+        for (unsigned int i=0;i<aiplayer->battlefield->size;i++) {
+            p = aiplayer->battlefield->entries[i];
+            if (p->subtypes.has_instant && rand() % 4) {
+                if (MTGPlayer_tap(aiplayer, p)) {
+                    if (MTGPlayer_activateAbility(aiplayer, p,buffer)) {
+                        Event_onPlay(p);
+                        used_ability=true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (used_ability) {
+            int k = sprintf(buffer,"Opponent activated %s",p->name);
+            if (p->target && p->target->name)
+                sprintf(buffer+k," (target=%s)",p->target->name);
+            message(buffer);
+            displayBattlefield(aiplayer->battlefield, false);
         } else {
             state = (state+1) % AI_NUMSTATES;
         }
@@ -249,10 +287,7 @@ void AI_getAction() {
     }
     if (state == AI_DISCARD) {
         if (aiplayer->hand->size > 7) {
-            while (aiplayer->hand->size > 7) {
-                int k = rand() % aiplayer->hand->size;
-                MTGPlayer_discard(aiplayer, k);
-            }
+            AI_discard(aiplayer->hand->size - 7);
             displayHand(aiplayer->hand);
             message("Opponent discards down to 7 cards");
         } else

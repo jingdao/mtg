@@ -73,6 +73,7 @@ typedef enum {
     @public int manaBuffer[6];
     @public Mode mode;
     @public int pendingMana;
+    @public int pendingDiscard;
     @public int block_index;
     @public int deck_index;
     @public List* attackerList;

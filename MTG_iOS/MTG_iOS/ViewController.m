@@ -241,6 +241,7 @@ ViewController* viewController;
     
     cd = loadCardData();
     loadCardDataTable();
+    loadAbilities();
     self->player = newGame(deck_index);
 
 }
@@ -529,17 +530,29 @@ ViewController* viewController;
             [self toggleHighlight:opponentBattlefield];
             currentEquipment->target = currentPermanent;
             [self changeMode:STACK];
-        } else if (mode==WAIT) {
-            if (!currentPermanent->is_tapped && currentPermanent->subtypes.has_instant) {
-                MTGPlayer_tap(self->player, self->currentPermanent);
-                displayBattlefield(self->player->battlefield, true);
+        } else if (mode==WAIT || mode==STACK) {
+            if (currentPermanent->subtypes.has_instant) {
+                if (MTGPlayer_tap(self->player, self->currentPermanent)) {
+                    if (MTGPlayer_activateAbility(player, currentPermanent,buffer)) {
+                        displayBattlefield(self->player->battlefield, true);
+                        if (pendingMana == 0)
+                            if (Event_onPlay(currentPermanent))
+                                [self changeMode:STACK];
+                    } else
+                        message(buffer);
+                }
             }
         } else if (mode==NONE) {
-            if (currentPermanent->has_summoning_sickness && !currentPermanent->subtypes.has_instant && !currentPermanent->subtypes.is_haste)
-                [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->name]];
-            else if (!currentPermanent->is_tapped && currentPermanent->source->abilities->size > 0) {
-                MTGPlayer_tap(self->player, self->currentPermanent);
-                displayBattlefield(self->player->battlefield, true);
+            if (currentPermanent->subtypes.has_instant) {
+                if (MTGPlayer_tap(self->player, self->currentPermanent)) {
+                    if (MTGPlayer_activateAbility(player, currentPermanent,buffer)) {
+                        displayBattlefield(self->player->battlefield, true);
+                        if (pendingMana == 0)
+                            if (Event_onPlay(currentPermanent))
+                                [self changeMode:STACK];
+                    } else
+                        message(buffer);
+                }
             }
         }
     } else if ([gesture view] == self->opponentBattlefield && opponentBattlefieldViews.count > 0) {
@@ -572,7 +585,7 @@ ViewController* viewController;
 
 - (void) onEndturn: (id)sender{
     if (player->hand->size > 7)
-        discardToSeven(player);
+        discardCards(player,player->hand->size-7);
     else {
         [self changeMode:WAIT];
         newTurn();
@@ -598,6 +611,12 @@ ViewController* viewController;
                 MTGPlayer_discard(player, i - discarded);
                 discarded++;
             }
+        }
+        pendingDiscard -= discarded;
+        if (pendingDiscard > 0) {
+            sprintf(buffer,"Discard %d cards\n",pendingDiscard);
+            message(buffer);
+            return;
         }
         displayHand(player->hand);
     } else if (mode == ATTACK) {
@@ -1087,6 +1106,10 @@ void selectPlayer(Permanent* source) {
     viewController->currentEquipment = source;
 }
 
+void selectAbility(Permanent* permanent) {
+    
+}
+
 void saveDeck(char* name,List* cards){
     NSArray *paths = NSSearchPathForDirectoriesInDomains
     (NSDocumentDirectory, NSUserDomainMask, YES);
@@ -1126,8 +1149,9 @@ void startTurn(MTGPlayer* player) {
     }
 }
 
-void discardToSeven(MTGPlayer* player){
-    sprintf(viewController->buffer,"Please discard down to 7 cards\n");
+void discardCards(MTGPlayer* player,int num){
+    viewController->pendingDiscard = num;
+    sprintf(viewController->buffer,"Discard %d cards\n",num);
     message(viewController->buffer);
     if (viewController->scrollView.layer.borderWidth == 0)
         [viewController toggleHighlight:viewController->scrollView];

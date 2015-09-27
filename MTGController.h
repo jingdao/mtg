@@ -7,6 +7,7 @@
 void Event_gainLife(Permanent* source, MTGPlayer* player,int num);
 
 void loadCardDataTable();
+void loadAbilities();
 void buildDeck(List* cards,int index);
 void shuffleDeck(List* cards);
 void apply_mulligan(MTGPlayer* p);

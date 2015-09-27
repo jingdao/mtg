@@ -73,13 +73,17 @@ bool MTGPlayer_drawCards(MTGPlayer* p,int num) {
 
 Permanent* MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     MTGCard* card = (MTGCard*)player->hand->entries[cardIndex];
-    if (player == player1 && !MTGPlayer_payMana(player, card)) {
+    if (player == player1 && !MTGPlayer_payMana(player, card->manaCost)) {
         sprintf(err,"Not enough mana to play %s (%d/%d)",card->name,player->mana[0],card->cmc);
         return NULL;
-    } else if (player == player2 && !AI_payMana(card))
+    } else if (player == player2 && !AI_payMana(card->manaCost))
         return NULL;
     if (card->subtypes.is_land && player->playedLand) {
         sprintf(err,"You can only play one Land per turn");
+        return NULL;
+    }
+    if (card == cd.IllusoryAngel && !player->hasCastSpell) {
+        sprintf(err, "Can play IllusoryAngel only if you have casted another spell");
         return NULL;
     }
     
@@ -132,7 +136,7 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,bool exile
         RemoveListObject(player->battlefield, p);
 }
 
-void MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
+bool MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
     if (permanent->source->subtypes.is_land) {
         if (permanent->source == cd.Plains) player->mana[1]++;
         else if (permanent->source == cd.Island) player->mana[2]++;
@@ -140,24 +144,61 @@ void MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
         else if (permanent->source == cd.Mountain) player->mana[4]++;
         else if (permanent->source == cd.Forest) player->mana[5]++;
         player->mana[0]++;
+        permanent->is_tapped = true;
+        return false;
     } else {
-        Event_tapAbility(permanent, 0);
+        if (permanent->source->abilities->size > 1) {
+            if (player == player1)
+                selectAbility(permanent);
+            else
+                AI_selectAbility(permanent);
+            return false;
+        } else {
+            permanent->selectedAbility = 1;
+            return true;
+        }
     }
-    permanent->is_tapped = true;
 }
 
-bool MTGPlayer_payMana(MTGPlayer* player,MTGCard* card) {
-    if (card->cmc > player->mana[0]) {
+bool MTGPlayer_activateAbility(MTGPlayer* player,Permanent* permanent,char* err) {
+    if (permanent->source->abilities->size == 0) {
+        RemoveListObject(player->battlefield, permanent);
+        AppendToList(stack, permanent);
+        return true;
+    }
+    Ability* a = permanent->source->abilities->entries[permanent->selectedAbility-1];
+    if (a->needs_tap) {
+        if (permanent->has_summoning_sickness) {
+            sprintf(err, "%s has summoning sickness!",permanent->name);
+            return false;
+        } else if (permanent->is_tapped) {
+            sprintf(err, "%s is already tapped!",permanent->name);
+            return false;
+        }
+    }
+    if ((player==player1 && MTGPlayer_payMana(player,a->manaCost)) || (player==player2 && AI_payMana(a->manaCost))) {
+        if (a->needs_tap)
+            permanent->is_tapped = true;
+        RemoveListObject(player->battlefield, permanent);
+        AppendToList(stack, permanent);
+        return true;
+    } else {
+        sprintf(err,"Not enough mana to activate %s",permanent->name);
         return false;
     }
-    for (int i=card->manaCost->size-1;i>=0;i--) {
-        Manacost *cost = card->manaCost->entries[i];
+}
+
+bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
+    for (int i=manaCost->size-1;i>=0;i--) {
+        Manacost *cost = manaCost->entries[i];
         if (cost->isVariable) {
             
         } else if (cost->hasOption) {
             
         } else if (cost->color1 == COLORLESS) {
-            if (cost->num == player->mana[0]) {
+            if (cost->num > player->mana[0])
+                return false;
+            else if (cost->num == player->mana[0]) {
                 memset(player->mana, 0, 6*sizeof(int));
             } else {
                 int countNonzero=0;
@@ -187,6 +228,16 @@ bool MTGPlayer_payMana(MTGPlayer* player,MTGCard* card) {
 }
 
 bool MTGPlayer_block(Permanent* attacker,List* defenders,char* err) {
+    if (attacker->subtypes.is_islandwalk && defenders->size>0) {
+        Permanent* p = defenders->entries[0];
+        for (unsigned int i=0;i<p->controller->lands->size;i++) {
+            Permanent* q = p->controller->lands->entries[i];
+            if (q->source->subtypes.is_island) {
+                sprintf(err,"%s cannot be blocked (Islandwalk)",attacker->name);
+                return false;
+            }
+        }
+    }
     for (unsigned int i=0;i<defenders->size;i++) {
         Permanent* p = defenders->entries[i];
         for (unsigned int j=0;j<p->equipment->size;j++) {
@@ -219,10 +270,15 @@ Permanent* MTGPlayer_getBattlefieldPermanent(List* bt,unsigned int index) {
 }
 
 void MTGPlayer_refresh(MTGPlayer* player) {
+    memset(player->mana,0,6 * sizeof(int));
     player->playedLand = false;
+    player->hasCastSpell = false;
     for (unsigned int i=0;i<player->battlefield->size;i++) {
         Permanent* p = player->battlefield->entries[i];
-        p->is_tapped = false;
+        if (p->is_untap_blocked)
+            p->is_untap_blocked=false;
+        else
+            p->is_tapped = false;
         p->has_summoning_sickness = false;
     }
     for (unsigned int i=0;i<player->lands->size;i++) {
@@ -232,7 +288,6 @@ void MTGPlayer_refresh(MTGPlayer* player) {
 }
 
 void MTGPlayer_restore(MTGPlayer* player) {
-    memset(player->mana,0,6 * sizeof(int));
     for (unsigned int i=0;i<player->battlefield->size;i++) {
         Permanent* p = player->battlefield->entries[i];
         if (p->source)
