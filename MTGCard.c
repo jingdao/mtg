@@ -10,9 +10,8 @@ MTGCard* NewMTGCard(const char* s,int cost) {
 }
 
 Ability* NewAbility() {
-    Ability* ab = (Ability*) malloc(sizeof(Ability));
+    Ability* ab = (Ability*) calloc(1,sizeof(Ability));
     ab->manaCost = InitList();
-    ab->needs_tap = false;
     return ab;
 }
 

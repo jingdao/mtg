@@ -19,6 +19,7 @@ typedef struct {
 typedef struct {
     List* manaCost;
     bool needs_tap;
+    int lifeCost;
 } Ability;
 
 typedef struct {

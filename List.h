@@ -14,6 +14,7 @@ typedef struct {
 
 List* InitList();
 void DeleteList(List* ls);
+List* ListCopy(List* ls);
 bool AppendToList(List* ls, void* entry);
 void* GetListItem(List* ls, unsigned int index);
 void* RemoveListIndex(List* ls,unsigned int index);

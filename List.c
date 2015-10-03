@@ -26,6 +26,18 @@ void DeleteList(List* ls) {
 	}
 }
 
+List* ListCopy(List* ls) {
+    if (ls) {
+        List* res = (List*)malloc(sizeof(List));
+        if (!res) return NULL;
+        res->maxSize = ls->maxSize;
+        res->size = ls->size;
+        res->entries = (void**)malloc(res->maxSize*sizeof(void*));
+        memcpy(res->entries,ls->entries,ls->size*sizeof(void*));
+        return res;
+    } else return NULL;
+}
+
 bool AppendToList(List* ls, void* entry) {
 	if (!ls) return false;
 	if (ls->maxSize==ls->size) {

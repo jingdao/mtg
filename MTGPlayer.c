@@ -46,6 +46,13 @@ bool Permanent_sameColor(Permanent* p,Permanent* q) {
         (p->subtypes.is_green && q->subtypes.is_blue);
 }
 
+void DeletePermanent(Permanent* permanent) {
+    if (permanent->equipment)
+        DeleteList(permanent->equipment);
+    free(permanent);
+    
+}
+
 MTGPlayer* InitMTGPlayer() {
 	MTGPlayer* p = (MTGPlayer*)malloc(sizeof(MTGPlayer));
     p->marker = (Permanent*)calloc(1,sizeof(Permanent));
@@ -57,7 +64,7 @@ MTGPlayer* InitMTGPlayer() {
     p->battlefield=InitList();
     p->playedLand = false;
     memset(p->mana,0,6 * sizeof(int));
-    p->hp=20;
+    p->hp=80;
 	return p;
 }
 
@@ -120,7 +127,7 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,bool exile
             else {
                 Event_onDestroy(q);
                 AppendToList(q->owner->graveyard, q->source);
-                free(q);
+                DeletePermanent(q);
             }
         }
         DeleteList(p->equipment);
@@ -130,7 +137,7 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,bool exile
         AppendToList(exile?player->exile:player->graveyard,p->source);
     free(p);
     //remove card from battlefield
-    if (p->target)
+    if (p->subtypes.is_aura || p->subtypes.is_equipment)
         RemoveListObject(p->target->equipment, p);
     else
         RemoveListObject(player->battlefield, p);
@@ -161,11 +168,6 @@ bool MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
 }
 
 bool MTGPlayer_activateAbility(MTGPlayer* player,Permanent* permanent,char* err) {
-    if (permanent->source->abilities->size == 0) {
-        RemoveListObject(player->battlefield, permanent);
-        AppendToList(stack, permanent);
-        return true;
-    }
     Ability* a = permanent->source->abilities->entries[permanent->selectedAbility-1];
     if (a->needs_tap) {
         if (permanent->has_summoning_sickness) {
@@ -176,9 +178,20 @@ bool MTGPlayer_activateAbility(MTGPlayer* player,Permanent* permanent,char* err)
             return false;
         }
     }
+    if (permanent->equipment) {
+        for (unsigned int i=0;i<permanent->equipment->size;i++) {
+            Permanent* q = permanent->equipment->entries[i];
+            if (q->source == cd.Encrust) {
+                sprintf(err,"%s cannot use abilities (%s)",permanent->name,q->name);
+                return false;
+            }
+        }
+    }
     if ((player==player1 && MTGPlayer_payMana(player,a->manaCost)) || (player==player2 && AI_payMana(a->manaCost))) {
         if (a->needs_tap)
             permanent->is_tapped = true;
+        if (a->lifeCost > 0)
+            Event_loseLife(permanent, player, a->lifeCost);
         RemoveListObject(player->battlefield, permanent);
         AppendToList(stack, permanent);
         return true;
@@ -189,6 +202,8 @@ bool MTGPlayer_activateAbility(MTGPlayer* player,Permanent* permanent,char* err)
 }
 
 bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
+    int manaBuffer[6];
+    memcpy(manaBuffer, player->mana, 6*sizeof(int));
     for (int i=manaCost->size-1;i>=0;i--) {
         Manacost *cost = manaCost->entries[i];
         if (cost->isVariable) {
@@ -196,34 +211,35 @@ bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
         } else if (cost->hasOption) {
             
         } else if (cost->color1 == COLORLESS) {
-            if (cost->num > player->mana[0])
+            if (cost->num > manaBuffer[0])
                 return false;
-            else if (cost->num == player->mana[0]) {
-                memset(player->mana, 0, 6*sizeof(int));
+            else if (cost->num == manaBuffer[0]) {
+                memset(manaBuffer, 0, 6*sizeof(int));
             } else {
                 int countNonzero=0;
                 int nonzeroIndex=0;
                 for (int i=1;i<=5;i++) {
-                    if (player->mana[i] > 0) {
+                    if (manaBuffer[i] > 0) {
                         countNonzero++;
                         nonzeroIndex=i;
                     }
                 }
-                if (countNonzero == 1 && player->mana[nonzeroIndex] > cost->num) {
-                    player->mana[nonzeroIndex] -= cost->num;
-                    player->mana[0] -= cost->num;
+                if (countNonzero == 1 && manaBuffer[nonzeroIndex] > cost->num) {
+                    manaBuffer[nonzeroIndex] -= cost->num;
+                    manaBuffer[0] -= cost->num;
                 } else {
-                    selectMana(player->mana,cost->num);
+                    selectMana(manaBuffer,cost->num);
                 }
             }
         } else { //one color
-            if (player->mana[cost->color1] < cost->num)
+            if (manaBuffer[cost->color1] < cost->num)
                 return false;
             else
-                player->mana[cost->color1] -= cost->num;
-            player->mana[0] -= cost->num;
+                manaBuffer[cost->color1] -= cost->num;
+            manaBuffer[0] -= cost->num;
         }
     }
+    memcpy(player->mana, manaBuffer, 6*sizeof(int));
     return true;
 }
 

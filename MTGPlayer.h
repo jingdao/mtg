@@ -44,6 +44,7 @@ typedef struct permanent_struct Permanent;
 Permanent* NewPermanent(MTGCard* source,MTGPlayer* own);
 Permanent* NewCreatureToken(MTGPlayer* own,int pow,int tough,const char* nm);
 bool Permanent_sameColor(Permanent* p,Permanent* q);
+void DeletePermanent(Permanent* permanent);
 
 MTGPlayer* InitMTGPlayer();
 bool MTGPlayer_drawCards(MTGPlayer* p,int num);
@@ -65,3 +66,4 @@ bool AI_payMana(List* manaCost);
 void AI_selectAbility(Permanent* permanent);
 void Event_tapAbility(Permanent* permanent,int index);
 void Event_onDestroy(Permanent* permanent);
+void Event_loseLife(Permanent* source,MTGPlayer* player,int num);

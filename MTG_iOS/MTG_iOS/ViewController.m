@@ -78,6 +78,7 @@ ViewController* viewController;
     self->views = [[NSMutableArray alloc] init];
     self->images = [[NSMutableArray alloc] init];
     self->messageQueue = [[NSMutableArray alloc] init];
+    self->commandQueue = [[NSMutableArray alloc] init];
 
 
     self->opponentLands = [[UIScrollView alloc] initWithFrame:CGRectMake(margin*3+cardWidth+textWidth,topmargin, width-margin*5-cardWidth-textWidth-buttonWidth, gridHeight2)];
@@ -451,7 +452,8 @@ ViewController* viewController;
                     displayHand(self->player->hand);
                     displayStats(self->player->hp,self->player->library->size, self->player->hand->size, self->player->graveyard->size,self->player->exile->size,self->player->mana,true);
                     if (pendingMana==0) {
-                        Event_onPlay(currentPermanent);
+                        if (Event_onPlay(currentPermanent))
+                            [self changeMode:STACK];
                     }
                 } else message(buffer);
             }
@@ -682,8 +684,12 @@ ViewController* viewController;
         mode = STACK;
         return;
     } else if (mode == STACK) {
-        if (!resolveStack())
+        if ([self continueAction])
             return;
+        if (!resolveStack()) {
+            [self changeMode:STACK];
+            return;
+        }
     } else if (mode == WAIT) {
         resolveAI();
         return;
@@ -692,6 +698,16 @@ ViewController* viewController;
             return;
     }
     [self changeMode:NONE];
+}
+
+- (bool) continueAction {
+    if (commandQueue.count > 0) {
+        void (^blockcommand)(void);
+        blockcommand = commandQueue.lastObject;
+        [commandQueue removeLastObject];
+        blockcommand();
+        return true;
+    } else return false;
 }
 
 - (void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -1091,19 +1107,29 @@ void selectBlockers(List* permanentList,List* blockersList) {
 }
 
 void selectTarget(Permanent* source,char* allowedTargets) {
-    [viewController displayToastWithMessage:[NSString stringWithFormat:@"Select target %s",allowedTargets]];
-    [viewController toggleHighlight:viewController->selfBattlefield];
-    [viewController toggleHighlight:viewController->opponentBattlefield];
-    [viewController changeMode:SELECT_TARGET];
-    viewController->currentEquipment = source;
+    [viewController changeMode:STACK];
+    void (^blockcommand)(void);
+    blockcommand = ^{
+        [viewController displayToastWithMessage:[NSString stringWithFormat:@"%s: select target %s",source->name,allowedTargets]];
+        [viewController toggleHighlight:viewController->selfBattlefield];
+        [viewController toggleHighlight:viewController->opponentBattlefield];
+        [viewController changeMode:SELECT_TARGET];
+        viewController->currentEquipment = source;
+    };
+    [viewController->commandQueue addObject:blockcommand];
 }
 
 void selectPlayer(Permanent* source) {
-    [viewController displayToastWithMessage:[NSString stringWithFormat:@"Select target player"]];
-    [viewController toggleCard:viewController->selfDeck];
-    [viewController toggleCard:viewController->opponentDeck];
-    [viewController changeMode:SELECT_PLAYER];
-    viewController->currentEquipment = source;
+    [viewController changeMode:STACK];
+    void (^blockcommand)(void);
+    blockcommand = ^{
+        [viewController displayToastWithMessage:[NSString stringWithFormat:@"%s: select target player",source->name]];
+        [viewController toggleCard:viewController->selfDeck];
+        [viewController toggleCard:viewController->opponentDeck];
+        [viewController changeMode:SELECT_PLAYER];
+        viewController->currentEquipment = source;
+    };
+    [viewController->commandQueue addObject:blockcommand];
 }
 
 void selectAbility(Permanent* permanent) {

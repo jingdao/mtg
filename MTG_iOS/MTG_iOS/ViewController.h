@@ -46,6 +46,7 @@ typedef enum {
     @public NSMutableArray* selfLabels;
     @public NSMutableArray* opponentLabels;
     @public NSMutableArray* messageQueue;
+    @public NSMutableArray* commandQueue;
 
     @public UIScrollView* opponentLands;
     @public UIScrollView* opponentBattlefield;

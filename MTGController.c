@@ -328,7 +328,6 @@ bool resolveStack() {
     Permanent* permanent = stack->entries[stack->size-1];
     stack->size--;
     bool destroyed = false;
-    bool untarget = false;
     
     if ((permanent->subtypes.is_aura || permanent->subtypes.is_equipment)) {
         if (permanent->target)
@@ -339,12 +338,11 @@ bool resolveStack() {
         }
     } else if (permanent->subtypes.is_enchantment || permanent->subtypes.is_creature || permanent->subtypes.is_planeswalker || permanent->subtypes.is_artifact) {
         AppendToList(permanent->owner->battlefield,permanent);
-        untarget = true;
     } else {
         AppendToList(permanent->owner->graveyard,permanent->source);
         destroyed = true;
     }
-    Event_onResolve(permanent);
+    bool isValid = Event_onResolve(permanent);
     
     displayStack(stack);
     displayHand(currentPlayer->hand);
@@ -354,10 +352,8 @@ bool resolveStack() {
     displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size,player2->exile->size, player2->mana ,false);
     displayLands(player2->lands, false);
     displayBattlefield(player2->battlefield, false);
-    if (untarget)
-        permanent->target = NULL;
-    if (destroyed)
-        free(permanent);
+    if (isValid && destroyed)
+        DeletePermanent(permanent);
     if (stack->size == 0)
         return true;
     else

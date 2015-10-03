@@ -11,7 +11,7 @@ void AI_init(MTGPlayer* player) {
 }
 
 void AI_getBlockers(List* attackerList, List* blockersList){
-    char buffer[64];
+    char buffer[128];
 	for (unsigned int i=0;i<aiplayer->battlefield->size;i++) {
 		Permanent* p = aiplayer->battlefield->entries[i];
 		if (p->subtypes.is_creature && !p->is_tapped) {
