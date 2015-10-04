@@ -4,6 +4,12 @@
 
 struct permanent_struct;
 
+typedef enum {
+    GRAVEYARD,
+    EXILE,
+    HAND
+} Destination;
+
 typedef struct {
 	List* hand;
 	List* library;
@@ -34,6 +40,7 @@ struct permanent_struct{
     int selectedAbility;
     List* equipment;
     struct permanent_struct *target;
+    struct permanent_struct *target2;
     MTGCard* source;
     MTGPlayer* owner;
     MTGPlayer* controller;
@@ -50,7 +57,7 @@ MTGPlayer* InitMTGPlayer();
 bool MTGPlayer_drawCards(MTGPlayer* p,int num);
 Permanent* MTGPlayer_playCard(MTGPlayer* p,int cardIndex,char* err);
 void MTGPlayer_discard(MTGPlayer* player,int cardIndex);
-void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,bool exile);
+void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,Destination dest);
 void MTGPlayer_refresh(MTGPlayer* p);
 void MTGPlayer_restore(MTGPlayer* player);
 bool MTGPlayer_tap(MTGPlayer* player,Permanent* perm);

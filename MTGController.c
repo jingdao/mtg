@@ -3,6 +3,7 @@
 extern CardData cd;
 extern HashTable* cdt;
 extern List* categories;
+extern bool DEBUG_AI;
 MTGPlayer* player1;
 MTGPlayer* player2;
 MTGPlayer* currentPlayer;
@@ -58,9 +59,9 @@ void loadAbilities() {
 
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
-        for (int i=0;i<10;i++) AppendToList(cards,cd.ResearchAssistant);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.MercurialPretender);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.KapshoKitefins);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.SatyrWayfinder);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.InvasiveSpecies);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.ReclamationSage);
 		for (int i=0;i<15;i++) AppendToList(cards,cd.Island);
         for (int i=0;i<15;i++) AppendToList(cards,cd.Forest);
 	} else if (index == 1) {
@@ -345,7 +346,10 @@ bool resolveStack() {
     bool isValid = Event_onResolve(permanent);
     
     displayStack(stack);
-    displayHand(currentPlayer->hand);
+    if (DEBUG_AI)
+        displayHand(currentPlayer->hand);
+    else
+        displayHand(player1->hand);
     displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,player1->exile->size,  player1->mana,true);
     displayLands(player1->lands, true);
     displayBattlefield(player1->battlefield, true);

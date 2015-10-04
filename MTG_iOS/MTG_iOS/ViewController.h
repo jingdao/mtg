@@ -77,6 +77,7 @@ typedef enum {
     @public int pendingDiscard;
     @public int block_index;
     @public int deck_index;
+    @public int target_index;
     @public List* attackerList;
     @public List* blockersList;
     @public List* opponentPermanents;

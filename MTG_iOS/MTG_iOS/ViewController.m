@@ -17,6 +17,7 @@ CardData cd;
 HashTable* cdt;
 List* categories;
 ViewController* viewController;
+extern MTGPlayer* currentPlayer;
 
 @implementation ViewController
 
@@ -229,7 +230,7 @@ ViewController* viewController;
     }
     
     deckSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Custom",@"Dragon's Hoard", @"Hit the Ground Running",@"Infernal Intervention",@"Price of Glory",@"Will of the Masses",nil];
-    self.deckController = [[DeckController alloc]init];
+    self.deckController = [[DeckController alloc] init];
     self.deckController->coverWidth = self->coverWidth;
     self.deckController->coverHeight = self->coverHeight;
     self.deckController->buttonWidth = self->buttonWidth;
@@ -249,6 +250,10 @@ ViewController* viewController;
 
 - (void)changeMode: (Mode) m {
     switch (m) {
+        case DISCARD:
+            confirmButton.enabled=true;
+            endturnButton.enabled=false;
+            attackButton.enabled=false;
         case ATTACK:
             attackButton.enabled = false;
             endturnButton.enabled = false;
@@ -282,7 +287,10 @@ ViewController* viewController;
         default:
             break;
     }
-    mode = m;
+    if (m == STACK && currentPlayer != player)
+        mode = WAIT;
+    else
+        mode = m;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -444,7 +452,7 @@ ViewController* viewController;
             idx = self->images.count - 1;
         if (mode==DISCARD) {
             [self toggleCard:self->views[idx]];
-        } else if (mode==STACK) {
+        } else if (mode==WAIT || mode==STACK) {
             MTGCard* card = player->hand->entries[idx];
             if (card->subtypes.is_instant) {
                 currentPermanent = MTGPlayer_playCard(self->player, (int)idx, self->buffer);
@@ -530,8 +538,12 @@ ViewController* viewController;
         } else if (mode==SELECT_TARGET) {
             [self toggleHighlight:selfBattlefield];
             [self toggleHighlight:opponentBattlefield];
-            currentEquipment->target = currentPermanent;
+            if (target_index == 2)
+                currentEquipment->target2 = currentPermanent;
+            else
+                currentEquipment->target = currentPermanent;
             [self changeMode:STACK];
+            [self onConfirm:NULL];
         } else if (mode==WAIT || mode==STACK) {
             if (currentPermanent->subtypes.has_instant) {
                 if (MTGPlayer_tap(self->player, self->currentPermanent)) {
@@ -569,26 +581,33 @@ ViewController* viewController;
         if (mode==SELECT_TARGET) {
             [self toggleHighlight:selfBattlefield];
             [self toggleHighlight:opponentBattlefield];
-            currentEquipment->target = currentPermanent;
+            if (target_index == 2)
+                currentEquipment->target2 = currentPermanent;
+            else
+                currentEquipment->target = currentPermanent;
             [self changeMode:STACK];
+            [self onConfirm:NULL];
         }
     } else if ([gesture view] == selfDeck && mode==SELECT_PLAYER) {
         currentEquipment->target = player->marker;
         [self toggleCard:selfDeck];
         [self toggleCard:opponentDeck];
         [self changeMode:STACK];
+        [self onConfirm:NULL];
     } else if ([gesture view] == opponentDeck && mode==SELECT_PLAYER) {
         currentEquipment->target = NULL;
         [self toggleCard:selfDeck];
         [self toggleCard:opponentDeck];
         [self changeMode:STACK];
+        [self onConfirm:NULL];
     }
 }
 
 - (void) onEndturn: (id)sender{
-    if (player->hand->size > 7)
+    if (player->hand->size > 7) {
         discardCards(player,player->hand->size-7);
-    else {
+        [self onConfirm:NULL];
+    } else {
         [self changeMode:WAIT];
         newTurn();
     }
@@ -615,12 +634,17 @@ ViewController* viewController;
             }
         }
         pendingDiscard -= discarded;
+        displayHand(player->hand);
         if (pendingDiscard > 0) {
             sprintf(buffer,"Discard %d cards\n",pendingDiscard);
             message(buffer);
             return;
         }
-        displayHand(player->hand);
+
+        if (stackViews.count > 0) {
+            [self changeMode:STACK];
+            return;
+        }
     } else if (mode == ATTACK) {
         List* permanentList = InitList();
         for (unsigned int i=0;i<player->battlefield->size;i++) {
@@ -661,7 +685,7 @@ ViewController* viewController;
             }
         }
         block_index++;
-        if (block_index >= attackerList->size) {
+        if (numBlockers==0 || block_index >= attackerList->size) {
             [self toggleHighlight:selfBattlefield];
             [self changeMode:WAIT];
             resolveBlock();
@@ -690,8 +714,13 @@ ViewController* viewController;
             [self changeMode:STACK];
             return;
         }
+        if ([self continueAction])
+            return;
     } else if (mode == WAIT) {
+        if ([self continueAction])
+            return;
         resolveAI();
+        [self continueAction];
         return;
     } else if (mode == WAITATTACK) {
         if (!resolveBlock(player))
@@ -1110,6 +1139,7 @@ void selectTarget(Permanent* source,char* allowedTargets) {
     [viewController changeMode:STACK];
     void (^blockcommand)(void);
     blockcommand = ^{
+        viewController->target_index = allowedTargets[0]=='2' ? 2 : 0;
         [viewController displayToastWithMessage:[NSString stringWithFormat:@"%s: select target %s",source->name,allowedTargets]];
         [viewController toggleHighlight:viewController->selfBattlefield];
         [viewController toggleHighlight:viewController->opponentBattlefield];
@@ -1176,15 +1206,17 @@ void startTurn(MTGPlayer* player) {
 }
 
 void discardCards(MTGPlayer* player,int num){
-    viewController->pendingDiscard = num;
-    sprintf(viewController->buffer,"Discard %d cards\n",num);
-    message(viewController->buffer);
-    if (viewController->scrollView.layer.borderWidth == 0)
-        [viewController toggleHighlight:viewController->scrollView];
-    viewController->confirmButton.enabled=true;
-    viewController->endturnButton.enabled=false;
-    viewController->attackButton.enabled=false;
-    viewController->mode=DISCARD;
+    [viewController changeMode:STACK];
+    void (^blockcommand)(void);
+    blockcommand = ^{
+        viewController->pendingDiscard = num;
+        sprintf(viewController->buffer,"Discard %d cards\n",num);
+        message(viewController->buffer);
+        if (viewController->scrollView.layer.borderWidth == 0)
+            [viewController toggleHighlight:viewController->scrollView];
+        [viewController changeMode:DISCARD];
+    };
+    [viewController->commandQueue addObject:blockcommand];
 }
 
 void mulligan() {

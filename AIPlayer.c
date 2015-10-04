@@ -1,5 +1,9 @@
 #include "AIPlayer.h"
 
+bool DEBUG_AI = 0;
+bool castedCreature = false;
+bool castedSorcery = false;
+bool castedAbility = false;
 AIState state;
 MTGPlayer* aiplayer;
 extern CardData cd;
@@ -157,7 +161,11 @@ void AI_getAction() {
     char buffer[128];
     state = (state + 1) % AI_NUMSTATES;
     if (state == AI_START) {
-        displayHand(aiplayer->hand);
+        castedCreature = false;
+        castedSorcery = false;
+        castedAbility = false;
+        if (DEBUG_AI)
+            displayHand(aiplayer->hand);
     }
     if (state == AI_LAND) {
         Permanent* permanent = NULL;
@@ -175,7 +183,8 @@ void AI_getAction() {
             sprintf(buffer,"Opponent played a %s",permanent->name);
             displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->graveyard->size,aiplayer->exile->size,aiplayer->mana,false);
             displayLands(aiplayer->lands, false);
-            displayHand(aiplayer->hand);
+            if (DEBUG_AI)
+                displayHand(aiplayer->hand);
             message(buffer);
         } else {
             state = (state + 1) % AI_NUMSTATES;
@@ -202,6 +211,7 @@ void AI_getAction() {
                 continue;
             if ((p  = MTGPlayer_playCard(aiplayer, i, buffer))) {
                 Event_onPlay(p);
+                castedCreature = true;
                 break;
             }
         }
@@ -211,9 +221,10 @@ void AI_getAction() {
                 sprintf(buffer+k," (target=%s)",p->target->name);
             message(buffer);
             displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->graveyard->size,aiplayer->exile->size,aiplayer->mana,false);
-            displayHand(aiplayer->hand);
+            if (DEBUG_AI)
+                displayHand(aiplayer->hand);
             state--;
-        } else {
+        } else if (!castedCreature){
             state = (state+1) % AI_NUMSTATES;
         }
     }
@@ -225,6 +236,7 @@ void AI_getAction() {
                 if (card->subtypes.is_enchantment || card->subtypes.is_sorcery || card->subtypes.is_instant || card->subtypes.is_artifact) {
                     if ((p  = MTGPlayer_playCard(aiplayer, i, buffer))) {
                         Event_onPlay(p);
+                        castedSorcery = true;
                         break;
                     }
                 }
@@ -236,9 +248,10 @@ void AI_getAction() {
                 sprintf(buffer+k," (target=%s)",p->target->name);
             message(buffer);
             displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->graveyard->size,aiplayer->exile->size,aiplayer->mana,false);
-            displayHand(aiplayer->hand);
+            if (DEBUG_AI)
+                displayHand(aiplayer->hand);
             state--;
-        } else {
+        } else if (!castedSorcery){
             state = (state+1) % AI_NUMSTATES;
         }
     }
@@ -252,6 +265,7 @@ void AI_getAction() {
                     if (MTGPlayer_activateAbility(aiplayer, p,buffer)) {
                         Event_onPlay(p);
                         used_ability=true;
+                        castedAbility=true;
                         break;
                     }
                 }
@@ -263,7 +277,8 @@ void AI_getAction() {
                 sprintf(buffer+k," (target=%s)",p->target->name);
             message(buffer);
             displayBattlefield(aiplayer->battlefield, false);
-        } else {
+            state--;
+        } else if (!castedAbility) {
             state = (state+1) % AI_NUMSTATES;
         }
     }
@@ -288,7 +303,8 @@ void AI_getAction() {
     if (state == AI_DISCARD) {
         if (aiplayer->hand->size > 7) {
             AI_discard(aiplayer->hand->size - 7);
-            displayHand(aiplayer->hand);
+            if (DEBUG_AI)
+                displayHand(aiplayer->hand);
             message("Opponent discards down to 7 cards");
         } else
             state = (state + 1) % AI_NUMSTATES;

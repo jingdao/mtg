@@ -80,6 +80,10 @@ bool MTGPlayer_drawCards(MTGPlayer* p,int num) {
 
 Permanent* MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
     MTGCard* card = (MTGCard*)player->hand->entries[cardIndex];
+    if (card == cd.IllusoryAngel && !player->hasCastSpell) {
+        sprintf(err, "Can play IllusoryAngel only if you have casted another spell");
+        return NULL;
+    }
     if (player == player1 && !MTGPlayer_payMana(player, card->manaCost)) {
         sprintf(err,"Not enough mana to play %s (%d/%d)",card->name,player->mana[0],card->cmc);
         return NULL;
@@ -89,10 +93,7 @@ Permanent* MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
         sprintf(err,"You can only play one Land per turn");
         return NULL;
     }
-    if (card == cd.IllusoryAngel && !player->hasCastSpell) {
-        sprintf(err, "Can play IllusoryAngel only if you have casted another spell");
-        return NULL;
-    }
+    
     
     //create permanent
     Permanent* permanent = NewPermanent(card,player);
@@ -116,7 +117,7 @@ void MTGPlayer_discard(MTGPlayer* player,int cardIndex) {
     RemoveListIndex(player->hand, cardIndex);
 }
 
-void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,bool exile) {
+void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,Destination dest) {
     Permanent* p = MTGPlayer_getBattlefieldPermanent(player->battlefield, cardIndex);
     Event_onDestroy(p);
     if (p->equipment) {
@@ -134,7 +135,7 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,bool exile
     }
     
     if (p->source)
-        AppendToList(exile?player->exile:player->graveyard,p->source);
+        AppendToList(dest==EXILE?player->exile:dest==GRAVEYARD?player->graveyard:player->hand,p->source);
     free(p);
     //remove card from battlefield
     if (p->subtypes.is_aura || p->subtypes.is_equipment)
@@ -204,6 +205,7 @@ bool MTGPlayer_activateAbility(MTGPlayer* player,Permanent* permanent,char* err)
 bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
     int manaBuffer[6];
     memcpy(manaBuffer, player->mana, 6*sizeof(int));
+    int userSelect = 0;
     for (int i=manaCost->size-1;i>=0;i--) {
         Manacost *cost = manaCost->entries[i];
         if (cost->isVariable) {
@@ -228,7 +230,7 @@ bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
                     manaBuffer[nonzeroIndex] -= cost->num;
                     manaBuffer[0] -= cost->num;
                 } else {
-                    selectMana(manaBuffer,cost->num);
+                    userSelect = cost->num;
                 }
             }
         } else { //one color
@@ -240,6 +242,8 @@ bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
         }
     }
     memcpy(player->mana, manaBuffer, 6*sizeof(int));
+    if (userSelect)
+        selectMana(manaBuffer, userSelect);
     return true;
 }
 
