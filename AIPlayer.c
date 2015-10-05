@@ -153,6 +153,10 @@ void AI_selectPlayer(Permanent* source) {
     source->target = targetPlayer->marker;
 }
 
+void AI_selectCards(Permanent* permanent,List* cards,char* allowedTargets) {
+    
+}
+
 void AI_selectAbility(Permanent* permanent) {
     permanent->selectedAbility = rand() % permanent->source->abilities->size + 1;
 }
@@ -261,7 +265,9 @@ void AI_getAction() {
         for (unsigned int i=0;i<aiplayer->battlefield->size;i++) {
             p = aiplayer->battlefield->entries[i];
             if (p->subtypes.has_instant && rand() % 4) {
-                if (MTGPlayer_tap(aiplayer, p)) {
+                Ability* a = p->source->abilities->entries[0];
+                if (a->lifeCost == 0) {
+                    MTGPlayer_tap(aiplayer, p);
                     if (MTGPlayer_activateAbility(aiplayer, p,buffer)) {
                         Event_onPlay(p);
                         used_ability=true;

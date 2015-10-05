@@ -254,6 +254,12 @@ extern MTGPlayer* currentPlayer;
             confirmButton.enabled=true;
             endturnButton.enabled=false;
             attackButton.enabled=false;
+            break;
+        case VIEW:
+            confirmButton.enabled=true;
+            endturnButton.enabled=false;
+            attackButton.enabled=false;
+            break;
         case ATTACK:
             attackButton.enabled = false;
             endturnButton.enabled = false;
@@ -265,6 +271,11 @@ extern MTGPlayer* currentPlayer;
             confirmButton.enabled = true;
             break;
         case SELECT_PLAYER:
+            attackButton.enabled = false;
+            endturnButton.enabled = false;
+            confirmButton.enabled = true;
+            break;
+        case SELECT_CARDS:
             attackButton.enabled = false;
             endturnButton.enabled = false;
             confirmButton.enabled = true;
@@ -450,7 +461,7 @@ extern MTGPlayer* currentPlayer;
         idx = p.x / (self->cardWidth + self->margin);
         if (idx >= self->images.count)
             idx = self->images.count - 1;
-        if (mode==DISCARD) {
+        if (mode==DISCARD || mode==SELECT_CARDS) {
             [self toggleCard:self->views[idx]];
         } else if (mode==WAIT || mode==STACK) {
             MTGCard* card = player->hand->entries[idx];
@@ -614,7 +625,7 @@ extern MTGPlayer* currentPlayer;
 }
 
 - (void) onPause:(id)sender {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"New Game",@"Tap All Lands", @"Attack All",@"Change Deck",@"Edit Deck",nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"New Game",@"Tap All Lands", @"Attack All",@"View Graveyard",@"View Exile",@"Change Deck",@"Edit Deck",nil];
     [sheet showInView:self.view];
 }
 
@@ -645,6 +656,9 @@ extern MTGPlayer* currentPlayer;
             [self changeMode:STACK];
             return;
         }
+    } else if (mode == VIEW) {
+        [self toggleHighlight:scrollView];
+        displayHand(currentPlayer->hand);
     } else if (mode == ATTACK) {
         List* permanentList = InitList();
         for (unsigned int i=0;i<player->battlefield->size;i++) {
@@ -705,6 +719,17 @@ extern MTGPlayer* currentPlayer;
     } else if (mode == SELECT_PLAYER) {
         [self toggleCard:selfDeck];
         [self toggleCard:opponentDeck];
+        mode = STACK;
+        return;
+    } else if (mode == SELECT_CARDS) {
+        for (int i=0;i<views.count;i++) {
+            UIImageView* iv = views[i];
+            if (iv.layer.borderWidth > 0) {
+                currentEquipment->target = currentEquipment + i + 1;
+                break;
+            }
+        }
+        displayHand(player->hand);
         mode = STACK;
         return;
     } else if (mode == STACK) {
@@ -794,13 +819,31 @@ extern MTGPlayer* currentPlayer;
         }
         case 3:
         {
+            if (mode == NONE) {
+                displayHand(currentPlayer->graveyard);
+                [self toggleHighlight:scrollView];
+                [self changeMode:VIEW];
+            }
+            break;
+        }
+        case 4:
+        {
+            if (mode == NONE) {
+                displayHand(currentPlayer->exile);
+                [self toggleHighlight:scrollView];
+                [self changeMode:VIEW];
+            }
+            break;
+        }
+        case 5:
+        {
             [self.view addSubview:self->popupMask];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC / 4)), dispatch_get_main_queue(), ^{
                 [self->deckSheet showInView:self.view];
             });
             break;
         }
-        case 4: {
+        case 6: {
 //            if (self.deckController->deck_index != self->deck_index) {
 //                [self.deckController freeImages];
 //                self.deckController->deck_index = self->deck_index;
@@ -1164,6 +1207,19 @@ void selectPlayer(Permanent* source) {
 
 void selectAbility(Permanent* permanent) {
     
+}
+
+void selectCards(Permanent* source,List* cards,char* allowedTargets) {
+    [viewController changeMode:STACK];
+    void (^blockcommand)(void);
+    blockcommand = ^{
+        [viewController displayToastWithMessage:[NSString stringWithFormat:@"%s: select %s",source->name,allowedTargets]];
+        displayHand(cards);
+        [viewController toggleHighlight:viewController->scrollView];
+        [viewController changeMode: SELECT_CARDS];
+        viewController->currentEquipment = source;
+    };
+    [viewController->commandQueue addObject:blockcommand];
 }
 
 void saveDeck(char* name,List* cards){

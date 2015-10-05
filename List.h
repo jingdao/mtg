@@ -16,6 +16,7 @@ List* InitList();
 void DeleteList(List* ls);
 List* ListCopy(List* ls);
 bool AppendToList(List* ls, void* entry);
+bool AppendListToList(List* ls, List* src);
 void* GetListItem(List* ls, unsigned int index);
 void* RemoveListIndex(List* ls,unsigned int index);
 bool RemoveListObject(List* ls,void* obj);

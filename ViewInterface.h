@@ -13,6 +13,7 @@ void selectBlockers(List* permanentList,List* blockersList);
 void selectTarget(Permanent* source,char* allowedTargets);
 void selectPlayer(Permanent* source);
 void selectAbility(Permanent* permanent);
+void selectCards(Permanent* permanent,List* cards,char* allowedTargets);
 void saveDeck(char* name,List* cards);
 void loadDeck(char* name,List* cards);
 void startTurn(MTGPlayer* player);

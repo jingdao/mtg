@@ -13,11 +13,13 @@
 typedef enum {
     NONE,
     DISCARD,
+    VIEW,
     MANA,
     ATTACK,
     BLOCK,
     SELECT_TARGET,
     SELECT_PLAYER,
+    SELECT_CARDS,
     STACK,
     WAIT,
     WAITATTACK

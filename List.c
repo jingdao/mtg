@@ -46,7 +46,7 @@ bool AppendToList(List* ls, void* entry) {
 		//printf("malloc double List: %d\n",ls->maxSize*2*sizeof(void*));
 		if (!newEntries) {
 			printf("Warning(List): Unable to resize table!\n");
-			return 0;
+			return false;
 		}
 		ls->entries = newEntries;
 		ls->maxSize *= 2;
@@ -54,6 +54,22 @@ bool AppendToList(List* ls, void* entry) {
 	ls->entries[ls->size]=entry;
 	ls->size++;
 	return true;
+}
+
+bool AppendListToList(List* ls, List* src) {
+    if (!ls) return false;
+    while (ls->maxSize < ls->size + src->size) {
+        void** newEntries = (void**)realloc(ls->entries,ls->maxSize*2*sizeof(void*));
+        if (!newEntries) {
+            printf("Warning(List): Unable to resize table!\n");
+            return false;
+        }
+        ls->entries = newEntries;
+        ls->maxSize *= 2;
+    }
+    memcpy(ls->entries+ls->size,src->entries,src->size * sizeof(void*));
+    ls->size+=src->size;
+    return true;
 }
 
 void* GetListItem(List* ls, unsigned int index) {

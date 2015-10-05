@@ -60,6 +60,10 @@ void selectAbility(Permanent* source) {
 
 }
 
+void selectCards(Permanent* source,List* cards,char* allowedTargets) {
+
+}
+
 void saveDeck(char* name,List* cards) {
 	FILE* file = fopen(name,"w");
 	for (unsigned int i=0;i<cards->size;i++) {

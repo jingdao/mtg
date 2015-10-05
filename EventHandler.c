@@ -10,6 +10,7 @@ List* gainLifeSubscribers = NULL;
 List* loseLifeSubscribers = NULL;
 List* castSpellSubscribers = NULL;
 List* upkeepSubscribers = NULL;
+List* bufferList = NULL;
 
 MTGPlayer* findTarget(Permanent* p,unsigned int* index) {
     *index = 0;
@@ -109,8 +110,10 @@ bool Event_onPlay(Permanent* permanent) {
     permanent->controller->hasCastSpell = true;
     void (*chooseTarget)(Permanent* source,char* allowedTargets);
     void (*choosePlayer)(Permanent* source);
+    void (*chooseCards)(Permanent* source,List* cards,char* allowedTargets);
     chooseTarget = permanent->controller==player1 ? selectTarget : AI_selectTarget;
     choosePlayer = permanent->controller==player1 ? selectPlayer : AI_selectPlayer;
+    chooseCards = permanent->controller==player1 ? selectCards : AI_selectCards;
     
     for (unsigned int i=0;i<castSpellSubscribers->size;i++) {
         Permanent* p = castSpellSubscribers->entries[i];
@@ -134,22 +137,29 @@ bool Event_onPlay(Permanent* permanent) {
     if (card->subtypes.is_land)
         return false;
     
-    if (card == cd.KinsbaileSkirmisher || card == cd.DivineFavor || card == cd.MercurialPretender)
+    if (card == cd.KinsbaileSkirmisher || card == cd.DivineFavor || card == cd.MercurialPretender || card == cd.InvasiveSpecies)
         chooseTarget(permanent,"creature (+ve)");
     else if (card == cd.PillarofLight || card == cd.CripplingBlight || card == cd.Ulcerate || card==cd.FrostLynx ||
              card == cd.KapshoKitefins || card == cd.Encrust || card == cd.TurntoFrog)
         chooseTarget(permanent,"creature (-ve)");
-    else if (card == cd.SolemnOffering)
+    else if (card == cd.SolemnOffering || card == cd.ReclamationSage)
         chooseTarget(permanent, "artifact or enchantment (-ve)");
-    else if (card == cd.SigninBlood)
-        choosePlayer(permanent);
+    
     else if (card == cd.PeelfromReality) {
         chooseTarget(permanent,"2nd creature (-ve)");
         chooseTarget(permanent,"1st creature (+ve)");
     } else if (card == cd.IntotheVoid) {
         chooseTarget(permanent,"2nd creature (-ve)");
         chooseTarget(permanent,"1st creature (-ve)");
-    } else
+    } else if (card == cd.SatyrWayfinder) {
+        int n = permanent->controller->library->size < 4 ? permanent->controller->library->size : 4;
+        memcpy(bufferList->entries,permanent->controller->library->entries+permanent->controller->library->size-n,n*sizeof(MTGCard*));
+        permanent->controller->library->size -= 4;
+        bufferList->size = n;
+        chooseCards(permanent,bufferList,"a Land card");
+    } else if (card == cd.SigninBlood)
+        choosePlayer(permanent);
+    else
         return true;
 
     return false;
@@ -383,6 +393,51 @@ bool Event_onResolve(Permanent* permanent) {
             sprintf(buffer,"Invalid target for %s",permanent->name);
             message(buffer);
         }
+    } else if (permanent->source == cd.InvasiveSpecies) {
+        Permanent* p = NULL;
+        if (permanent->target && findTarget(permanent->target, &index) && permanent->target->subtypes.is_creature && permanent->target->controller==permanent->controller)
+            p = permanent->target;
+        else {
+            for (unsigned int i=0;i<permanent->controller->battlefield->size;i++) {
+                Permanent* q = permanent->controller->battlefield->entries[i];
+                if (q!=permanent && q->subtypes.is_creature && q->controller == permanent->controller) {
+                    p = q;
+                    break;
+                }
+            }
+        }
+        if (p) {
+            targetPlayer = findTarget(p, &index);
+            sprintf(buffer,"%s is returned to hand (%s)",p->name,permanent->name);
+            message(buffer);
+            MTGPlayer_discardFromBattlefield(targetPlayer, index, HAND);
+        }
+    } else if (permanent->source == cd.ReclamationSage) {
+        if (permanent->target && (targetPlayer=findTarget(permanent->target,&index)) && (permanent->target->subtypes.is_artifact || permanent->target->subtypes.is_enchantment)) {
+            sprintf(buffer,"%s is destroyed",permanent->target->name);
+            message(buffer);
+            MTGPlayer_discardFromBattlefield(targetPlayer,index,GRAVEYARD);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+    } else if (permanent->source == cd.SatyrWayfinder) {
+        MTGCard * card = NULL;
+        if (permanent->target) {
+            unsigned long index = permanent->target - permanent - 1;
+            card = bufferList->entries[index];
+        }
+        if (card && card->subtypes.is_land) {
+            RemoveListIndex(bufferList, (unsigned int)index);
+            AppendToList(permanent->controller->hand, card);
+            sprintf(buffer,"%s draws %s to hand (%s)",permanent->controller==player1?"You":"Opponent",card->name,permanent->name);
+            message(buffer);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+        AppendListToList(permanent->controller->graveyard,bufferList);
+        bufferList->size = 0;
     }
     return true;
 }
@@ -492,6 +547,7 @@ void initEvents() {
     loseLifeSubscribers = InitList();
     castSpellSubscribers = InitList();
     upkeepSubscribers = InitList();
+    bufferList = InitList();
 }
 
 void DeleteEvents() {
@@ -503,5 +559,7 @@ void DeleteEvents() {
         DeleteList(castSpellSubscribers);
     if (upkeepSubscribers)
         DeleteList(upkeepSubscribers);
+    if (bufferList)
+        DeleteList(bufferList);
 }
 
