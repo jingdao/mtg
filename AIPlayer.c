@@ -93,7 +93,10 @@ void AI_selectTarget(Permanent* source,char* allowedTargets) {
             int index = rand() % targetBattlefield->size;
             Permanent* p = targetBattlefield->entries[index];
             if (p->subtypes.is_creature && p->controller == targetPlayer) {
-                source->target = p;
+                if (allowedTargets[0] == '2')
+                    source->target2 = p;
+                else
+                    source->target = p;
                 return;
             }
         }
@@ -142,6 +145,19 @@ void AI_selectTarget(Permanent* source,char* allowedTargets) {
             }
         }
     }
+    if (strstr(allowedTargets,"land")) {
+        for (int i=0;i<10;i++) {
+            List* targetLands = rand()%2 ? aiplayer->lands : player1->lands;
+            if (targetLands->size == 0)
+                continue;
+            int index = rand() % targetLands->size;
+            Permanent* p = targetLands->entries[index];
+            if (p->subtypes.is_land && p->controller == targetPlayer) {
+                source->target = p;
+                return;
+            }
+        }
+    }
 }
 
 void AI_selectPlayer(Permanent* source) {
@@ -153,8 +169,16 @@ void AI_selectPlayer(Permanent* source) {
     source->target = targetPlayer->marker;
 }
 
+void AI_selectCreatureOrPlayer(Permanent* source) {
+    
+}
+
 void AI_selectCards(Permanent* permanent,List* cards,char* allowedTargets) {
     
+}
+
+void AI_selectOption(Permanent* permanent,List* options) {
+    permanent->target = permanent + rand() % options->size;
 }
 
 void AI_selectAbility(Permanent* permanent) {
@@ -177,6 +201,7 @@ void AI_getAction() {
             MTGCard* card = aiplayer->hand->entries[i];
             if (card->subtypes.is_land) {
                 permanent = NewPermanent(card,aiplayer);
+                Event_onPlay(permanent);
                 AppendToList(aiplayer->lands, permanent);
                 aiplayer->playedLand = true;
                 RemoveListIndex(aiplayer->hand, i);
@@ -294,13 +319,18 @@ void AI_getAction() {
             Permanent* p = aiplayer->battlefield->entries[i];
             if (p->subtypes.is_creature && (p->subtypes.is_haste||!p->has_summoning_sickness) && !p->is_tapped && !p->subtypes.is_defender && p->canAttack && p->power>0 && (rand()%4)) {
                 p->has_attacked = true;
-                if (!p->subtypes.is_vigilance)
-                    p->is_tapped = true;
                 AppendToList(permanentList, p);
             }
         }
         if (permanentList->size > 0) {
-            resolveAttack(aiplayer, permanentList);
+            if (Event_attack(permanentList,buffer)) {
+                for (unsigned int i=0;i<permanentList->size;i++) {
+                    Permanent* p = permanentList->entries[i];
+                    if (!p->subtypes.is_vigilance)
+                        p->is_tapped = true;
+                }
+                resolveAttack(aiplayer, permanentList);
+            }
         } else {
             state = (state + 1) % AI_NUMSTATES;
         }

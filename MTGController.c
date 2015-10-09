@@ -59,11 +59,11 @@ void loadAbilities() {
 
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
-        for (int i=0;i<10;i++) AppendToList(cards,cd.SatyrWayfinder);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.InvasiveSpecies);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.ReclamationSage);
-		for (int i=0;i<15;i++) AppendToList(cards,cd.Island);
-        for (int i=0;i<15;i++) AppendToList(cards,cd.Forest);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.IndulgentTormentor);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.NightfireGiant);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.Demolish);
+		for (int i=0;i<15;i++) AppendToList(cards,cd.Mountain);
+        for (int i=0;i<15;i++) AppendToList(cards,cd.Swamp);
 	} else if (index == 1) {
 		for (int i=0;i<2;i++) AppendToList(cards,cd.Ornithopter);
 		for (int i=0;i<3;i++) AppendToList(cards,cd.BronzeSable);
@@ -297,10 +297,10 @@ bool resolveBlock() {
             
         }
         if (p->subtypes.is_trample && p->power > 0) {
-            Event_loseLife(p,defender, p->power);
+            Event_loseLife(NULL,defender, p->power);
         }
         if (p_lifelink > 0) {
-            Event_gainLife(p,currentPlayer,p_lifelink);
+            Event_gainLife(NULL,currentPlayer,p_lifelink);
         }
         if (q_lifelink) {
             Event_gainLife(NULL,defender,q_lifelink);
@@ -344,6 +344,10 @@ bool resolveStack() {
         destroyed = true;
     }
     bool isValid = Event_onResolve(permanent);
+    if (permanent->subtypes.is_aura && !permanent->target) {
+        AppendToList(permanent->owner->graveyard,permanent->source);
+        destroyed = true;
+    }
     
     displayStack(stack);
     if (DEBUG_AI)
@@ -389,12 +393,13 @@ void newTurn() {
         
 		currentPlayer = player2;
         MTGPlayer_refresh(player2);
-        Event_onUpkeep(player2);
         MTGPlayer_drawCards(player2, 1);
         startTurn(player2);
+        Event_onUpkeep(player2);
         displayStats(player2->hp,player2->library->size,player2->hand->size,player2->graveyard->size, player2->exile->size, player2->mana,false);
         displayLands(player2->lands, false);
         displayBattlefield(player2->battlefield, false);
+        displayStack(stack);
         AI_getAction(player2);
 	} else {
         MTGPlayer_restore(player1);
@@ -404,13 +409,14 @@ void newTurn() {
         
 		currentPlayer = player1;
 		MTGPlayer_refresh(player1);
-        Event_onUpkeep(player1);
 		MTGPlayer_drawCards(player1, 1);
         startTurn(player1);
+        Event_onUpkeep(player1);
 		displayHand(player1->hand);
 		displayStats(player1->hp,player1->library->size,player1->hand->size,player1->graveyard->size,player1->exile->size,  player1->mana,true);
         displayLands(player1->lands, true);
         displayBattlefield(player1->battlefield, true);
+        displayStack(stack);
 	}
 
 }
@@ -432,7 +438,7 @@ MTGPlayer* newGame(int deck_index) {
 
 	player2 = InitMTGPlayer();
     AI_init(player2);
-	buildDeck(player2->library,4);
+	buildDeck(player2->library,0);
 	shuffleDeck(player2->library);
 
 	MTGPlayer_drawCards(player1,7);

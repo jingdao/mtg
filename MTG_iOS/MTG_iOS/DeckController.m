@@ -181,6 +181,7 @@ extern List* categories;
     //[self showDeck];
     //[self showStock];
     //[self showCounts];
+    [super viewDidLoad];
 }
 
 - (void) doubleTap: (UITapGestureRecognizer*) gesture {

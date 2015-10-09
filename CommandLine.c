@@ -56,11 +56,23 @@ void selectPlayer(Permanent* source) {
 
 }
 
+void selectCreatureOrPlayer(Permanent* source) {
+
+}
+
 void selectAbility(Permanent* source) {
 
 }
 
+void selectOption(Permanent* source, List* option) {
+
+}
+
 void selectCards(Permanent* source,List* cards,char* allowedTargets) {
+
+}
+
+void triggerSelect(char* msg) {
 
 }
 

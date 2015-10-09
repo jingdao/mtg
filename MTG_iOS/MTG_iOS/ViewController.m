@@ -18,6 +18,7 @@ HashTable* cdt;
 List* categories;
 ViewController* viewController;
 extern MTGPlayer* currentPlayer;
+extern MTGPlayer* player2;
 
 @implementation ViewController
 
@@ -230,6 +231,7 @@ extern MTGPlayer* currentPlayer;
     }
     
     deckSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Custom",@"Dragon's Hoard", @"Hit the Ground Running",@"Infernal Intervention",@"Price of Glory",@"Will of the Masses",nil];
+    selectSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle: nil otherButtonTitles:nil];
     self.deckController = [[DeckController alloc] init];
     self.deckController->coverWidth = self->coverWidth;
     self.deckController->coverHeight = self->coverHeight;
@@ -266,11 +268,6 @@ extern MTGPlayer* currentPlayer;
             confirmButton.enabled = true;
             break;
         case SELECT_TARGET:
-            attackButton.enabled = false;
-            endturnButton.enabled = false;
-            confirmButton.enabled = true;
-            break;
-        case SELECT_PLAYER:
             attackButton.enabled = false;
             endturnButton.enabled = false;
             confirmButton.enabled = true;
@@ -456,11 +453,13 @@ extern MTGPlayer* currentPlayer;
     if (!(gesture.state==UIGestureRecognizerStateBegan))
         return;
     CGPoint p = [gesture locationInView:[gesture view]];
-    unsigned long idx;
-    if ([gesture view] == self->scrollView && player->hand->size > 0) {
+    long idx;
+    if ([gesture view] == self->scrollView) {
         idx = p.x / (self->cardWidth + self->margin);
         if (idx >= self->images.count)
             idx = self->images.count - 1;
+        if (idx < 0)
+            return;
         if (mode==DISCARD || mode==SELECT_CARDS) {
             [self toggleCard:self->views[idx]];
         } else if (mode==WAIT || mode==STACK) {
@@ -498,12 +497,22 @@ extern MTGPlayer* currentPlayer;
         }
         if (idx >= self->selfLandsViews.count)
             idx = self->selfLandsViews.count - 1;
+        currentPermanent = player->lands->entries[idx];
         if (mode==NONE) {
-            self->currentPermanent = self->player->lands->entries[idx];
             if (!self->currentPermanent->is_tapped)
                 MTGPlayer_tap(self->player, self->currentPermanent);
             displayLands(self->player->lands, true);
             displayStats(self->player->hp, self->player->library->size, self->player->hand->size,self->player->graveyard->size ,self->player->exile->size ,self->player->mana, self);
+        } else if (mode==SELECT_TARGET) {
+            if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
+            if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
+            if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
+            if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
+            if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
+            if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
+            currentEquipment->target = currentPermanent;
+            [self changeMode:STACK];
+            [self onConfirm:NULL];
         }
     } else if ([gesture view] == self->selfBattlefield && selfBattlefieldViews.count > 0) {
         for (idx=0;idx<self->selfBattlefieldViews.count;idx++) {
@@ -547,8 +556,12 @@ extern MTGPlayer* currentPlayer;
                 AppendToList(blockers, currentPermanent);
             }
         } else if (mode==SELECT_TARGET) {
-            [self toggleHighlight:selfBattlefield];
-            [self toggleHighlight:opponentBattlefield];
+            if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
+            if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
+            if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
+            if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
+            if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
+            if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
             if (target_index == 2)
                 currentEquipment->target2 = currentPermanent;
             else
@@ -590,8 +603,12 @@ extern MTGPlayer* currentPlayer;
             idx = self->opponentBattlefieldViews.count - 1;
         currentPermanent = MTGPlayer_getBattlefieldPermanent(opponentPermanents, (unsigned int)idx);
         if (mode==SELECT_TARGET) {
-            [self toggleHighlight:selfBattlefield];
-            [self toggleHighlight:opponentBattlefield];
+            if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
+            if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
+            if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
+            if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
+            if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
+            if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
             if (target_index == 2)
                 currentEquipment->target2 = currentPermanent;
             else
@@ -599,14 +616,34 @@ extern MTGPlayer* currentPlayer;
             [self changeMode:STACK];
             [self onConfirm:NULL];
         }
-    } else if ([gesture view] == selfDeck && mode==SELECT_PLAYER) {
+    } else if ([gesture view] == opponentLands && opponentLandsViews.count > 0) {
+        for (idx=0;idx<self->opponentLandsViews.count;idx++) {
+            UIImageView *imv = self->opponentLandsViews[idx];
+            if (p.x < imv.frame.origin.x + imv.frame.size.width)
+                break;
+        }
+        if (idx >= self->opponentLandsViews.count)
+            idx = self->opponentLandsViews.count - 1;
+        currentPermanent = player2->lands->entries[idx];
+        if (mode==SELECT_TARGET) {
+            if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
+            if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
+            if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
+            if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
+            if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
+            if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
+            currentEquipment->target = currentPermanent;
+            [self changeMode:STACK];
+            [self onConfirm:NULL];
+        }
+    } else if ([gesture view] == selfDeck && mode==SELECT_TARGET && selfDeck.layer.borderWidth > 0) {
         currentEquipment->target = player->marker;
         [self toggleCard:selfDeck];
         [self toggleCard:opponentDeck];
         [self changeMode:STACK];
         [self onConfirm:NULL];
-    } else if ([gesture view] == opponentDeck && mode==SELECT_PLAYER) {
-        currentEquipment->target = NULL;
+    } else if ([gesture view] == opponentDeck && mode==SELECT_TARGET && opponentDeck.layer.borderWidth > 0) {
+        currentEquipment->target = player2->marker;
         [self toggleCard:selfDeck];
         [self toggleCard:opponentDeck];
         [self changeMode:STACK];
@@ -646,6 +683,7 @@ extern MTGPlayer* currentPlayer;
         }
         pendingDiscard -= discarded;
         displayHand(player->hand);
+        displayStats(player->hp,player->library->size,player->hand->size,player->graveyard->size,player->exile->size,player->mana,true);
         if (pendingDiscard > 0) {
             sprintf(buffer,"Discard %d cards\n",pendingDiscard);
             message(buffer);
@@ -664,15 +702,24 @@ extern MTGPlayer* currentPlayer;
         for (unsigned int i=0;i<player->battlefield->size;i++) {
             Permanent* p = player->battlefield->entries[i];
             if (p->has_attacked) {
-                if (!p->subtypes.is_vigilance)
-                    p->is_tapped = true;
                 AppendToList(permanentList, p);
             }
+        }
+        if (!Event_attack(permanentList, buffer)) {
+            message(buffer);
+            DeleteList(permanentList);
+            return;
+        }
+        for (unsigned int i=0;i<permanentList->size;i++) {
+            Permanent* p = permanentList->entries[i];
+            if (!p->subtypes.is_vigilance)
+                p->is_tapped = true;
         }
         if (permanentList->size > 0) {
             resolveAttack(self->player, permanentList);
             canAttack = false;
             mode = WAITATTACK;
+            DeleteList(permanentList);
             return;
         }
         displayBattlefield(player->battlefield, self);
@@ -705,28 +752,35 @@ extern MTGPlayer* currentPlayer;
             resolveBlock();
         } else if (numBlockers > 0){
             Permanent* p = attackerList->entries[block_index];
-            unsigned int i;
+            int i;
             findTarget(p, &i);
             UIImageView* iv = opponentBattlefieldViews[i];
             [self toggleCard:iv];
         }
         return;
     } else if (mode == SELECT_TARGET) {
-        [self toggleHighlight:selfBattlefield];
-        [self toggleHighlight:opponentBattlefield];
-        mode = STACK;
-        return;
-    } else if (mode == SELECT_PLAYER) {
-        [self toggleCard:selfDeck];
-        [self toggleCard:opponentDeck];
+        if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
+        if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
+        if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
+        if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
+        if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
+        if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
         mode = STACK;
         return;
     } else if (mode == SELECT_CARDS) {
+        int numTargeted = 0;
         for (int i=0;i<views.count;i++) {
             UIImageView* iv = views[i];
             if (iv.layer.borderWidth > 0) {
-                currentEquipment->target = currentEquipment + i + 1;
-                break;
+                if (numTargeted==0) {
+                    currentEquipment->target = currentEquipment + i + 1;
+                    numTargeted++;
+                } else if (numTargeted==1) {
+                    currentEquipment->target2 = currentEquipment + i + 1;
+                    numTargeted++;
+                }
+                if (numTargeted>=2)
+                    break;
             }
         }
         displayHand(player->hand);
@@ -757,8 +811,8 @@ extern MTGPlayer* currentPlayer;
 - (bool) continueAction {
     if (commandQueue.count > 0) {
         void (^blockcommand)(void);
-        blockcommand = commandQueue.lastObject;
-        [commandQueue removeLastObject];
+        blockcommand = commandQueue.firstObject;
+        [commandQueue removeObjectAtIndex:0];
         blockcommand();
         return true;
     } else return false;
@@ -774,6 +828,12 @@ extern MTGPlayer* currentPlayer;
             endturnButton.enabled=false;
             endGame();
             self->player = newGame(deck_index);
+        }
+        return;
+    } else if (actionSheet == selectSheet) {
+        [selectSheet removeFromSuperview];
+        if (buttonIndex >= 0) {
+            currentEquipment->target = currentEquipment + buttonIndex;
         }
         return;
     }
@@ -1171,7 +1231,7 @@ void selectBlockers(List* permanentList,List* blockersList) {
     if (numBlockers > 0) {
         [viewController toggleHighlight:viewController->selfBattlefield];
         Permanent* p = viewController->attackerList->entries[viewController->block_index];
-        unsigned int i;
+        int i;
         findTarget(p, &i);
         UIImageView* iv = viewController->opponentBattlefieldViews[i];
         [viewController toggleCard:iv];
@@ -1186,6 +1246,10 @@ void selectTarget(Permanent* source,char* allowedTargets) {
         [viewController displayToastWithMessage:[NSString stringWithFormat:@"%s: select target %s",source->name,allowedTargets]];
         [viewController toggleHighlight:viewController->selfBattlefield];
         [viewController toggleHighlight:viewController->opponentBattlefield];
+        if (strstr(allowedTargets,"land")) {
+            [viewController toggleHighlight:viewController->selfLands];
+            [viewController toggleHighlight:viewController->opponentLands];
+        }
         [viewController changeMode:SELECT_TARGET];
         viewController->currentEquipment = source;
     };
@@ -1199,7 +1263,22 @@ void selectPlayer(Permanent* source) {
         [viewController displayToastWithMessage:[NSString stringWithFormat:@"%s: select target player",source->name]];
         [viewController toggleCard:viewController->selfDeck];
         [viewController toggleCard:viewController->opponentDeck];
-        [viewController changeMode:SELECT_PLAYER];
+        [viewController changeMode:SELECT_TARGET];
+        viewController->currentEquipment = source;
+    };
+    [viewController->commandQueue addObject:blockcommand];
+}
+
+void selectCreatureOrPlayer(Permanent* source) {
+    [viewController changeMode:STACK];
+    void (^blockcommand)(void);
+    blockcommand = ^{
+        [viewController displayToastWithMessage:[NSString stringWithFormat:@"%s: select target creature or player",source->name]];
+        [viewController toggleCard:viewController->selfDeck];
+        [viewController toggleCard:viewController->opponentDeck];
+        [viewController toggleHighlight:viewController->selfBattlefield];
+        [viewController toggleHighlight:viewController->opponentBattlefield];
+        [viewController changeMode:SELECT_TARGET];
         viewController->currentEquipment = source;
     };
     [viewController->commandQueue addObject:blockcommand];
@@ -1220,6 +1299,32 @@ void selectCards(Permanent* source,List* cards,char* allowedTargets) {
         viewController->currentEquipment = source;
     };
     [viewController->commandQueue addObject:blockcommand];
+}
+
+void selectOption(Permanent* source,List* options) {
+    [viewController changeMode:STACK];
+    void (^blockcommand)(void);
+    blockcommand = ^{
+        for (UIView* v in [viewController->selectSheet subviews]) {
+            [v removeFromSuperview];
+        }
+        for (unsigned int i=0;i<options->size;i++) {
+            char* str = options->entries[i];
+            [viewController->selectSheet addButtonWithTitle:[NSString stringWithUTF8String:str]];
+        }
+        [viewController->selectSheet setTitle:[NSString stringWithFormat:@"%s: select option",source->name]];
+        viewController->currentEquipment = source;
+        [viewController.view addSubview:viewController->selectSheet];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC / 4)), dispatch_get_main_queue(), ^{
+            [viewController->selectSheet showInView:viewController.view];
+        });
+    };
+    [viewController->commandQueue addObject:blockcommand];
+}
+
+void triggerSelect(char* msg) {
+    [viewController changeMode:STACK];
+    [viewController displayToastWithMessage:[NSString stringWithFormat:@"Opponent selected %s",msg]];
 }
 
 void saveDeck(char* name,List* cards){

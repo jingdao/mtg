@@ -18,7 +18,6 @@ typedef enum {
     ATTACK,
     BLOCK,
     SELECT_TARGET,
-    SELECT_PLAYER,
     SELECT_CARDS,
     STACK,
     WAIT,
@@ -69,6 +68,7 @@ typedef enum {
     @public UIButton* confirmButton;
     @public UITextView* manaLabel;
     @public UIActionSheet* deckSheet;
+    @public UIActionSheet* selectSheet;
     @public MTGPlayer* player;
     @public Permanent* currentPermanent;
     @public Permanent* currentEquipment;

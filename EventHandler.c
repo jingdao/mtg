@@ -10,9 +10,11 @@ List* gainLifeSubscribers = NULL;
 List* loseLifeSubscribers = NULL;
 List* castSpellSubscribers = NULL;
 List* upkeepSubscribers = NULL;
+List* attackSubscribers = NULL;
+List* destroySubscribers = NULL;
 List* bufferList = NULL;
 
-MTGPlayer* findTarget(Permanent* p,unsigned int* index) {
+MTGPlayer* findTarget(Permanent* p,int* index) {
     *index = 0;
     for (unsigned int i=0;i<player1->battlefield->size;i++) {
         Permanent* q = player1->battlefield->entries[i];
@@ -36,6 +38,18 @@ MTGPlayer* findTarget(Permanent* p,unsigned int* index) {
                 (*index)++;
             }
         }
+    }
+    *index = -1;
+    for (unsigned int i=0;i<player1->lands->size;i++) {
+        Permanent* q = player1->lands->entries[i];
+        if (p == q) return player1;
+        (*index)--;
+    }
+    *index = -1;
+    for (unsigned int i=0;i<player2->lands->size;i++) {
+        Permanent* q = player2->lands->entries[i];
+        if (p == q) return player2;
+        (*index)--;
     }
     return NULL;
 }
@@ -62,12 +76,12 @@ void Event_gainLife(Permanent* source, MTGPlayer* player,int num) {
 void Event_loseLife(Permanent* source, MTGPlayer* player,int num) {
     player->hp -= num;
     char buffer[128];
-    sprintf(buffer,"%s lose %d life (%s)",player==player1?"You":"Opponent",num,source->name);
+    sprintf(buffer,"%s lose %d life (%s)",player==player1?"You":"Opponent",num,source? source->name : "trample");
     message(buffer);
     
     for (unsigned int i=0;i<loseLifeSubscribers->size;i++) {
         Permanent* p = loseLifeSubscribers->entries[i];
-        if (p->source == cd.FirstResponse) {
+        if (p->source == cd.FirstResponse && p->controller==player) {
             p->is_activated = true;
         }
     }
@@ -93,7 +107,7 @@ void Event_damage(Permanent* attacker, Permanent* defender,int num) {
     if (defender->toughness <= 0 && !defender->subtypes.is_indestructible) {
         sprintf(buffer,"%s is destroyed",defender->name);
         message(buffer);
-        unsigned int index;
+        int index;
         MTGPlayer* p = findTarget(defender, &index);
         MTGPlayer_discardFromBattlefield(p, index, GRAVEYARD);
     }
@@ -103,7 +117,7 @@ bool Event_onPlay(Permanent* permanent) {
     if (permanent->selectedAbility)
         return Event_onPlayAbility(permanent);
     
-    unsigned int index;
+    int index;
     MTGPlayer* targetPlayer;
     MTGCard* card = permanent->source;
     
@@ -111,9 +125,13 @@ bool Event_onPlay(Permanent* permanent) {
     void (*chooseTarget)(Permanent* source,char* allowedTargets);
     void (*choosePlayer)(Permanent* source);
     void (*chooseCards)(Permanent* source,List* cards,char* allowedTargets);
+    void (*chooseCreatureOrPlayer)(Permanent* source);
+    void (*chooseOption)(Permanent* source,List* options);
     chooseTarget = permanent->controller==player1 ? selectTarget : AI_selectTarget;
     choosePlayer = permanent->controller==player1 ? selectPlayer : AI_selectPlayer;
     chooseCards = permanent->controller==player1 ? selectCards : AI_selectCards;
+    chooseCreatureOrPlayer = permanent->controller==player1 ? selectCreatureOrPlayer : AI_selectCreatureOrPlayer;
+    chooseOption = permanent->controller==player1 ? selectOption : AI_selectOption;
     
     for (unsigned int i=0;i<castSpellSubscribers->size;i++) {
         Permanent* p = castSpellSubscribers->entries[i];
@@ -125,7 +143,14 @@ bool Event_onPlay(Permanent* permanent) {
             targetPlayer = findTarget(p, &index);
             RemoveListObject(targetPlayer->battlefield,p);
             AppendToList(stack, p);
+            p->selectedAbility = 1;
             chooseTarget(p,"creature (-ve)");
+        } else if (p->source == cd.NightfireGiant && currentPlayer == p->controller && permanent->subtypes.is_mountain &&!p->is_activated) {
+            p->is_activated = true;
+            p->power++;
+            p->toughness++;
+            p->bonusPower++;
+            p->bonusToughness++;
         }
     }
     
@@ -140,8 +165,10 @@ bool Event_onPlay(Permanent* permanent) {
     if (card == cd.KinsbaileSkirmisher || card == cd.DivineFavor || card == cd.MercurialPretender || card == cd.InvasiveSpecies)
         chooseTarget(permanent,"creature (+ve)");
     else if (card == cd.PillarofLight || card == cd.CripplingBlight || card == cd.Ulcerate || card==cd.FrostLynx ||
-             card == cd.KapshoKitefins || card == cd.Encrust || card == cd.TurntoFrog)
+             card == cd.KapshoKitefins || card == cd.TurntoFrog || card == cd.Plummet || card == cd.StabWound)
         chooseTarget(permanent,"creature (-ve)");
+    else if (card == cd.Encrust)
+        chooseTarget(permanent,"creature or enchantment (-ve)");
     else if (card == cd.SolemnOffering || card == cd.ReclamationSage)
         chooseTarget(permanent, "artifact or enchantment (-ve)");
     
@@ -157,7 +184,15 @@ bool Event_onPlay(Permanent* permanent) {
         permanent->controller->library->size -= 4;
         bufferList->size = n;
         chooseCards(permanent,bufferList,"a Land card");
-    } else if (card == cd.SigninBlood)
+    } else if (card == cd.Restock)
+        chooseCards(permanent,permanent->controller->graveyard,"2 cards from graveyard");
+    else if (card == cd.Gravedigger)
+        chooseCards(permanent,permanent->controller->graveyard,"creature card from graveryard");
+    else if (card == cd.Meteorite)
+        chooseCreatureOrPlayer(permanent);
+    else if (card == cd.Demolish)
+        chooseTarget(permanent,"artifact or land (-ve)");
+    else if (card == cd.SigninBlood)
         choosePlayer(permanent);
     else
         return true;
@@ -170,11 +205,27 @@ bool Event_onPlayAbility(Permanent* permanent) {
     displayStack(stack);
     void (*chooseTarget)(Permanent* source,char* allowedTargets);
     void (*choosePlayer)(Permanent* source);
+    void (*chooseCards)(Permanent* source,List* cards,char* allowedTargets);
+    void (*chooseCreatureOrPlayer)(Permanent* source);
+    void (*chooseOption)(Permanent* source,List* options);
     chooseTarget = permanent->controller==player1 ? selectTarget : AI_selectTarget;
     choosePlayer = permanent->controller==player1 ? selectPlayer : AI_selectPlayer;
+    chooseCards = permanent->controller==player1 ? selectCards : AI_selectCards;
+    chooseCreatureOrPlayer = permanent->controller==player1 ? selectCreatureOrPlayer : AI_selectCreatureOrPlayer;
+    chooseOption = permanent->controller==player1 ? selectOption : AI_selectOption;
     
     if (card == cd.BloodHost)
         chooseTarget(permanent,"creature (+ve)");
+    else if (card == cd.Meteorite) {
+        bufferList->size = 0;
+        AppendToList(bufferList, "white");
+        AppendToList(bufferList, "blue");
+        AppendToList(bufferList, "black");
+        AppendToList(bufferList, "red");
+        AppendToList(bufferList, "green");
+        chooseOption(permanent,bufferList);
+    } else if (card == cd.NightfireGiant)
+        chooseCreatureOrPlayer(permanent);
     else return true;
     return false;
 }
@@ -185,7 +236,7 @@ bool Event_onResolve(Permanent* permanent) {
     }
     
     char buffer[128];
-    unsigned int index;
+    int index;
     MTGPlayer* targetPlayer;
     MTGCard* card = permanent->source;
 
@@ -197,6 +248,10 @@ bool Event_onResolve(Permanent* permanent) {
         Event_gainLife(permanent,permanent->controller,20-permanent->controller->hp);
     else if (card == cd.StaffoftheDeathMagus || card == cd.StaffoftheSunMagus)
         AppendToList(castSpellSubscribers, permanent);
+    else if (card == cd.RoaringPrimadox || card == cd.IndulgentTormentor)
+        AppendToList(upkeepSubscribers, permanent);
+    else if (card == cd.StormtideLeviathan)
+        AppendToList(attackSubscribers, permanent);
     else if (card == cd.FirstResponse) {
         AppendToList(upkeepSubscribers,permanent);
         AppendToList(loseLifeSubscribers, permanent);
@@ -226,6 +281,8 @@ bool Event_onResolve(Permanent* permanent) {
         } else {
             sprintf(buffer,"Invalid target for %s",permanent->name);
             message(buffer);
+            RemoveListObject(permanent->target->equipment, permanent);
+            permanent->target = NULL;
         }
     } else if (permanent->source == cd.CripplingBlight) {
         if (permanent->target && findTarget(permanent->target, &index) && permanent->target->subtypes.is_creature) {
@@ -238,6 +295,8 @@ bool Event_onResolve(Permanent* permanent) {
         } else {
             sprintf(buffer,"Invalid target for %s",permanent->name);
             message(buffer);
+            RemoveListObject(permanent->target->equipment, permanent);
+            permanent->target = NULL;
         }
     } else if (permanent->source == cd.PillarofLight) {
         if (permanent->target && (targetPlayer=findTarget(permanent->target,&index)) && permanent->target->subtypes.is_creature && permanent->target->toughness >= 4) {
@@ -327,6 +386,8 @@ bool Event_onResolve(Permanent* permanent) {
         } else {
             sprintf(buffer,"Invalid target for %s",permanent->name);
             message(buffer);
+            RemoveListObject(permanent->target->equipment, permanent);
+            permanent->target = NULL;
         }
     } else if (permanent->source == cd.KapshoKitefins) {
         AppendToList(castSpellSubscribers, permanent);
@@ -366,7 +427,7 @@ bool Event_onResolve(Permanent* permanent) {
             message(buffer);
         }
     } else if (permanent->source == cd.PeelfromReality) {
-        unsigned int index2;
+        int index2;
         if (permanent->target && findTarget(permanent->target,&index) &&
             permanent->target->subtypes.is_creature && permanent->target->controller==player1 &&
             permanent->target2 && findTarget(permanent->target2, &index2) &&
@@ -423,12 +484,13 @@ bool Event_onResolve(Permanent* permanent) {
         }
     } else if (permanent->source == cd.SatyrWayfinder) {
         MTGCard * card = NULL;
+        unsigned long j=0;
         if (permanent->target) {
-            unsigned long index = permanent->target - permanent - 1;
-            card = bufferList->entries[index];
+            j= permanent->target - permanent;
+            card = bufferList->entries[j];
         }
         if (card && card->subtypes.is_land) {
-            RemoveListIndex(bufferList, (unsigned int)index);
+            RemoveListIndex(bufferList, (unsigned int)j);
             AppendToList(permanent->controller->hand, card);
             sprintf(buffer,"%s draws %s to hand (%s)",permanent->controller==player1?"You":"Opponent",card->name,permanent->name);
             message(buffer);
@@ -437,14 +499,120 @@ bool Event_onResolve(Permanent* permanent) {
             message(buffer);
         }
         AppendListToList(permanent->controller->graveyard,bufferList);
-        bufferList->size = 0;
+    } else if (permanent->source == cd.ShamanofSpring) {
+        sprintf(buffer,"%s draw one card (%s)",permanent->controller==player1?"You":"Opponent",permanent->name);
+        message(buffer);
+        MTGPlayer_drawCards(permanent->controller, 1);
+    } else if (permanent->source == cd.Restock) {
+        if (permanent->target) {
+            unsigned long j = permanent->target - permanent;
+            MTGCard* card = RemoveListIndex(permanent->controller->graveyard, (unsigned int)j);
+            AppendToList(permanent->controller->hand,card);
+            sprintf(buffer,"%s is returned to hand (%s)",card->name,permanent->name);
+            message(buffer);
+        }
+        if (permanent->target2) {
+            unsigned long j = permanent->target2 - permanent - 1;
+            MTGCard* card = RemoveListIndex(permanent->controller->graveyard, (unsigned int)j);
+            AppendToList(permanent->controller->hand,card);
+            sprintf(buffer,"%s is returned to hand (%s)",card->name,permanent->name);
+            message(buffer);
+        }
+        RemoveListIndex(permanent->controller->graveyard,permanent->controller->graveyard->size-1);
+        AppendToList(permanent->controller->exile, permanent->source);
+        sprintf(buffer,"%s is exiled",permanent->name);
+        message(buffer);
+    } else if (permanent->source == cd.Plummet) {
+        if (permanent->target && (targetPlayer=findTarget(permanent->target,&index)) && permanent->target->subtypes.is_creature && permanent->target->subtypes.is_flying) {
+            sprintf(buffer,"%s is destroyed",permanent->target->name);
+            message(buffer);
+            MTGPlayer_discardFromBattlefield(targetPlayer,index,GRAVEYARD);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+    } else if (permanent->source == cd.Meteorite) {
+        if (permanent->target == player1->marker) {
+            Event_loseLife(permanent, player1, 2);
+        } else if (permanent->target == player2->marker) {
+            Event_loseLife(permanent, player2, 2);
+        } else if (permanent->target) {
+            if (findTarget(permanent->target,&index) && permanent->target->subtypes.is_creature) {
+                sprintf(buffer,"%s is dealt 2 damage (%s)",permanent->target->name,permanent->name);
+                message(buffer);
+                Event_damage(permanent, permanent->target, 2);
+            } else {
+                sprintf(buffer,"Invalid target for %s",permanent->name);
+                message(buffer);
+            }
+        } else {
+            Event_loseLife(permanent, player2, 2);
+        }
+    } else if (permanent->source == cd.CarrionCrow) {
+        permanent->is_tapped = true;
+    } else if (permanent->source == cd.Gravedigger) {
+        if (permanent->target) {
+            unsigned long j = permanent->target - permanent;
+            MTGCard* card = permanent->controller->graveyard->entries[j];
+            if (card->subtypes.is_creature) {
+                RemoveListIndex(permanent->controller->graveyard, (unsigned int)j);
+                AppendToList(permanent->controller->hand,card);
+                sprintf(buffer,"%s is returned to hand (%s)",card->name,permanent->name);
+                message(buffer);
+            } else {
+                sprintf(buffer,"Invalid target for %s",permanent->name);
+                message(buffer);
+            }
+        }
+    } else if (permanent->source == cd.StabWound) {
+        if (permanent->target && findTarget(permanent->target, &index) && permanent->target->subtypes.is_creature) {
+            sprintf(buffer,"%s gets -2/-2",permanent->target->name);
+            message(buffer);
+            permanent->target->power-=2;
+            permanent->target->bonusPower-=2;
+            permanent->target->bonusToughness-=2;
+            Event_damage(NULL, permanent->target, 2);
+            AppendToList(upkeepSubscribers, permanent);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+            RemoveListObject(permanent->target->equipment, permanent);
+            permanent->target = NULL;
+        }
+    } else if (card == cd.NightfireGiant) {
+        AppendToList(castSpellSubscribers, permanent);
+        AppendToList(destroySubscribers, permanent);
+        for (unsigned int i=0;i<permanent->controller->lands->size;i++) {
+            Permanent* q = permanent->controller->lands->entries[i];
+            if (q->subtypes.is_mountain) {
+                permanent->is_activated = true;
+                permanent->power++;
+                permanent->toughness++;
+                permanent->bonusPower++;
+                permanent->bonusToughness++;
+                break;
+            }
+        }
+    } else if (card == cd.Demolish) {
+        if (permanent->target && (targetPlayer=findTarget(permanent->target,&index)) && (permanent->target->subtypes.is_artifact || permanent->target->subtypes.is_land)) {
+            sprintf(buffer,"%s is destroyed",permanent->target->name);
+            message(buffer);
+            MTGPlayer_discardFromBattlefield(targetPlayer,index,GRAVEYARD);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
     }
+    if (!permanent->subtypes.is_aura && !permanent->subtypes.is_equipment) {
+        permanent->target = NULL;
+    }
+    permanent->target2 = NULL;
     return true;
 }
 
 bool Event_onAbility(Permanent* permanent) {
     char buffer[128];
-    unsigned int index;
+    int index;
     MTGPlayer* player;
     if (permanent->source == cd.Soulmender)
         Event_gainLife(permanent,permanent->controller, 1);
@@ -490,19 +658,141 @@ bool Event_onAbility(Permanent* permanent) {
             sprintf(buffer,"Invalid target for %s",permanent->name);
             message(buffer);
         }
+    } else if (permanent->source == cd.CarnivorousMossBeast) {
+        sprintf(buffer,"%s gets +1/+1",permanent->name);
+        message(buffer);
+        permanent->power++;
+        permanent->toughness++;
+        permanent->bonusPower++;
+        permanent->bonusToughness++;
+    } else if (permanent->source == cd.RoaringPrimadox) {
+        Permanent* p = NULL;
+        if (permanent->target && findTarget(permanent->target, &index) && permanent->target->subtypes.is_creature && permanent->target->controller==permanent->controller)
+            p = permanent->target;
+        else {
+            for (unsigned int i=0;i<permanent->controller->battlefield->size;i++) {
+                Permanent* q = permanent->controller->battlefield->entries[i];
+                if (q->subtypes.is_creature && q->controller == permanent->controller) {
+                    p = q;
+                    break;
+                }
+            }
+        }
+        if (p) {
+            player = findTarget(p, &index);
+            sprintf(buffer,"%s is returned to hand (%s)",p->name,permanent->name);
+            message(buffer);
+            MTGPlayer_discardFromBattlefield(player, index, HAND);
+        }
+    } else if (permanent->source == cd.Meteorite) {
+        if (permanent->target) {
+            unsigned long j = permanent->target - permanent;
+            permanent->controller->mana[j]++;
+            permanent->controller->mana[0]++;
+            sprintf(buffer,"%s get 1 %s mana (%s)",permanent->controller==player1?"You":"Opponent",bufferList->entries[j-1],permanent->name);
+            message(buffer);
+        }
+    } else if (permanent->source == cd.ZofShade) {
+        sprintf(buffer,"%s gets +2/+2",permanent->name);
+        message(buffer);
+        permanent->power+=2;
+        permanent->toughness+=2;
+    }  else if (permanent->source == cd.IndulgentTormentor) {
+        if (permanent->target2) {
+            if ((player = findTarget(permanent->target2, &index)) && permanent->controller != permanent->target2->controller) {
+                sprintf(buffer,"%s is destroyed",permanent->target2->name);
+                message(buffer);
+                MTGPlayer_discardFromBattlefield(player,index,GRAVEYARD);
+            } else {
+                MTGPlayer_drawCards(permanent->controller==player1?player1:player2, 1);
+                sprintf(buffer,"%s draw 1 card",permanent->controller==player1?"You":"Opponent");
+                message(buffer);
+            }
+        } else {
+            unsigned long j = permanent->target ? permanent->target - permanent : 0;
+            switch (j) {
+                case 0:
+                    MTGPlayer_drawCards(permanent->controller==player1?player1:player2, 1);
+                    sprintf(buffer,"%s draw 1 card",permanent->controller==player1?"You":"Opponent");
+                    message(buffer);
+                    permanent->target = NULL;
+                    break;
+                case 1:
+                    if(permanent->controller==player1) {
+                        AI_selectTarget(permanent, "2 creature (+ve)");
+                        if (permanent->target2) {
+                            RemoveListObject(permanent->controller->battlefield, permanent);
+                            AppendToList(stack, permanent);
+                            break;
+                        }
+                    } else {
+                        selectTarget(permanent, "2 creature (+ve)");
+                        RemoveListObject(permanent->controller->battlefield, permanent);
+                        AppendToList(stack, permanent);
+                        break;
+                    }
+                default:
+                    Event_loseLife(permanent,permanent->controller==player1?player2:player1, 3);
+                    permanent->target = NULL;
+            }
+            return true;
+        }
+    } else if (permanent->source == cd.NightfireGiant) {
+        if (permanent->target == player1->marker) {
+            Event_loseLife(permanent, player1, 2);
+        } else if (permanent->target == player2->marker) {
+            Event_loseLife(permanent, player2, 2);
+        } else if (permanent->target) {
+            if (findTarget(permanent->target,&index) && permanent->target->subtypes.is_creature) {
+                sprintf(buffer,"%s is dealt 2 damage (%s)",permanent->target->name,permanent->name);
+                message(buffer);
+                Event_damage(permanent, permanent->target, 2);
+            } else {
+                sprintf(buffer,"Invalid target for %s",permanent->name);
+                message(buffer);
+            }
+        } else {
+            Event_loseLife(permanent, player2, 2);
+        }
     }
     permanent->selectedAbility = 0;
+    permanent->target = NULL;
+    permanent->target2 = NULL;
     return true;
 }
 
 void Event_onDestroy(Permanent* p) {
     MTGCard* card = p->source;
+    
+    for (unsigned int i=0;i<destroySubscribers->size;i++) {
+        Permanent* q = destroySubscribers->entries[i];
+        if (q->source == cd.NightfireGiant && q->is_activated && p->subtypes.is_mountain && p->controller == q->controller) {
+            q->is_activated = false;
+            for (unsigned int j=0;j<p->controller->lands->size;j++) {
+                Permanent* r = p->controller->lands->entries[j];
+                if (r->subtypes.is_mountain && r!=p) {
+                    q->is_activated = true;
+                    break;
+                }
+            }
+            if (!q->is_activated) {
+                q->power--;
+                q->toughness--;
+                q->bonusPower--;
+                q->bonusToughness--;
+            }
+        }
+    }
+    
     if (card == cd.AjanisPridemate || card == cd.WallofLimbs) {
         RemoveListObject(gainLifeSubscribers, p);
     } else if (card == cd.StaffoftheSunMagus || card == cd.StaffoftheDeathMagus || card == cd.KapshoKitefins) {
         RemoveListObject(castSpellSubscribers, p);
+    } else if (card == cd.RoaringPrimadox || card == cd.IndulgentTormentor) {
+        RemoveListObject(upkeepSubscribers, p);
     } else if (card == cd.FirstResponse) {
         RemoveListObject(upkeepSubscribers, p);
+        RemoveListObject(loseLifeSubscribers,p);
     } else if (card == cd.DivineFavor) {
         p->target->bonusPower -= 1;
         p->target->bonusToughness -= 3;
@@ -519,6 +809,15 @@ void Event_onDestroy(Permanent* p) {
         p->target->bonusToughness+=3;
         p->target->power+=3;
         p->target->toughness+=3;
+    } else if (card == cd.StabWound) {
+        p->target->bonusPower+=2;
+        p->target->bonusToughness+=2;
+        p->target->power+=2;
+        p->target->toughness+=2;
+        RemoveListObject(upkeepSubscribers, p);
+    } else if (card == cd.NightfireGiant) {
+        RemoveListObject(castSpellSubscribers, p);
+        RemoveListObject(destroySubscribers, p);
     }
 }
 
@@ -537,9 +836,46 @@ void Event_onUpkeep(MTGPlayer* player) {
                     message(buffer);
                 }
                 p->is_activated = false;
+            } else if (p->source == cd.RoaringPrimadox) {
+                RemoveListObject(p->controller->battlefield, p);
+                AppendToList(stack, p);
+                p->selectedAbility = 1;
+                selectTarget(p, "creature (+ve)");
+            } else if (p->source == cd.IndulgentTormentor) {
+                RemoveListObject(p->controller->battlefield, p);
+                AppendToList(stack, p);
+                p->selectedAbility = 1;
+                bufferList->size = 0;
+                AppendToList(bufferList, "Opponent draws a card");
+                AppendToList(bufferList, "Sacrifice a creature");
+                AppendToList(bufferList, "Lose 3 life");
+                if (p->controller==player1) {
+                    AI_selectOption(p, bufferList);
+                    triggerSelect(bufferList->entries[p->target-p]);
+                } else
+                    selectOption(p, bufferList);
+            }
+        }
+        if (p->source == cd.StabWound && p->target->controller == player) {
+            Event_loseLife(p, player, 2);
+        }
+    }
+}
+
+bool Event_attack(List* attackers,char* err) {
+    for (unsigned int i=0;i<attackSubscribers->size;i++) {
+        Permanent* p = attackSubscribers->entries[i];
+        if (p->source == cd.StormtideLeviathan) {
+            for (unsigned int j=0;j<attackers->size;j++) {
+                Permanent* q = attackers->entries[j];
+                if (!q->subtypes.is_flying && !q->subtypes.is_islandwalk) {
+                    sprintf(err,"Only creatures with islandwalk or flying can attack");
+                    return false;
+                }
             }
         }
     }
+    return true;
 }
 
 void initEvents() {
@@ -547,6 +883,8 @@ void initEvents() {
     loseLifeSubscribers = InitList();
     castSpellSubscribers = InitList();
     upkeepSubscribers = InitList();
+    attackSubscribers = InitList();
+    destroySubscribers = InitList();
     bufferList = InitList();
 }
 
@@ -559,6 +897,10 @@ void DeleteEvents() {
         DeleteList(castSpellSubscribers);
     if (upkeepSubscribers)
         DeleteList(upkeepSubscribers);
+    if (attackSubscribers)
+        DeleteList(attackSubscribers);
+    if (destroySubscribers)
+        DeleteList(destroySubscribers);
     if (bufferList)
         DeleteList(bufferList);
 }

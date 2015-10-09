@@ -118,7 +118,11 @@ void MTGPlayer_discard(MTGPlayer* player,int cardIndex) {
 }
 
 void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,Destination dest) {
-    Permanent* p = MTGPlayer_getBattlefieldPermanent(player->battlefield, cardIndex);
+    Permanent* p;
+    if (cardIndex >= 0)
+        p = MTGPlayer_getBattlefieldPermanent(player->battlefield, cardIndex);
+    else
+        p = player->lands->entries[-cardIndex - 1];
     Event_onDestroy(p);
     if (p->equipment) {
         for (unsigned int j=0;j<p->equipment->size;j++) {
@@ -136,12 +140,14 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,Destinatio
     
     if (p->source)
         AppendToList(dest==EXILE?player->exile:dest==GRAVEYARD?player->graveyard:player->hand,p->source);
-    free(p);
     //remove card from battlefield
     if (p->subtypes.is_aura || p->subtypes.is_equipment)
         RemoveListObject(p->target->equipment, p);
+    else if (cardIndex >= 0)
+        RemoveListIndex(player->battlefield, cardIndex);
     else
-        RemoveListObject(player->battlefield, p);
+        RemoveListIndex(player->lands, -cardIndex - 1);
+    free(p);
 }
 
 bool MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
@@ -261,7 +267,7 @@ bool MTGPlayer_block(Permanent* attacker,List* defenders,char* err) {
     for (unsigned int i=0;i<defenders->size;i++) {
         Permanent* p = defenders->entries[i];
         for (unsigned int j=0;j<p->equipment->size;j++) {
-            Permanent* q = p->equipment->entries[i];
+            Permanent* q = p->equipment->entries[j];
             if (q->source == cd.CripplingBlight) {
                 sprintf(err,"%s cannot block (%s)",p->name,q->name);
                 return false;

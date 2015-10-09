@@ -4,6 +4,7 @@
 void newTurn();
 void resolveAttack(MTGPlayer* attacker,List* permanentList);
 bool Event_onPlay(Permanent* permanent);
+bool Event_attack(List* attackers,char* err);
 
 typedef enum {
     AI_START = 0,
@@ -25,5 +26,7 @@ bool AI_payMana(List* manaCost);
 void AI_discard(int num);
 void AI_selectTarget(Permanent* source,char* allowedTargets);
 void AI_selectPlayer(Permanent* source);
+void AI_selectCreatureOrPlayer(Permanent* source);
 void AI_selectAbility(Permanent* permanent);
 void AI_selectCards(Permanent* permanent,List* cards,char* allowedTargets);
+void AI_selectOption(Permanent* permanent,List* options);

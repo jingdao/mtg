@@ -85,6 +85,7 @@ void* RemoveListIndex(List* ls,unsigned int index) {
 }
 
 bool RemoveListObject(List* ls,void* obj) {
+    if (!ls) return false;
     for (unsigned int i=0;i<ls->size;i++) {
         if (ls->entries[i] == obj) {
             RemoveListIndex(ls, i);
