@@ -38,9 +38,11 @@ struct permanent_struct{
     int toughness,sourceToughness,bonusToughness;
     int loyalty;
     int selectedAbility;
+    int X;
     List* equipment;
     struct permanent_struct *target;
     struct permanent_struct *target2;
+    struct permanent_struct *target3;
     MTGCard* source;
     MTGPlayer* owner;
     MTGPlayer* controller;
@@ -72,5 +74,5 @@ void selectAbility(Permanent* permanent);
 bool AI_payMana(List* manaCost);
 void AI_selectAbility(Permanent* permanent);
 void Event_tapAbility(Permanent* permanent,int index);
-void Event_onDestroy(Permanent* permanent);
+void Event_onDestroy(Permanent* permanent,Destination dest);
 void Event_loseLife(Permanent* source,MTGPlayer* player,int num);

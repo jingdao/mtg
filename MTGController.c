@@ -59,11 +59,11 @@ void loadAbilities() {
 
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
-        for (int i=0;i<10;i++) AppendToList(cards,cd.IndulgentTormentor);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.NightfireGiant);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.Demolish);
-		for (int i=0;i<15;i++) AppendToList(cards,cd.Mountain);
-        for (int i=0;i<15;i++) AppendToList(cards,cd.Swamp);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.SelflessCathar);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.MidnightGuard);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.SeraphoftheMasses);
+		for (int i=0;i<15;i++) AppendToList(cards,cd.Forest);
+        for (int i=0;i<15;i++) AppendToList(cards,cd.Plains);
 	} else if (index == 1) {
 		for (int i=0;i<2;i++) AppendToList(cards,cd.Ornithopter);
 		for (int i=0;i<3;i++) AppendToList(cards,cd.BronzeSable);
@@ -438,7 +438,7 @@ MTGPlayer* newGame(int deck_index) {
 
 	player2 = InitMTGPlayer();
     AI_init(player2);
-	buildDeck(player2->library,0);
+	buildDeck(player2->library,4);
 	shuffleDeck(player2->library);
 
 	MTGPlayer_drawCards(player1,7);

@@ -66,6 +66,7 @@ typedef enum {
     @public UIButton* endturnButton;
     @public UIButton* attackButton;
     @public UIButton* confirmButton;
+    @public UIButton* manaButton;
     @public UITextView* manaLabel;
     @public UIActionSheet* deckSheet;
     @public UIActionSheet* selectSheet;
@@ -76,6 +77,7 @@ typedef enum {
     @public int manaBuffer[6];
     @public Mode mode;
     @public int pendingMana;
+    @public int paidMana;
     @public int pendingDiscard;
     @public int block_index;
     @public int deck_index;

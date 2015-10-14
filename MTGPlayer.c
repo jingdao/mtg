@@ -123,14 +123,14 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,Destinatio
         p = MTGPlayer_getBattlefieldPermanent(player->battlefield, cardIndex);
     else
         p = player->lands->entries[-cardIndex - 1];
-    Event_onDestroy(p);
+    Event_onDestroy(p,dest);
     if (p->equipment) {
         for (unsigned int j=0;j<p->equipment->size;j++) {
             Permanent* q = p->equipment->entries[j];
             if (q->subtypes.is_equipment)
                 AppendToList(q->owner->battlefield, q);
             else {
-                Event_onDestroy(q);
+                Event_onDestroy(q,GRAVEYARD);
                 AppendToList(q->owner->graveyard, q->source);
                 DeletePermanent(q);
             }
@@ -144,7 +144,7 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,Destinatio
     if (p->subtypes.is_aura || p->subtypes.is_equipment)
         RemoveListObject(p->target->equipment, p);
     else if (cardIndex >= 0)
-        RemoveListIndex(player->battlefield, cardIndex);
+        RemoveListObject(player->battlefield, p);
     else
         RemoveListIndex(player->lands, -cardIndex - 1);
     free(p);
@@ -215,7 +215,7 @@ bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
     for (int i=manaCost->size-1;i>=0;i--) {
         Manacost *cost = manaCost->entries[i];
         if (cost->isVariable) {
-            
+            userSelect = -1;
         } else if (cost->hasOption) {
             
         } else if (cost->color1 == COLORLESS) {

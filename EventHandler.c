@@ -95,7 +95,7 @@ void Event_loseLife(Permanent* source, MTGPlayer* player,int num) {
     }
 }
 
-void Event_damage(Permanent* attacker, Permanent* defender,int num) {
+bool Event_damage(Permanent* attacker, Permanent* defender,int num) {
     char buffer[128];
     if (attacker && attacker->subtypes.is_deathtouch)
         defender->toughness = 0;
@@ -110,7 +110,9 @@ void Event_damage(Permanent* attacker, Permanent* defender,int num) {
         int index;
         MTGPlayer* p = findTarget(defender, &index);
         MTGPlayer_discardFromBattlefield(p, index, GRAVEYARD);
+        return true;
     }
+    return false;
 }
 
 bool Event_onPlay(Permanent* permanent) {
@@ -125,12 +127,10 @@ bool Event_onPlay(Permanent* permanent) {
     void (*chooseTarget)(Permanent* source,char* allowedTargets);
     void (*choosePlayer)(Permanent* source);
     void (*chooseCards)(Permanent* source,List* cards,char* allowedTargets);
-    void (*chooseCreatureOrPlayer)(Permanent* source);
     void (*chooseOption)(Permanent* source,List* options);
     chooseTarget = permanent->controller==player1 ? selectTarget : AI_selectTarget;
     choosePlayer = permanent->controller==player1 ? selectPlayer : AI_selectPlayer;
     chooseCards = permanent->controller==player1 ? selectCards : AI_selectCards;
-    chooseCreatureOrPlayer = permanent->controller==player1 ? selectCreatureOrPlayer : AI_selectCreatureOrPlayer;
     chooseOption = permanent->controller==player1 ? selectOption : AI_selectOption;
     
     for (unsigned int i=0;i<castSpellSubscribers->size;i++) {
@@ -165,19 +165,25 @@ bool Event_onPlay(Permanent* permanent) {
     if (card == cd.KinsbaileSkirmisher || card == cd.DivineFavor || card == cd.MercurialPretender || card == cd.InvasiveSpecies)
         chooseTarget(permanent,"creature (+ve)");
     else if (card == cd.PillarofLight || card == cd.CripplingBlight || card == cd.Ulcerate || card==cd.FrostLynx ||
-             card == cd.KapshoKitefins || card == cd.TurntoFrog || card == cd.Plummet || card == cd.StabWound)
+             card == cd.KapshoKitefins || card == cd.TurntoFrog || card == cd.Plummet || card == cd.StabWound || card == cd.FleshtoDust ||
+             card == cd.ClearaPath || card == cd.BlastfireBolt || card == cd.HeatRay)
         chooseTarget(permanent,"creature (-ve)");
     else if (card == cd.Encrust)
         chooseTarget(permanent,"creature or enchantment (-ve)");
     else if (card == cd.SolemnOffering || card == cd.ReclamationSage)
         chooseTarget(permanent, "artifact or enchantment (-ve)");
-    
     else if (card == cd.PeelfromReality) {
-        chooseTarget(permanent,"2nd creature (-ve)");
         chooseTarget(permanent,"1st creature (+ve)");
-    } else if (card == cd.IntotheVoid) {
         chooseTarget(permanent,"2nd creature (-ve)");
+    } else if (card == cd.IntotheVoid) {
         chooseTarget(permanent,"1st creature (-ve)");
+        chooseTarget(permanent,"2nd creature (-ve)");
+    } else if (card == cd.ConeofFlame) {
+        chooseTarget(permanent,"1st creature or player (-ve)");
+        chooseTarget(permanent,"2nd creature or player (-ve)");
+        chooseTarget(permanent,"3rd creature or player (-ve)");
+    } else if (card == cd.Meteorite || card == cd.LightningStrike) {
+        chooseTarget(permanent,"creature or player (-ve)");
     } else if (card == cd.SatyrWayfinder) {
         int n = permanent->controller->library->size < 4 ? permanent->controller->library->size : 4;
         memcpy(bufferList->entries,permanent->controller->library->entries+permanent->controller->library->size-n,n*sizeof(MTGCard*));
@@ -188,8 +194,6 @@ bool Event_onPlay(Permanent* permanent) {
         chooseCards(permanent,permanent->controller->graveyard,"2 cards from graveyard");
     else if (card == cd.Gravedigger)
         chooseCards(permanent,permanent->controller->graveyard,"creature card from graveryard");
-    else if (card == cd.Meteorite)
-        chooseCreatureOrPlayer(permanent);
     else if (card == cd.Demolish)
         chooseTarget(permanent,"artifact or land (-ve)");
     else if (card == cd.SigninBlood)
@@ -206,12 +210,10 @@ bool Event_onPlayAbility(Permanent* permanent) {
     void (*chooseTarget)(Permanent* source,char* allowedTargets);
     void (*choosePlayer)(Permanent* source);
     void (*chooseCards)(Permanent* source,List* cards,char* allowedTargets);
-    void (*chooseCreatureOrPlayer)(Permanent* source);
     void (*chooseOption)(Permanent* source,List* options);
     chooseTarget = permanent->controller==player1 ? selectTarget : AI_selectTarget;
     choosePlayer = permanent->controller==player1 ? selectPlayer : AI_selectPlayer;
     chooseCards = permanent->controller==player1 ? selectCards : AI_selectCards;
-    chooseCreatureOrPlayer = permanent->controller==player1 ? selectCreatureOrPlayer : AI_selectCreatureOrPlayer;
     chooseOption = permanent->controller==player1 ? selectOption : AI_selectOption;
     
     if (card == cd.BloodHost)
@@ -225,7 +227,9 @@ bool Event_onPlayAbility(Permanent* permanent) {
         AppendToList(bufferList, "green");
         chooseOption(permanent,bufferList);
     } else if (card == cd.NightfireGiant)
-        chooseCreatureOrPlayer(permanent);
+        chooseTarget(permanent,"creature or player (-ve)");
+    else if (card == cd.TorchFiend)
+        chooseTarget(permanent,"artifact");
     else return true;
     return false;
 }
@@ -250,8 +254,8 @@ bool Event_onResolve(Permanent* permanent) {
         AppendToList(castSpellSubscribers, permanent);
     else if (card == cd.RoaringPrimadox || card == cd.IndulgentTormentor)
         AppendToList(upkeepSubscribers, permanent);
-    else if (card == cd.StormtideLeviathan)
-        AppendToList(attackSubscribers, permanent);
+    else if (card == cd.ProfaneMemento)
+        AppendToList(destroySubscribers, permanent);
     else if (card == cd.FirstResponse) {
         AppendToList(upkeepSubscribers,permanent);
         AppendToList(loseLifeSubscribers, permanent);
@@ -399,6 +403,17 @@ bool Event_onResolve(Permanent* permanent) {
             sprintf(buffer,"Invalid target for %s",permanent->name);
             message(buffer);
         }
+    } else if (card == cd.StormtideLeviathan) {
+        AppendToList(attackSubscribers, permanent);
+        for (unsigned int i=0;i<player1->lands->size;i++) {
+            Permanent* q = player1->lands->entries[i];
+            q->subtypes.is_island = true;
+        }
+        for (unsigned int i=0;i<player2->lands->size;i++) {
+            Permanent* q = player2->lands->entries[i];
+            q->subtypes.is_island = true;
+        }
+        message("All lands are now Islands");
     } else if (permanent->source == cd.IntotheVoid) {
         if (permanent->target && (targetPlayer=findTarget(permanent->target, &index)) && permanent->target->subtypes.is_creature) {
             sprintf(buffer,"%s is returned to hand (%s)",permanent->target->name,permanent->name);
@@ -602,6 +617,110 @@ bool Event_onResolve(Permanent* permanent) {
             sprintf(buffer,"Invalid target for %s",permanent->name);
             message(buffer);
         }
+    } else if (card == cd.Festergloom) {
+        for (unsigned int i=0;i<player1->battlefield->size;i++) {
+            Permanent* p = player1->battlefield->entries[i];
+            if (p->subtypes.is_creature && !p->subtypes.is_black) {
+                p->power--;
+                if (Event_damage(permanent, p, 1))
+                    i--;
+            }
+        }
+        for (unsigned int i=0;i<player2->battlefield->size;i++) {
+            Permanent* p = player2->battlefield->entries[i];
+            if (p->subtypes.is_creature && !p->subtypes.is_white) {
+                p->power--;
+                if (Event_damage(permanent, p, 1))
+                    i--;
+            }
+        }
+        sprintf(buffer,"All non-black creatures get -1/-1 (%s)",permanent->name);
+        message(buffer);
+    } else if (card == cd.FleshtoDust) {
+        if (permanent->target && (targetPlayer=findTarget(permanent->target,&index)) && permanent->target->subtypes.is_creature) {
+            sprintf(buffer,"%s is destroyed",permanent->target->name);
+            message(buffer);
+            MTGPlayer_discardFromBattlefield(targetPlayer,index,GRAVEYARD);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+    } else if (card == cd.ClearaPath) {
+        if (permanent->target && (targetPlayer=findTarget(permanent->target,&index)) && permanent->target->subtypes.is_creature && permanent->target->subtypes.is_defender) {
+            sprintf(buffer,"%s is destroyed",permanent->target->name);
+            message(buffer);
+            MTGPlayer_discardFromBattlefield(targetPlayer,index,GRAVEYARD);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+    } else if (card == cd.ConeofFlame) {
+        Permanent* targets[3] = {permanent->target,permanent->target2,permanent->target3};
+        for (int i=0;i<3;i++) {
+            if (targets[i] == player1->marker) {
+                Event_loseLife(permanent, player1, i+1);
+            } else if (targets[i] == player2->marker) {
+                Event_loseLife(permanent, player2, i+1);
+            } else if (targets[i]) {
+                if (findTarget(targets[i],&index) && targets[i]->subtypes.is_creature) {
+                    sprintf(buffer,"%s is dealt %d damage (%s)",targets[i]->name,i+1,permanent->name);
+                    message(buffer);
+                    Event_damage(permanent, targets[i], i+1);
+                } else {
+                    sprintf(buffer,"Invalid target for %s",permanent->name);
+                    message(buffer);
+                }
+            } else {
+                Event_loseLife(permanent, player2, i+1);
+            }
+        }
+    } else if (card == cd.LightningStrike) {
+        if (permanent->target == player1->marker) {
+            Event_loseLife(permanent, player1, 3);
+        } else if (permanent->target == player2->marker) {
+            Event_loseLife(permanent, player2, 3);
+        } else if (permanent->target) {
+            if (findTarget(permanent->target,&index) && permanent->target->subtypes.is_creature) {
+                sprintf(buffer,"%s is dealt 3 damage (%s)",permanent->target->name,permanent->name);
+                message(buffer);
+                Event_damage(permanent, permanent->target, 3);
+            } else {
+                sprintf(buffer,"Invalid target for %s",permanent->name);
+                message(buffer);
+            }
+        } else {
+            Event_loseLife(permanent, player2, 3);
+        }
+    } else if (card == cd.BlastfireBolt) {
+        if (permanent->target && findTarget(permanent->target,&index) && permanent->target->subtypes.is_creature) {
+            sprintf(buffer,"%s is dealt 5 damage (%s)",permanent->target->name,permanent->name);
+            message(buffer);
+            Event_damage(permanent, permanent->target, 5);
+            for (unsigned int j=0;j<permanent->target->equipment->size;j++) {
+                Permanent* q = permanent->target->equipment->entries[j];
+                if (q->subtypes.is_equipment) {
+                    sprintf(buffer,"%s is destroyed (%s)",q->name,permanent->name);
+                    message(buffer);
+                    RemoveListIndex(permanent->target->equipment, j--);
+                    Event_onDestroy(q,GRAVEYARD);
+                    AppendToList(q->owner->graveyard, q->source);
+                    DeletePermanent(q);
+                }
+            }
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+    } else if (card == cd.HeatRay) {
+        if (permanent->target && findTarget(permanent->target,&index) && permanent->target->subtypes.is_creature) {
+            sprintf(buffer,"%s is dealt %d damage (%s)",permanent->target->name,permanent->X,permanent->name);
+            message(buffer);
+            Event_damage(permanent, permanent->target, permanent->X);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+        
     }
     if (!permanent->subtypes.is_aura && !permanent->subtypes.is_equipment) {
         permanent->target = NULL;
@@ -620,8 +739,8 @@ bool Event_onAbility(Permanent* permanent) {
         sprintf(buffer,"WallofLimbs is sacrificed");
         message(buffer);
         Event_loseLife(permanent, permanent->controller==player1?player2:player1, permanent->power);
-        player = findTarget(permanent, &index);
-        MTGPlayer_discardFromBattlefield(player, index, GRAVEYARD);
+        if ((player = findTarget(permanent, &index)))
+            MTGPlayer_discardFromBattlefield(player, index, GRAVEYARD);
         return false;
     } else if (permanent->source == cd.BloodHost) {
         if (permanent->target && (player=findTarget(permanent->target, &index)) && permanent->target->subtypes.is_creature && permanent->controller==permanent->target->controller) {
@@ -754,6 +873,29 @@ bool Event_onAbility(Permanent* permanent) {
         } else {
             Event_loseLife(permanent, player2, 2);
         }
+    } else if (permanent->source == cd.TorchFiend) {
+        if (permanent->target && (player=findTarget(permanent->target, &index)) && permanent->target->subtypes.is_artifact) {
+            sprintf(buffer,"%s is destroyed (%s)",permanent->target->name,permanent->name);
+            message(buffer);
+            MTGPlayer_discardFromBattlefield(player, index, GRAVEYARD);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+        sprintf(buffer,"%s is sacrificed",permanent->name);
+        message(buffer);
+        if ((player = findTarget(permanent, &index)))
+            MTGPlayer_discardFromBattlefield(player, index, GRAVEYARD);
+        return false;
+    }  else if (permanent->source == cd.WallofFire) {
+        sprintf(buffer,"%s gets +1/+0",permanent->name);
+        message(buffer);
+        permanent->power++;
+    } else if (permanent->source == cd.GargoyleSentinel) {
+        sprintf(buffer,"%s loses defender and gains flying",permanent->name);
+        message(buffer);
+        permanent->subtypes.is_flying=true;
+        permanent->subtypes.is_defender=false;
     }
     permanent->selectedAbility = 0;
     permanent->target = NULL;
@@ -761,7 +903,7 @@ bool Event_onAbility(Permanent* permanent) {
     return true;
 }
 
-void Event_onDestroy(Permanent* p) {
+void Event_onDestroy(Permanent* p,Destination dest) {
     MTGCard* card = p->source;
     
     for (unsigned int i=0;i<destroySubscribers->size;i++) {
@@ -781,6 +923,8 @@ void Event_onDestroy(Permanent* p) {
                 q->bonusPower--;
                 q->bonusToughness--;
             }
+        } else if (q->source == cd.ProfaneMemento && p->controller!=q->controller && p->subtypes.is_creature && dest==GRAVEYARD) {
+            Event_gainLife(q, q->controller, 1);
         }
     }
     

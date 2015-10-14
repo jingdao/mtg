@@ -8,6 +8,7 @@ AIState state;
 MTGPlayer* aiplayer;
 extern CardData cd;
 extern MTGPlayer* player1;
+int X;
 
 void AI_init(MTGPlayer* player) {
     state = AI_NONE;
@@ -43,11 +44,15 @@ void AI_getBlockers(List* attackerList, List* blockersList){
 
 bool AI_payMana(List* manaCost) {
     int manaBuffer[6];
+    X=0;
     memcpy(manaBuffer,aiplayer->mana,6*sizeof(int));
     int j;
     for (j=manaCost->size - 1;j>=0;j--) {
         Manacost* cost = manaCost->entries[j];
-        if (cost->color1 == COLORLESS) {
+        if (cost->isVariable) {
+            X = manaBuffer[0];
+            memset(manaBuffer, 0, 6*sizeof(int));
+        } else if (cost->color1 == COLORLESS) {
             if (cost->num <= manaBuffer[0]) {
                 int pendingMana = cost->num;
                 while (pendingMana > 0) {
@@ -85,6 +90,15 @@ void AI_discard(int num) {
 void AI_selectTarget(Permanent* source,char* allowedTargets) {
     unsigned long l = strlen(allowedTargets);
     MTGPlayer* targetPlayer = strncmp(allowedTargets+(l-5), "(+ve)", 5)==0 ? aiplayer : player1;
+    if (strstr(allowedTargets,"player")) {
+        if (allowedTargets[0] == '3')
+            source->target3 = targetPlayer->marker;
+        else if (allowedTargets[1] == '2')
+            source->target2 = targetPlayer->marker;
+        else
+            source->target = targetPlayer->marker;
+        return;
+    }
     if (strstr(allowedTargets,"creature")) {
         for (int i=0;i<10;i++) {
             List* targetBattlefield = rand()%2 ? aiplayer->battlefield : player1->battlefield;
@@ -169,10 +183,6 @@ void AI_selectPlayer(Permanent* source) {
     source->target = targetPlayer->marker;
 }
 
-void AI_selectCreatureOrPlayer(Permanent* source) {
-    
-}
-
 void AI_selectCards(Permanent* permanent,List* cards,char* allowedTargets) {
     
 }
@@ -239,6 +249,7 @@ void AI_getAction() {
             if (!card->subtypes.is_creature)
                 continue;
             if ((p  = MTGPlayer_playCard(aiplayer, i, buffer))) {
+                p->X = X;
                 Event_onPlay(p);
                 castedCreature = true;
                 break;
@@ -264,6 +275,7 @@ void AI_getAction() {
                 MTGCard* card = aiplayer->hand->entries[i];
                 if (card->subtypes.is_enchantment || card->subtypes.is_sorcery || card->subtypes.is_instant || card->subtypes.is_artifact) {
                     if ((p  = MTGPlayer_playCard(aiplayer, i, buffer))) {
+                        p->X = X;
                         Event_onPlay(p);
                         castedSorcery = true;
                         break;
@@ -294,6 +306,7 @@ void AI_getAction() {
                 if (a->lifeCost == 0) {
                     MTGPlayer_tap(aiplayer, p);
                     if (MTGPlayer_activateAbility(aiplayer, p,buffer)) {
+                        p->X = X;
                         Event_onPlay(p);
                         used_ability=true;
                         castedAbility=true;

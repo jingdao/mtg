@@ -218,11 +218,16 @@ extern MTGPlayer* player2;
     self->manaAlert = [[UIView alloc] initWithFrame: CGRectMake((width-stepperWidth*2-margin*2)/2, (height-margin*4-stepperHeight*5)/2, margin*4+stepperWidth*2, margin*4+stepperHeight*5)];
     manaAlert.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
     manaAlert.layer.cornerRadius = 10.0;
-    self->manaLabel = [[UITextView alloc] initWithFrame:CGRectMake(margin*2, margin*2, stepperWidth,margin*2+stepperHeight*5)];
+    self->manaLabel = [[UITextView alloc] initWithFrame:CGRectMake(margin*2, margin*2, stepperWidth,margin*2+stepperHeight*4)];
     manaLabel.editable = false;
     manaLabel.backgroundColor = manaAlert.backgroundColor;
     [manaLabel setFont: [UIFont systemFontOfSize:15]];
     [manaAlert addSubview:manaLabel];
+    manaButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [manaButton setFrame:CGRectMake(margin*2, margin*4+stepperHeight*4, stepperWidth, stepperHeight)];
+    [manaButton setTitle:@"Confirm" forState:UIControlStateNormal];
+    [manaButton addTarget:self action:@selector(onManaButton:) forControlEvents:UIControlEventTouchUpInside];
+    [manaAlert addSubview:manaButton];
     for (int i=1;i<=5;i++) {
         UIStepper* stepper = [[UIStepper alloc] initWithFrame:CGRectMake(stepperWidth+margin*2,margin+stepperHeight*(i-1),stepperWidth,stepperHeight)];
         stepper.tag=i;
@@ -360,6 +365,15 @@ extern MTGPlayer* player2;
     else
         //return [UIImage imageWithContentsOfFile:name];
         return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:nil]];
+}
+
+- (void) disableHighlight {
+    if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
+    if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
+    if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
+    if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
+    if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
+    if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
 }
 
 - (void) toggleHighlight: (UIScrollView*) sv {
@@ -503,13 +517,8 @@ extern MTGPlayer* player2;
                 MTGPlayer_tap(self->player, self->currentPermanent);
             displayLands(self->player->lands, true);
             displayStats(self->player->hp, self->player->library->size, self->player->hand->size,self->player->graveyard->size ,self->player->exile->size ,self->player->mana, self);
-        } else if (mode==SELECT_TARGET) {
-            if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
-            if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
-            if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
-            if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
-            if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
-            if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
+        } else if (mode==SELECT_TARGET && selfLands.layer.borderWidth > 0) {
+            [self disableHighlight];
             currentEquipment->target = currentPermanent;
             [self changeMode:STACK];
             [self onConfirm:NULL];
@@ -556,13 +565,10 @@ extern MTGPlayer* player2;
                 AppendToList(blockers, currentPermanent);
             }
         } else if (mode==SELECT_TARGET) {
-            if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
-            if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
-            if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
-            if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
-            if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
-            if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
-            if (target_index == 2)
+            [self disableHighlight];
+            if (target_index == 3)
+                currentEquipment->target3 = currentPermanent;
+            else if (target_index == 2)
                 currentEquipment->target2 = currentPermanent;
             else
                 currentEquipment->target = currentPermanent;
@@ -603,13 +609,10 @@ extern MTGPlayer* player2;
             idx = self->opponentBattlefieldViews.count - 1;
         currentPermanent = MTGPlayer_getBattlefieldPermanent(opponentPermanents, (unsigned int)idx);
         if (mode==SELECT_TARGET) {
-            if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
-            if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
-            if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
-            if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
-            if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
-            if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
-            if (target_index == 2)
+            [self disableHighlight];
+            if (target_index == 3)
+                currentEquipment->target3 = currentPermanent;
+            else if (target_index == 2)
                 currentEquipment->target2 = currentPermanent;
             else
                 currentEquipment->target = currentPermanent;
@@ -625,27 +628,30 @@ extern MTGPlayer* player2;
         if (idx >= self->opponentLandsViews.count)
             idx = self->opponentLandsViews.count - 1;
         currentPermanent = player2->lands->entries[idx];
-        if (mode==SELECT_TARGET) {
-            if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
-            if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
-            if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
-            if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
-            if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
-            if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
+        if (mode==SELECT_TARGET && opponentLands.layer.borderWidth > 0) {
+            [self disableHighlight];
             currentEquipment->target = currentPermanent;
             [self changeMode:STACK];
             [self onConfirm:NULL];
         }
     } else if ([gesture view] == selfDeck && mode==SELECT_TARGET && selfDeck.layer.borderWidth > 0) {
-        currentEquipment->target = player->marker;
-        [self toggleCard:selfDeck];
-        [self toggleCard:opponentDeck];
+        if (target_index == 3)
+            currentEquipment->target3 = player->marker;
+        else if (target_index == 2)
+            currentEquipment->target2 = player->marker;
+        else
+            currentEquipment->target = player->marker;
+        [self disableHighlight];
         [self changeMode:STACK];
         [self onConfirm:NULL];
     } else if ([gesture view] == opponentDeck && mode==SELECT_TARGET && opponentDeck.layer.borderWidth > 0) {
-        currentEquipment->target = player2->marker;
-        [self toggleCard:selfDeck];
-        [self toggleCard:opponentDeck];
+        if (target_index == 3)
+            currentEquipment->target3 = player2->marker;
+        else if (target_index == 2)
+            currentEquipment->target2 = player2->marker;
+        else
+            currentEquipment->target = player2->marker;
+        [self disableHighlight];
         [self changeMode:STACK];
         [self onConfirm:NULL];
     }
@@ -759,12 +765,7 @@ extern MTGPlayer* player2;
         }
         return;
     } else if (mode == SELECT_TARGET) {
-        if (selfBattlefield.layer.borderWidth > 0) [self toggleHighlight:selfBattlefield];
-        if (opponentBattlefield.layer.borderWidth > 0) [self toggleHighlight:opponentBattlefield];
-        if (selfLands.layer.borderWidth > 0) [self toggleHighlight:selfLands];
-        if (opponentLands.layer.borderWidth > 0) [self toggleHighlight:opponentLands];
-        if (selfDeck.layer.borderWidth > 0) [self toggleCard:selfDeck];
-        if (opponentDeck.layer.borderWidth > 0) [self toggleCard:opponentDeck];
+        [self disableHighlight];
         mode = STACK;
         return;
     } else if (mode == SELECT_CARDS) {
@@ -806,6 +807,18 @@ extern MTGPlayer* player2;
             return;
     }
     [self changeMode:NONE];
+}
+
+- (void) onManaButton: (id)sender {
+    if (pendingMana < 0)
+        currentPermanent->X = paidMana;
+    memcpy(viewController->player->mana, manaBuffer, 6*sizeof(int));
+    displayStats(player->hp,player->library->size,player->hand->size,player->graveyard->size,player->exile->size,player->mana,true);
+    self->mode = NONE;
+    [self->manaAlert removeFromSuperview];
+    [self->popupMask removeFromSuperview];
+    if (Event_onPlay(currentPermanent))
+        [self changeMode:STACK];
 }
 
 - (bool) continueAction {
@@ -952,24 +965,19 @@ extern MTGPlayer* player2;
     if (theStepper.value > old_value && mana[index] > 0) { //increment
         mana[index]--;
         mana[0]--;
-        pendingMana--;
+        paidMana++;
     } else  if (theStepper.value < old_value && mana[index] < player->mana[index]) { //decrement
         mana[index]++;
         mana[0]++;
-        pendingMana++;
+        paidMana--;
     }
-    if (pendingMana == 0) {
-        memcpy(viewController->player->mana, mana, 6*sizeof(int));
-        displayStats(player->hp,player->library->size,player->hand->size,player->graveyard->size,player->exile->size,player->mana,true);
-        self->mode = NONE;
-        [self->manaAlert removeFromSuperview];
-        [self->popupMask removeFromSuperview];
-        if (Event_onPlay(currentPermanent))
-            [self changeMode:STACK];
-    } else {
-        theStepper.tag = theStepper.value * 10 + index;
-        self->manaLabel.text = [NSString stringWithFormat:@"Select mana\n(%d remaining)\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d",viewController->pendingMana,mana[1],mana[2],mana[3],mana[4],mana[5]];
-    }
+
+    theStepper.tag = theStepper.value * 10 + index;
+    viewController->manaLabel.text = [NSString stringWithFormat:@"Select mana\n(%d/%d)\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d",viewController->paidMana,viewController->pendingMana,mana[1],mana[2],mana[3],mana[4],mana[5]];
+    if (paidMana >= pendingMana)
+        manaButton.enabled = true;
+    else
+        manaButton.enabled = false;
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
@@ -1209,8 +1217,10 @@ void displayWinner(MTGPlayer* winner) {
 
 void selectMana(int* mana,int amount) {
     viewController->pendingMana = amount;
+    viewController->paidMana = 0;
+    viewController->manaButton.enabled = amount < 0;
     memcpy(viewController->manaBuffer, viewController->player->mana, 6*sizeof(int));
-    viewController->manaLabel.text = [NSString stringWithFormat:@"Select mana\n(%d remaining)\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d",viewController->pendingMana,mana[1],mana[2],mana[3],mana[4],mana[5]];
+    viewController->manaLabel.text = [NSString stringWithFormat:@"Select mana\n(%d/%d)\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d",viewController->paidMana,viewController->pendingMana,mana[1],mana[2],mana[3],mana[4],mana[5] ];
     viewController->mode = MANA;
     [viewController.view addSubview:viewController->popupMask];
     [viewController.view addSubview:viewController->manaAlert];
@@ -1242,13 +1252,17 @@ void selectTarget(Permanent* source,char* allowedTargets) {
     [viewController changeMode:STACK];
     void (^blockcommand)(void);
     blockcommand = ^{
-        viewController->target_index = allowedTargets[0]=='2' ? 2 : 0;
+        viewController->target_index = allowedTargets[0]=='3' ? 3 : allowedTargets[0]=='2' ? 2 : 0;
         [viewController displayToastWithMessage:[NSString stringWithFormat:@"%s: select target %s",source->name,allowedTargets]];
         [viewController toggleHighlight:viewController->selfBattlefield];
         [viewController toggleHighlight:viewController->opponentBattlefield];
         if (strstr(allowedTargets,"land")) {
             [viewController toggleHighlight:viewController->selfLands];
             [viewController toggleHighlight:viewController->opponentLands];
+        }
+        if (strstr(allowedTargets,"player")) {
+            [viewController toggleCard:viewController->selfDeck];
+            [viewController toggleCard:viewController->opponentDeck];
         }
         [viewController changeMode:SELECT_TARGET];
         viewController->currentEquipment = source;
@@ -1263,21 +1277,6 @@ void selectPlayer(Permanent* source) {
         [viewController displayToastWithMessage:[NSString stringWithFormat:@"%s: select target player",source->name]];
         [viewController toggleCard:viewController->selfDeck];
         [viewController toggleCard:viewController->opponentDeck];
-        [viewController changeMode:SELECT_TARGET];
-        viewController->currentEquipment = source;
-    };
-    [viewController->commandQueue addObject:blockcommand];
-}
-
-void selectCreatureOrPlayer(Permanent* source) {
-    [viewController changeMode:STACK];
-    void (^blockcommand)(void);
-    blockcommand = ^{
-        [viewController displayToastWithMessage:[NSString stringWithFormat:@"%s: select target creature or player",source->name]];
-        [viewController toggleCard:viewController->selfDeck];
-        [viewController toggleCard:viewController->opponentDeck];
-        [viewController toggleHighlight:viewController->selfBattlefield];
-        [viewController toggleHighlight:viewController->opponentBattlefield];
         [viewController changeMode:SELECT_TARGET];
         viewController->currentEquipment = source;
     };
