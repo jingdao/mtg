@@ -53,17 +53,13 @@ void loadCardDataTable() {
     }
 }
 
-void loadAbilities() {
-    cd.ShadowcloakVampire->subtypes.has_instant = true;
-}
-
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
-        for (int i=0;i<10;i++) AppendToList(cards,cd.SelflessCathar);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.MidnightGuard);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.SeraphoftheMasses);
-		for (int i=0;i<15;i++) AppendToList(cards,cd.Forest);
-        for (int i=0;i<15;i++) AppendToList(cards,cd.Plains);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.ResearchAssistant);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.MercurialPretender);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.StormtideLeviathan);
+        for (int i=0;i<15;i++) AppendToList(cards,cd.Island);
+        for (int i=0;i<15;i++) AppendToList(cards,cd.Forest);
 	} else if (index == 1) {
 		for (int i=0;i<2;i++) AppendToList(cards,cd.Ornithopter);
 		for (int i=0;i<3;i++) AppendToList(cards,cd.BronzeSable);
@@ -231,6 +227,8 @@ void resolveAttack(MTGPlayer* attacker,List* permanentList) {
 		List* blockers = InitList();
 		AppendToList(blockersList,blockers);
 	}
+    displayBattlefield(player1->battlefield, true);
+    displayBattlefield(player2->battlefield, false);
 	if (attacker==player1) {
 		AI_getBlockers(attackerList,blockersList);
         message("You launched an attack");
@@ -260,7 +258,7 @@ bool resolveBlock() {
     char buffer[128];
     int k;
     if (blockers->size == 0) {
-        Event_loseLife(p, defender, p->power);
+        Event_combat(p, defender->marker, p->power);
         if (p->subtypes.is_lifelink) {
             Event_gainLife(p, currentPlayer, p->power);
         }
@@ -273,31 +271,45 @@ bool resolveBlock() {
         message(buffer);
         int p_lifelink = 0;
         int q_lifelink = 0;
+        bool p_destroyed = false, q_destroyed = false;
+        int index;
+        MTGPlayer* player;
         for (unsigned int j=0;j<blockers->size;j++) {
             Permanent* q = blockers->entries[j];
             int initialToughness = q->toughness;
             if ((p->subtypes.is_first_strike||p->subtypes.is_double_strike) && p->power > 0 && p->toughness > 0) {
-                Event_damage(p, q, p->power);
+                q_destroyed = Event_combat(p, q, p->power);
                 if (p->subtypes.is_lifelink) p_lifelink += p->power;
             }
             if ((q->subtypes.is_first_strike||q->subtypes.is_double_strike) && q->power > 0) {
-                Event_damage(q, p, q->power);
+                p_destroyed = Event_combat(q, p, q->power);
                 if (q->subtypes.is_lifelink) q_lifelink += q->power;
             }
             int currentToughness = q->toughness;
             if (!p->subtypes.is_first_strike && p->power > 0 && p->toughness > 0) {
-                Event_damage(p, q, p->power);
+                q_destroyed = Event_combat(p, q, p->power);
                 if (p->subtypes.is_lifelink) p_lifelink += p->power;
             }
             if (!q->subtypes.is_first_strike && q->power > 0 && currentToughness > 0) {
-                Event_damage(q, p, q->power);
+                p_destroyed = Event_combat(q, p, q->power);
                 if (q->subtypes.is_lifelink) q_lifelink += q->power;
             }
             p->power -= initialToughness;
-            
+            if (q_destroyed) {
+                sprintf(buffer,"%s is destroyed",q->name);
+                message(buffer);
+                player = findTarget(q, &index);
+                MTGPlayer_discardFromBattlefield(player, index, GRAVEYARD);
+            }
         }
         if (p->subtypes.is_trample && p->power > 0) {
-            Event_loseLife(NULL,defender, p->power);
+            Event_combat(NULL,defender->marker, p->power);
+        }
+        if (p_destroyed) {
+            sprintf(buffer,"%s is destroyed",p->name);
+            message(buffer);
+            player = findTarget(p, &index);
+            MTGPlayer_discardFromBattlefield(player, index, GRAVEYARD);
         }
         if (p_lifelink > 0) {
             Event_gainLife(NULL,currentPlayer,p_lifelink);
@@ -331,13 +343,18 @@ bool resolveStack() {
     bool destroyed = false;
     
     if ((permanent->subtypes.is_aura || permanent->subtypes.is_equipment)) {
-        if (permanent->target)
+        if (permanent->target && permanent->target->equipment)
             AppendToList(permanent->target->equipment,permanent);
+        else if (permanent->subtypes.is_equipment)
+            AppendToList(permanent->owner->battlefield,permanent);
+    } else if (permanent->subtypes.is_planeswalker){
+        if (permanent->loyalty > 0)
+            AppendToList(permanent->owner->battlefield, permanent);
         else {
             AppendToList(permanent->owner->graveyard,permanent->source);
             destroyed = true;
         }
-    } else if (permanent->subtypes.is_enchantment || permanent->subtypes.is_creature || permanent->subtypes.is_planeswalker || permanent->subtypes.is_artifact) {
+    } else if (permanent->subtypes.is_enchantment || permanent->subtypes.is_creature || permanent->subtypes.is_artifact) {
         AppendToList(permanent->owner->battlefield,permanent);
     } else {
         AppendToList(permanent->owner->graveyard,permanent->source);
@@ -426,6 +443,7 @@ MTGPlayer* newGame(int deck_index) {
     stack = InitList();
     
     player1 = InitMTGPlayer();
+    player1->marker->name = "You";
 	//loadDeck("deck.txt",player1->library);
     //if (player1->library->size <= 0)
     //    buildDeck(player1->library,rand() % 6);
@@ -437,8 +455,9 @@ MTGPlayer* newGame(int deck_index) {
 	//saveDeck("deck.txt",player1->library);
 
 	player2 = InitMTGPlayer();
+    player2->marker->name = "Opponent";
     AI_init(player2);
-	buildDeck(player2->library,4);
+	buildDeck(player2->library,3);
 	shuffleDeck(player2->library);
 
 	MTGPlayer_drawCards(player1,7);

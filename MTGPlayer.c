@@ -15,9 +15,8 @@ Permanent* NewPermanent(MTGCard* source,MTGPlayer* own) {
         p->power = p->sourcePower = source->power;
         p->toughness = p->sourceToughness = source->toughness;
         p->has_summoning_sickness = true;
-        p->canAttack = true;
-        p->equipment = InitList();
     }
+    p->equipment = InitList();
     p->source = source;
     p->owner = own;
     p->controller = own;
@@ -32,7 +31,6 @@ Permanent* NewCreatureToken(MTGPlayer* own,int pow,int tough,const char* nm) {
     p->owner = own;
     p->controller = own;
     p->has_summoning_sickness = true;
-    p->canAttack = true;
     p->equipment = InitList();
     p->subtypes.is_creature = true;
     return p;
@@ -127,9 +125,10 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,Destinatio
     if (p->equipment) {
         for (unsigned int j=0;j<p->equipment->size;j++) {
             Permanent* q = p->equipment->entries[j];
-            if (q->subtypes.is_equipment)
+            if (q->subtypes.is_equipment) {
+                q->target = NULL;
                 AppendToList(q->owner->battlefield, q);
-            else {
+            } else {
                 Event_onDestroy(q,GRAVEYARD);
                 AppendToList(q->owner->graveyard, q->source);
                 DeletePermanent(q);
@@ -141,7 +140,9 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,Destinatio
     if (p->source)
         AppendToList(dest==EXILE?player->exile:dest==GRAVEYARD?player->graveyard:player->hand,p->source);
     //remove card from battlefield
-    if (p->subtypes.is_aura || p->subtypes.is_equipment)
+    if (p->subtypes.is_aura)
+        RemoveListObject(p->target->equipment, p);
+    else if (p->subtypes.is_equipment && p->target)
         RemoveListObject(p->target->equipment, p);
     else if (cardIndex >= 0)
         RemoveListObject(player->battlefield, p);
@@ -176,6 +177,22 @@ bool MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
 
 bool MTGPlayer_activateAbility(MTGPlayer* player,Permanent* permanent,char* err) {
     Ability* a = permanent->source->abilities->entries[permanent->selectedAbility-1];
+    if (permanent->subtypes.is_planeswalker) {
+        Manacost *m = a->manaCost->entries[0];
+        if (permanent->is_activated) {
+            sprintf(err,"%s is already activated",permanent->name);
+            return false;
+        } else if (permanent->loyalty + m->num < 0) {
+            sprintf(err,"Not enough loyalty to activate %s",permanent->name);
+            return false;
+        } else {
+            permanent->is_activated = true;
+            permanent->loyalty += m->num;
+            RemoveListObject(player->battlefield, permanent);
+            AppendToList(stack, permanent);
+            return true;
+        }
+    }
     if (a->needs_tap) {
         if (permanent->has_summoning_sickness) {
             sprintf(err, "%s has summoning sickness!",permanent->name);
@@ -224,6 +241,17 @@ bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
             else if (cost->num == manaBuffer[0]) {
                 memset(manaBuffer, 0, 6*sizeof(int));
             } else {
+                int pendingCost = cost->num;
+                int numColorless = manaBuffer[0]-(manaBuffer[1]+manaBuffer[2]+manaBuffer[3]+manaBuffer[4]+manaBuffer[5]);
+                if (numColorless) {
+                    if (numColorless > pendingCost) {
+                        manaBuffer[0] -= pendingCost;
+                        pendingCost = 0;
+                    } else {
+                        pendingCost -= numColorless;
+                        manaBuffer[0] -= numColorless;
+                    }
+                }
                 int countNonzero=0;
                 int nonzeroIndex=0;
                 for (int i=1;i<=5;i++) {
@@ -232,11 +260,11 @@ bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
                         nonzeroIndex=i;
                     }
                 }
-                if (countNonzero == 1 && manaBuffer[nonzeroIndex] > cost->num) {
-                    manaBuffer[nonzeroIndex] -= cost->num;
-                    manaBuffer[0] -= cost->num;
+                if (countNonzero == 1 && manaBuffer[nonzeroIndex] > pendingCost) {
+                    manaBuffer[nonzeroIndex] -= pendingCost;
+                    manaBuffer[0] -= pendingCost;
                 } else {
-                    userSelect = cost->num;
+                    userSelect = pendingCost;
                 }
             }
         } else { //one color
@@ -258,7 +286,7 @@ bool MTGPlayer_block(Permanent* attacker,List* defenders,char* err) {
         Permanent* p = defenders->entries[0];
         for (unsigned int i=0;i<p->controller->lands->size;i++) {
             Permanent* q = p->controller->lands->entries[i];
-            if (q->source->subtypes.is_island) {
+            if (q->subtypes.is_island) {
                 sprintf(err,"%s cannot be blocked (Islandwalk)",attacker->name);
                 return false;
             }
@@ -266,12 +294,30 @@ bool MTGPlayer_block(Permanent* attacker,List* defenders,char* err) {
     }
     for (unsigned int i=0;i<defenders->size;i++) {
         Permanent* p = defenders->entries[i];
+        if (p->source == cd.WelkinTern && !attacker->subtypes.is_flying) {
+            sprintf(err,"%s can only block creatures with flying",p->name);
+            return false;
+        } else if (p->subtypes.is_wall && attacker->source == cd.Juggernaut) {
+            sprintf(err,"%s cannot be blocked by walls",attacker->name);
+            return false;
+        }
         for (unsigned int j=0;j<p->equipment->size;j++) {
             Permanent* q = p->equipment->entries[j];
             if (q->source == cd.CripplingBlight) {
                 sprintf(err,"%s cannot block (%s)",p->name,q->name);
                 return false;
             }
+        }
+    }
+    return true;
+}
+
+bool MTGPlayer_endTurn(MTGPlayer* player,char* err) {
+    for (unsigned int i=0;i<player->battlefield->size;i++) {
+        Permanent* p = player->battlefield->entries[i];
+        if (p->source == cd.Juggernaut && !p->is_tapped && !p->has_summoning_sickness && !p->has_attacked) {
+            sprintf(err,"%s must attack",p->name);
+            return false;
         }
     }
     return true;
@@ -292,7 +338,7 @@ Permanent* MTGPlayer_getBattlefieldPermanent(List* bt,unsigned int index) {
                 j+=p->equipment->size;
         }
     }
-    return p;
+    return NULL;
 }
 
 void MTGPlayer_refresh(MTGPlayer* player) {
@@ -311,6 +357,7 @@ void MTGPlayer_refresh(MTGPlayer* player) {
         Permanent* p = player->lands->entries[i];
         p->is_tapped = false;
     }
+    Event_onRefresh(player);
 }
 
 void MTGPlayer_restore(MTGPlayer* player) {
@@ -324,7 +371,10 @@ void MTGPlayer_restore(MTGPlayer* player) {
             p->has_attacked = false;
             p->has_blocked = false;
         }
+        if (p->subtypes.is_planeswalker)
+            p->is_activated = false;
     }
+    Event_onRestore(player);
 }
 
 void DeleteMTGPlayer(MTGPlayer* p) {

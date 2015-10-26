@@ -250,7 +250,6 @@ extern MTGPlayer* player2;
     
     cd = loadCardData();
     loadCardDataTable();
-    loadAbilities();
     self->player = newGame(deck_index);
 
 }
@@ -334,7 +333,7 @@ extern MTGPlayer* player2;
         [keyWindow addSubview:toastView];
         
         if (messageQueue.count > 0)
-            [UIView animateWithDuration: 1.0f delay: 0.0 options: UIViewAnimationOptionCurveEaseOut
+            [UIView animateWithDuration: 0.8f delay: 0.0 options: UIViewAnimationOptionCurveEaseOut
                              animations: ^{    toastView.alpha = 0.0;}
                              completion: ^(BOOL finished) {
                                  [toastView removeFromSuperview];
@@ -537,7 +536,7 @@ extern MTGPlayer* player2;
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s is not a creature!",self->currentPermanent->name]];
             else if (self->currentPermanent->has_summoning_sickness && !currentPermanent->subtypes.is_haste)
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s has summoning sickness!",self->currentPermanent->name]];
-            else if (self->currentPermanent->is_tapped || currentPermanent->subtypes.is_defender || ! currentPermanent->canAttack)
+            else if (self->currentPermanent->is_tapped || currentPermanent->subtypes.is_defender)
                 [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot attack!",self->currentPermanent->name]];
             else {
                 self->currentPermanent->has_attacked= !self->currentPermanent->has_attacked;
@@ -658,7 +657,9 @@ extern MTGPlayer* player2;
 }
 
 - (void) onEndturn: (id)sender{
-    if (player->hand->size > 7) {
+    if (!MTGPlayer_endTurn(player, buffer))
+        message(buffer);
+    else if (player->hand->size > 7) {
         discardCards(player,player->hand->size-7);
         [self onConfirm:NULL];
     } else {
@@ -691,6 +692,7 @@ extern MTGPlayer* player2;
         displayHand(player->hand);
         displayStats(player->hp,player->library->size,player->hand->size,player->graveyard->size,player->exile->size,player->mana,true);
         if (pendingDiscard > 0) {
+            [viewController toggleHighlight:viewController->scrollView];
             sprintf(buffer,"Discard %d cards\n",pendingDiscard);
             message(buffer);
             return;
@@ -711,7 +713,7 @@ extern MTGPlayer* player2;
                 AppendToList(permanentList, p);
             }
         }
-        if (!Event_attack(permanentList, buffer)) {
+        if (!Event_attack(player,permanentList, buffer)) {
             message(buffer);
             DeleteList(permanentList);
             return;
@@ -774,10 +776,10 @@ extern MTGPlayer* player2;
             UIImageView* iv = views[i];
             if (iv.layer.borderWidth > 0) {
                 if (numTargeted==0) {
-                    currentEquipment->target = currentEquipment + i + 1;
+                    currentEquipment->target = currentEquipment + i;
                     numTargeted++;
                 } else if (numTargeted==1) {
-                    currentEquipment->target2 = currentEquipment + i + 1;
+                    currentEquipment->target2 = currentEquipment + i;
                     numTargeted++;
                 }
                 if (numTargeted>=2)
@@ -812,6 +814,7 @@ extern MTGPlayer* player2;
 - (void) onManaButton: (id)sender {
     if (pendingMana < 0)
         currentPermanent->X = paidMana;
+    pendingMana = 0;
     memcpy(viewController->player->mana, manaBuffer, 6*sizeof(int));
     displayStats(player->hp,player->library->size,player->hand->size,player->graveyard->size,player->exile->size,player->mana,true);
     self->mode = NONE;
@@ -845,8 +848,23 @@ extern MTGPlayer* player2;
         return;
     } else if (actionSheet == selectSheet) {
         [selectSheet removeFromSuperview];
-        if (buttonIndex >= 0) {
-            currentEquipment->target = currentEquipment + buttonIndex;
+        if (mode == ABILITY) {
+            if (buttonIndex >= 0) {
+                currentPermanent->selectedAbility = (int)buttonIndex + 1;
+                if (MTGPlayer_activateAbility(player, currentPermanent,buffer)) {
+                    displayBattlefield(self->player->battlefield, true);
+                    if (Event_onPlay(currentPermanent))
+                        [self changeMode:STACK];
+                } else {
+                    message(buffer);
+                    [self changeMode:NONE];
+                }
+            } else
+                [self changeMode:NONE];
+        } else {
+            if (buttonIndex >= 0) {
+                currentEquipment->target = currentEquipment + buttonIndex;
+            }
         }
         return;
     }
@@ -996,7 +1014,8 @@ void displayHand(List* cards) {
     [viewController->views removeAllObjects];
     viewController->scrollView.layer.borderWidth=0;
     
-    int numCards = cards->size > viewController->maxColumns ? viewController->maxColumns : cards->size;
+    //int numCards = cards->size > viewController->maxColumns ? viewController->maxColumns : cards->size;
+    int numCards = cards->size;
     viewController->scrollView.contentSize = CGSizeMake((viewController->cardWidth+viewController->margin)*numCards,viewController->cardHeight);
     
     NSString* extension = @".jpg";
@@ -1284,7 +1303,40 @@ void selectPlayer(Permanent* source) {
 }
 
 void selectAbility(Permanent* permanent) {
-    
+    viewController->mode = ABILITY;
+    for (UIView* v in [viewController->selectSheet subviews]) {
+        [v removeFromSuperview];
+    }
+    for (unsigned int i=0;i<permanent->source->abilities->size;i++) {
+        Ability* a = permanent->source->abilities->entries[i];
+        NSString *s = @"";
+        for (unsigned int j=0;j<a->manaCost->size;j++) {
+            Manacost* m = a->manaCost->entries[j];
+            char color;
+            switch (m->color1) {
+                case WHITE:
+                    color = 'W';
+                case BLUE:
+                    color = 'U';
+                case BLACK:
+                    color = 'B';
+                case RED:
+                    color = 'R';
+                case GREEN:
+                    color = 'G';
+                case COLORLESS:
+                    color = ' ';
+            }
+            s = [s stringByAppendingString:[NSString stringWithFormat:@"{%d%c}",m->num,color]];
+        }
+        [viewController->selectSheet addButtonWithTitle: s];
+    }
+    [viewController->selectSheet setTitle:[NSString stringWithFormat:@"%s: select ability",permanent->name]];
+    viewController->currentPermanent = permanent;
+    [viewController.view addSubview:viewController->selectSheet];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC / 4)), dispatch_get_main_queue(), ^{
+        [viewController->selectSheet showInView:viewController.view];
+    });
 }
 
 void selectCards(Permanent* source,List* cards,char* allowedTargets) {

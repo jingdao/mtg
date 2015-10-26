@@ -156,7 +156,23 @@ for page in cards:
 			if re.match(r'[Pp]ay \d+ life',s):
 				outFile.write('ab=NewAbility(); ')
 				lifeCost = re.match(r'[Pp]ay (\d+) life',s).group(1)
+				has_instant_ability = True
 				outFile.write('ab->lifeCost='+lifeCost+'; ')
+				outFile.write('AppendToList(cd.'+variableName+'->abilities,ab); ')
+			if re.match(r'Equip \{\d\}',s):
+				outFile.write('ab=NewAbility(); ')
+				has_instant_ability = True
+				req = re.match(r'Equip \{(\d)\}',s).group(1)
+				outFile.write('AppendToList(ab->manaCost,colorlessMana('+req+')); ')
+				outFile.write('AppendToList(cd.'+variableName+'->abilities,ab); ')
+			if re.match(r'.?\d+:',s):
+				outFile.write('ab=NewAbility(); ')
+				has_instant_ability = True
+				req = re.match(r'(.?\d+):',s).group(1)
+				if req[0]=='0' or req[0]=='+':
+					outFile.write('AppendToList(ab->manaCost,colorlessMana('+req+')); ')
+				else:
+					outFile.write('AppendToList(ab->manaCost,colorlessMana(-'+req[1:]+')); ')
 				outFile.write('AppendToList(cd.'+variableName+'->abilities,ab); ')
 		if has_instant_ability:
 			outFile.write('cd.'+variableName+'->subtypes.has_instant=true; ')

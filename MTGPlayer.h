@@ -33,7 +33,6 @@ struct permanent_struct{
     bool has_blocked;
     bool has_summoning_sickness;
     bool is_activated;
-    bool canAttack;
     int power,sourcePower,bonusPower;
     int toughness,sourceToughness,bonusToughness;
     int loyalty;
@@ -66,6 +65,7 @@ bool MTGPlayer_tap(MTGPlayer* player,Permanent* perm);
 bool MTGPlayer_activateAbility(MTGPlayer* player,Permanent* perm,char* err);
 bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost);
 bool MTGPlayer_block(Permanent* attacker,List* defenders,char* err);
+bool MTGPlayer_endTurn(MTGPlayer* player,char* err);
 Permanent* MTGPlayer_getBattlefieldPermanent(List* bt,unsigned int index);
 void DeleteMTGPlayer(MTGPlayer* p);
 
@@ -76,3 +76,5 @@ void AI_selectAbility(Permanent* permanent);
 void Event_tapAbility(Permanent* permanent,int index);
 void Event_onDestroy(Permanent* permanent,Destination dest);
 void Event_loseLife(Permanent* source,MTGPlayer* player,int num);
+void Event_onRefresh(MTGPlayer* player);
+void Event_onRestore(MTGPlayer* player);

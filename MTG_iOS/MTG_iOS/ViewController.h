@@ -15,6 +15,7 @@ typedef enum {
     DISCARD,
     VIEW,
     MANA,
+    ABILITY,
     ATTACK,
     BLOCK,
     SELECT_TARGET,

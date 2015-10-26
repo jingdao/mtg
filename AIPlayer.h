@@ -4,7 +4,7 @@
 void newTurn();
 void resolveAttack(MTGPlayer* attacker,List* permanentList);
 bool Event_onPlay(Permanent* permanent);
-bool Event_attack(List* attackers,char* err);
+bool Event_attack(MTGPlayer *player,List* attackers,char* err);
 
 typedef enum {
     AI_START = 0,

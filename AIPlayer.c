@@ -55,6 +55,16 @@ bool AI_payMana(List* manaCost) {
         } else if (cost->color1 == COLORLESS) {
             if (cost->num <= manaBuffer[0]) {
                 int pendingMana = cost->num;
+                int numColorless = manaBuffer[0]-(manaBuffer[1]+manaBuffer[2]+manaBuffer[3]+manaBuffer[4]+manaBuffer[5]);
+                if (numColorless) {
+                    if (numColorless > pendingMana) {
+                        manaBuffer[0] -= pendingMana;
+                        pendingMana = 0;
+                    } else {
+                        pendingMana -= numColorless;
+                        manaBuffer[0] -= numColorless;
+                    }
+                }
                 while (pendingMana > 0) {
                     int k = rand() % 5 + 1;
                     if (manaBuffer[k] > 0) {
@@ -93,7 +103,7 @@ void AI_selectTarget(Permanent* source,char* allowedTargets) {
     if (strstr(allowedTargets,"player")) {
         if (allowedTargets[0] == '3')
             source->target3 = targetPlayer->marker;
-        else if (allowedTargets[1] == '2')
+        else if (allowedTargets[0] == '2')
             source->target2 = targetPlayer->marker;
         else
             source->target = targetPlayer->marker;
@@ -184,7 +194,11 @@ void AI_selectPlayer(Permanent* source) {
 }
 
 void AI_selectCards(Permanent* permanent,List* cards,char* allowedTargets) {
-    
+    if (cards->size == 0)
+        return;
+    permanent->target = permanent + rand() % cards->size;
+    if (allowedTargets[0] == '2')
+        permanent->target2 = permanent + rand() % cards->size;
 }
 
 void AI_selectOption(Permanent* permanent,List* options) {
@@ -257,8 +271,14 @@ void AI_getAction() {
         }
         if (p) {
             int k = sprintf(buffer,"Opponent played %s",p->name);
-            if (p->target)
-                sprintf(buffer+k," (target=%s)",p->target->name);
+            if (p->target && (p->target - p > 60 || p->target - p < 0))
+                k += sprintf(buffer+k," (target=%s,",p->target->name);
+            if (p->target2 && (p->target2 - p > 60 || p->target2 - p < 0))
+                k += sprintf(buffer+k,"%s,",p->target->name);
+            if (p->target3 && (p->target3 - p > 60 || p->target3 - p < 0))
+                k += sprintf(buffer+k,"%s,",p->target->name);
+            if (p->target && (p->target - p > 60 || p->target - p < 0))
+                k += sprintf(buffer+k,")");
             message(buffer);
             displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->graveyard->size,aiplayer->exile->size,aiplayer->mana,false);
             if (DEBUG_AI)
@@ -273,7 +293,8 @@ void AI_getAction() {
         if (aiplayer->battlefield->size>0 || player1->battlefield->size>0) {
             for (unsigned int i=0;i<aiplayer->hand->size;i++) {
                 MTGCard* card = aiplayer->hand->entries[i];
-                if (card->subtypes.is_enchantment || card->subtypes.is_sorcery || card->subtypes.is_instant || card->subtypes.is_artifact) {
+                if (card->subtypes.is_enchantment || card->subtypes.is_sorcery || card->subtypes.is_instant ||
+                    card->subtypes.is_artifact || card->subtypes.is_planeswalker) {
                     if ((p  = MTGPlayer_playCard(aiplayer, i, buffer))) {
                         p->X = X;
                         Event_onPlay(p);
@@ -285,8 +306,14 @@ void AI_getAction() {
         }
         if (p) {
             int k = sprintf(buffer,"Opponent played %s",p->name);
-            if (p->target && p->target->name)
-                sprintf(buffer+k," (target=%s)",p->target->name);
+            if (p->target && (p->target - p > 60 || p->target - p < 0))
+                k += sprintf(buffer+k," (target=%s,",p->target->name);
+            if (p->target2 && (p->target2 - p > 60 || p->target2 - p < 0))
+                k += sprintf(buffer+k,"%s,",p->target2->name);
+            if (p->target3 && (p->target3 - p > 60 || p->target3 - p < 0))
+                k += sprintf(buffer+k,"%s,",p->target3->name);
+            if (p->target && (p->target - p > 60 || p->target - p < 0))
+                k += sprintf(buffer+k,")");
             message(buffer);
             displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->graveyard->size,aiplayer->exile->size,aiplayer->mana,false);
             if (DEBUG_AI)
@@ -306,7 +333,7 @@ void AI_getAction() {
                 if (a->lifeCost == 0) {
                     MTGPlayer_tap(aiplayer, p);
                     if (MTGPlayer_activateAbility(aiplayer, p,buffer)) {
-                        p->X = X;
+                            p->X = X;
                         Event_onPlay(p);
                         used_ability=true;
                         castedAbility=true;
@@ -330,13 +357,15 @@ void AI_getAction() {
         List* permanentList = InitList();
         for (unsigned int i=0;i<aiplayer->battlefield->size;i++) {
             Permanent* p = aiplayer->battlefield->entries[i];
-            if (p->subtypes.is_creature && (p->subtypes.is_haste||!p->has_summoning_sickness) && !p->is_tapped && !p->subtypes.is_defender && p->canAttack && p->power>0 && (rand()%4)) {
-                p->has_attacked = true;
-                AppendToList(permanentList, p);
+            if (p->subtypes.is_creature && (p->subtypes.is_haste||!p->has_summoning_sickness) && !p->is_tapped && !p->subtypes.is_defender && p->power>0) {
+                if (p->source==cd.Juggernaut || (rand()%4)) {
+                    p->has_attacked = true;
+                    AppendToList(permanentList, p);
+                }
             }
         }
         if (permanentList->size > 0) {
-            if (Event_attack(permanentList,buffer)) {
+            if (Event_attack(aiplayer,permanentList,buffer)) {
                 for (unsigned int i=0;i<permanentList->size;i++) {
                     Permanent* p = permanentList->entries[i];
                     if (!p->subtypes.is_vigilance)
