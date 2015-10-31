@@ -510,10 +510,12 @@ extern MTGPlayer* player2;
         }
         if (idx >= self->selfLandsViews.count)
             idx = self->selfLandsViews.count - 1;
-        currentPermanent = player->lands->entries[idx];
+        currentPermanent = MTGPlayer_getBattlefieldPermanent(player->lands,(unsigned int)idx);
         if (mode==NONE) {
-            if (!self->currentPermanent->is_tapped)
-                MTGPlayer_tap(self->player, self->currentPermanent);
+            if (!self->currentPermanent->is_tapped) {
+                if (MTGPlayer_tap(self->player, self->currentPermanent))
+                    Event_onPlayAbility(currentPermanent);
+            }
             displayLands(self->player->lands, true);
             displayStats(self->player->hp, self->player->library->size, self->player->hand->size,self->player->graveyard->size ,self->player->exile->size ,self->player->mana, self);
         } else if (mode==SELECT_TARGET && selfLands.layer.borderWidth > 0) {
@@ -574,7 +576,7 @@ extern MTGPlayer* player2;
             [self changeMode:STACK];
             [self onConfirm:NULL];
         } else if (mode==WAIT || mode==STACK) {
-            if (currentPermanent->subtypes.has_instant) {
+            if (currentPermanent->abilities->size > 0) {
                 if (MTGPlayer_tap(self->player, self->currentPermanent)) {
                     if (MTGPlayer_activateAbility(player, currentPermanent,buffer)) {
                         displayBattlefield(self->player->battlefield, true);
@@ -586,7 +588,7 @@ extern MTGPlayer* player2;
                 }
             }
         } else if (mode==NONE) {
-            if (currentPermanent->subtypes.has_instant) {
+            if (currentPermanent->abilities->size > 0) {
                 if (MTGPlayer_tap(self->player, self->currentPermanent)) {
                     if (MTGPlayer_activateAbility(player, currentPermanent,buffer)) {
                         displayBattlefield(self->player->battlefield, true);
@@ -626,7 +628,7 @@ extern MTGPlayer* player2;
         }
         if (idx >= self->opponentLandsViews.count)
             idx = self->opponentLandsViews.count - 1;
-        currentPermanent = player2->lands->entries[idx];
+        currentPermanent = MTGPlayer_getBattlefieldPermanent(player2->lands,(unsigned int)idx);
         if (mode==SELECT_TARGET && opponentLands.layer.borderWidth > 0) {
             [self disableHighlight];
             currentEquipment->target = currentPermanent;
@@ -851,14 +853,21 @@ extern MTGPlayer* player2;
         if (mode == ABILITY) {
             if (buttonIndex >= 0) {
                 currentPermanent->selectedAbility = (int)buttonIndex + 1;
-                if (MTGPlayer_activateAbility(player, currentPermanent,buffer)) {
-                    displayBattlefield(self->player->battlefield, true);
+                if (currentPermanent->subtypes.is_land) {
+                    if (Event_onPlayAbility(currentPermanent))
+                        [self changeMode:STACK];
+                    else
+                        [self changeMode:NONE];
+                } else if (MTGPlayer_activateAbility(player, currentPermanent,buffer)) {
                     if (Event_onPlay(currentPermanent))
                         [self changeMode:STACK];
                 } else {
                     message(buffer);
                     [self changeMode:NONE];
                 }
+                displayStats(player->hp,player->library->size,player->hand->size,player->graveyard->size,player->exile->size,player->mana,true);
+                displayBattlefield(self->player->battlefield, true);
+                displayLands(player->lands, true);
             } else
                 [self changeMode:NONE];
         } else {
@@ -883,8 +892,15 @@ extern MTGPlayer* player2;
             if (mode == NONE) {
                 for (unsigned int i=0;i<self->player->lands->size;i++) {
                     Permanent* p = self->player->lands->entries[i];
-                    if (!p->is_tapped) {
+                    int numOptions = 0;
+                    if (p->subtypes.is_plains) numOptions++;
+                    if (p->subtypes.is_island) numOptions++;
+                    if (p->subtypes.is_swamp) numOptions++;
+                    if (p->subtypes.is_mountain) numOptions++;
+                    if (p->subtypes.is_forest) numOptions++;
+                    if (!p->is_tapped && numOptions <= 1 && p->abilities->size == 0) {
                         MTGPlayer_tap(self->player, p);
+                        Event_onPlayAbility(p);
                     }
                 }
                 displayLands(self->player->lands, true);
@@ -1090,8 +1106,19 @@ void displayLands(List* permanents, bool selfOrOpponent) {
             [currentImages addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
             x += viewController->cardWidth2 + viewController->margin;
         }
-        [currentViews[i] setImage: currentImages[i]];
-        [currentScrollView addSubview:currentViews[i]];
+        [currentViews.lastObject setImage: currentImages.lastObject];
+        [currentScrollView addSubview:currentViews.lastObject];
+        if (p->equipment) {
+            for (unsigned int j=0;j<p->equipment->size;j++) {
+                Permanent* q = p->equipment->entries[j];
+                NSString* fileName = [[NSString stringWithUTF8String:q->name] stringByAppendingString:@".jpg"];
+                [currentViews addObject:[[UIImageView alloc] initWithFrame:CGRectMake(x-viewController->margin,viewController->margin, viewController->cardWidth2, viewController->cardHeight2)]];
+                [currentImages addObject:[viewController loadImage:fileName cached:viewController->cacheImages]];
+                x += viewController->cardWidth2;
+                [currentViews.lastObject setImage: currentImages.lastObject];
+                [currentScrollView addSubview:currentViews.lastObject];
+            }
+        }
     }
 }
 
@@ -1302,33 +1329,12 @@ void selectPlayer(Permanent* source) {
     [viewController->commandQueue addObject:blockcommand];
 }
 
-void selectAbility(Permanent* permanent) {
+void selectAbility(Permanent* permanent,List* options) {
     viewController->mode = ABILITY;
-    for (UIView* v in [viewController->selectSheet subviews]) {
-        [v removeFromSuperview];
-    }
-    for (unsigned int i=0;i<permanent->source->abilities->size;i++) {
-        Ability* a = permanent->source->abilities->entries[i];
-        NSString *s = @"";
-        for (unsigned int j=0;j<a->manaCost->size;j++) {
-            Manacost* m = a->manaCost->entries[j];
-            char color;
-            switch (m->color1) {
-                case WHITE:
-                    color = 'W';
-                case BLUE:
-                    color = 'U';
-                case BLACK:
-                    color = 'B';
-                case RED:
-                    color = 'R';
-                case GREEN:
-                    color = 'G';
-                case COLORLESS:
-                    color = ' ';
-            }
-            s = [s stringByAppendingString:[NSString stringWithFormat:@"{%d%c}",m->num,color]];
-        }
+    viewController->selectSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:viewController cancelButtonTitle:nil destructiveButtonTitle: nil otherButtonTitles:nil];
+    for (unsigned int i=0;i<options->size;i++) {
+        char* str = options->entries[i];
+        NSString* s = [NSString stringWithFormat:@"%u: %s",i,str];
         [viewController->selectSheet addButtonWithTitle: s];
     }
     [viewController->selectSheet setTitle:[NSString stringWithFormat:@"%s: select ability",permanent->name]];
@@ -1356,9 +1362,7 @@ void selectOption(Permanent* source,List* options) {
     [viewController changeMode:STACK];
     void (^blockcommand)(void);
     blockcommand = ^{
-        for (UIView* v in [viewController->selectSheet subviews]) {
-            [v removeFromSuperview];
-        }
+        viewController->selectSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:viewController cancelButtonTitle:nil destructiveButtonTitle: nil otherButtonTitles:nil];
         for (unsigned int i=0;i<options->size;i++) {
             char* str = options->entries[i];
             [viewController->selectSheet addButtonWithTitle:[NSString stringWithUTF8String:str]];

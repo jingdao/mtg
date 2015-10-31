@@ -92,14 +92,18 @@ Manacost* X_Mana(int n) {
 	return m;
 }
 
+void DeleteAbility(Ability* a) {
+    for (unsigned int j=0;j<a->manaCost->size;j++) {
+        free(a->manaCost->entries[j]);
+    }
+    DeleteList(a->manaCost);
+    free(a);
+}
+
 void DeleteMTGCard(MTGCard* card) {
     for (unsigned int i=0;i<card->abilities->size;i++) {
         Ability* a = card->abilities->entries[i];
-        for (unsigned int j=0;j<a->manaCost->size;j++) {
-            free(a->manaCost->entries[j]);
-        }
-        DeleteList(a->manaCost);
-        free(a);
+        DeleteAbility(a);
     }
     DeleteList(card->abilities);
 	for (unsigned int i=0;i<card->manaCost->size;i++)

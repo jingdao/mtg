@@ -55,10 +55,10 @@ void loadCardDataTable() {
 
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
-        for (int i=0;i<10;i++) AppendToList(cards,cd.ResearchAssistant);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.MercurialPretender);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.StormtideLeviathan);
-        for (int i=0;i<15;i++) AppendToList(cards,cd.Island);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.WillForgedGolem);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.SiegeWurm);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.DevouringLight);
+        for (int i=0;i<15;i++) AppendToList(cards,cd.Plains);
         for (int i=0;i<15;i++) AppendToList(cards,cd.Forest);
 	} else if (index == 1) {
 		for (int i=0;i<2;i++) AppendToList(cards,cd.Ornithopter);
@@ -354,6 +354,8 @@ bool resolveStack() {
             AppendToList(permanent->owner->graveyard,permanent->source);
             destroyed = true;
         }
+    } else if (permanent->subtypes.is_land) {
+        AppendToList(permanent->owner->lands, permanent);
     } else if (permanent->subtypes.is_enchantment || permanent->subtypes.is_creature || permanent->subtypes.is_artifact) {
         AppendToList(permanent->owner->battlefield,permanent);
     } else {
@@ -457,7 +459,7 @@ MTGPlayer* newGame(int deck_index) {
 	player2 = InitMTGPlayer();
     player2->marker->name = "Opponent";
     AI_init(player2);
-	buildDeck(player2->library,3);
+	buildDeck(player2->library,1);
 	shuffleDeck(player2->library);
 
 	MTGPlayer_drawCards(player1,7);

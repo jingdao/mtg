@@ -39,6 +39,7 @@ struct permanent_struct{
     int selectedAbility;
     int X;
     List* equipment;
+    List* abilities;
     struct permanent_struct *target;
     struct permanent_struct *target2;
     struct permanent_struct *target3;
@@ -70,9 +71,9 @@ Permanent* MTGPlayer_getBattlefieldPermanent(List* bt,unsigned int index);
 void DeleteMTGPlayer(MTGPlayer* p);
 
 void selectMana(int* mana,int amount);
-void selectAbility(Permanent* permanent);
+void selectAbility(Permanent* permanent,List* options);
 bool AI_payMana(List* manaCost);
-void AI_selectAbility(Permanent* permanent);
+void AI_selectAbility(Permanent* permanent,List* options);
 void Event_tapAbility(Permanent* permanent,int index);
 void Event_onDestroy(Permanent* permanent,Destination dest);
 void Event_loseLife(Permanent* source,MTGPlayer* player,int num);

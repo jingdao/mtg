@@ -9,6 +9,7 @@ Permanent* NewPermanent(MTGCard* source,MTGPlayer* own) {
     Permanent* p = (Permanent*) calloc(1,sizeof(Permanent));
     p->name = source->name;
     p->subtypes = source->subtypes;
+    p->abilities = ListCopy(source->abilities);
     if (source->subtypes.is_planeswalker)
         p->loyalty = source->loyalty;
     else if (source->subtypes.is_creature){
@@ -32,6 +33,7 @@ Permanent* NewCreatureToken(MTGPlayer* own,int pow,int tough,const char* nm) {
     p->controller = own;
     p->has_summoning_sickness = true;
     p->equipment = InitList();
+    p->abilities = InitList();
     p->subtypes.is_creature = true;
     return p;
 }
@@ -47,6 +49,8 @@ bool Permanent_sameColor(Permanent* p,Permanent* q) {
 void DeletePermanent(Permanent* permanent) {
     if (permanent->equipment)
         DeleteList(permanent->equipment);
+    if (permanent->abilities)
+        DeleteList(permanent->abilities);
     free(permanent);
     
 }
@@ -136,6 +140,8 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,Destinatio
         }
         DeleteList(p->equipment);
     }
+    if (p->abilities)
+        DeleteList(p->abilities);
     
     if (p->source)
         AppendToList(dest==EXILE?player->exile:dest==GRAVEYARD?player->graveyard:player->hand,p->source);
@@ -152,31 +158,65 @@ void MTGPlayer_discardFromBattlefield(MTGPlayer* player,int cardIndex,Destinatio
 }
 
 bool MTGPlayer_tap(MTGPlayer* player,Permanent* permanent) {
-    if (permanent->source->subtypes.is_land) {
-        if (permanent->source == cd.Plains) player->mana[1]++;
-        else if (permanent->source == cd.Island) player->mana[2]++;
-        else if (permanent->source == cd.Swamp) player->mana[3]++;
-        else if (permanent->source == cd.Mountain) player->mana[4]++;
-        else if (permanent->source == cd.Forest) player->mana[5]++;
-        player->mana[0]++;
+    List* options = InitList();
+    char buffer[256];
+    char* c = buffer;
+    for (unsigned int i=0;i<permanent->abilities->size;i++) {
+        char* s = c;
+        Ability* a = permanent->abilities->entries[i];
+        for (unsigned int j=0;j<a->manaCost->size;j++) {
+            Manacost* m = a->manaCost->entries[j];
+            char color;
+            switch (m->color1) {
+                case WHITE:
+                    color = 'W';
+                    break;
+                case BLUE:
+                    color = 'U';
+                    break;
+                case BLACK:
+                    color = 'B';
+                    break;
+                case RED:
+                    color = 'R';
+                    break;
+                case GREEN:
+                    color = 'G';
+                    break;
+                case COLORLESS:
+                    color = ' ';
+                    break;
+            }
+            c += sprintf(c,"{%d%c}",m->num,color);
+        }
+        c += sprintf(c,"%s",a->needs_tap?"{T}":"") + 1;
+        AppendToList(options, s);
+    }
+    if (permanent->subtypes.is_land) {
+        if (permanent->subtypes.is_plains) AppendToList(options, "W");
+        if (permanent->subtypes.is_island) AppendToList(options, "U");
+        if (permanent->subtypes.is_swamp) AppendToList(options, "B");
+        if (permanent->subtypes.is_mountain) AppendToList(options, "R");
+        if (permanent->subtypes.is_forest) AppendToList(options, "G");
+        if (permanent->source == cd.DarksteelCitadel) AppendToList(options, "C");
         permanent->is_tapped = true;
+    }
+    if (options->size > 1) {
+        if (player == player1)
+            selectAbility(permanent,options);
+        else
+            AI_selectAbility(permanent,options);
+        DeleteList(options);
         return false;
     } else {
-        if (permanent->source->abilities->size > 1) {
-            if (player == player1)
-                selectAbility(permanent);
-            else
-                AI_selectAbility(permanent);
-            return false;
-        } else {
-            permanent->selectedAbility = 1;
-            return true;
-        }
+        permanent->selectedAbility = 1;
+        DeleteList(options);
+        return true;
     }
 }
 
 bool MTGPlayer_activateAbility(MTGPlayer* player,Permanent* permanent,char* err) {
-    Ability* a = permanent->source->abilities->entries[permanent->selectedAbility-1];
+    Ability* a = permanent->abilities->entries[permanent->selectedAbility-1];
     if (permanent->subtypes.is_planeswalker) {
         Manacost *m = a->manaCost->entries[0];
         if (permanent->is_activated) {

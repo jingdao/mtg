@@ -60,7 +60,7 @@ void selectCreatureOrPlayer(Permanent* source) {
 
 }
 
-void selectAbility(Permanent* source) {
+void selectAbility(Permanent* source,List* options) {
 
 }
 

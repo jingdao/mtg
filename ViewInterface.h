@@ -13,7 +13,7 @@ void selectBlockers(List* permanentList,List* blockersList);
 void selectTarget(Permanent* source,char* allowedTargets);
 void selectCreatureOrPlayer(Permanent* source);
 void selectPlayer(Permanent* source);
-void selectAbility(Permanent* permanent);
+void selectAbility(Permanent* permanent,List* options);
 void selectCards(Permanent* permanent,List* cards,char* allowedTargets);
 void selectOption(Permanent* source,List* options);
 void triggerSelect(char* msg);

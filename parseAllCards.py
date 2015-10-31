@@ -141,7 +141,7 @@ for page in cards:
 				outFile.write('cd.'+variableName+'->subtypes.is_'+k_+'=true; ')
 		has_instant_ability = False
 		for s in node['text'].split('\n'):
-			if re.match(r'\{[\w\{\}, ]*\}',s):
+			if not 'land' in node['types'] and re.match(r'\{[\w\{\}, ]*\}',s):
 				outFile.write('ab=NewAbility(); ')
 				req = re.match(r'\{[\w\{\}, ]*\}',s).group(0)
 				for r in req:

@@ -185,11 +185,7 @@ void AI_selectTarget(Permanent* source,char* allowedTargets) {
 }
 
 void AI_selectPlayer(Permanent* source) {
-    MTGPlayer* targetPlayer;
-    if (source->source == cd.SigninBlood)
-        targetPlayer = player1;
-    else
-        targetPlayer = aiplayer;
+    MTGPlayer* targetPlayer = player1;
     source->target = targetPlayer->marker;
 }
 
@@ -205,8 +201,8 @@ void AI_selectOption(Permanent* permanent,List* options) {
     permanent->target = permanent + rand() % options->size;
 }
 
-void AI_selectAbility(Permanent* permanent) {
-    permanent->selectedAbility = rand() % permanent->source->abilities->size + 1;
+void AI_selectAbility(Permanent* permanent,List* options) {
+    permanent->selectedAbility = rand() % options->size + 1;
 }
 
 void AI_getAction() {
@@ -248,6 +244,8 @@ void AI_getAction() {
             for (unsigned int i=0;i<aiplayer->lands->size;i++) {
                 Permanent* p = aiplayer->lands->entries[i];
                 MTGPlayer_tap(aiplayer, p);
+                if (Event_onPlayAbility(p))
+                    i--;
             }
             displayStats(aiplayer->hp,aiplayer->library->size,aiplayer->hand->size,aiplayer->graveyard->size,aiplayer->exile->size,aiplayer->mana,false);
             displayLands(aiplayer->lands, false);
@@ -328,8 +326,8 @@ void AI_getAction() {
         Permanent* p = NULL;
         for (unsigned int i=0;i<aiplayer->battlefield->size;i++) {
             p = aiplayer->battlefield->entries[i];
-            if (p->subtypes.has_instant && rand() % 4) {
-                Ability* a = p->source->abilities->entries[0];
+            if (p->abilities->size>0 && rand() % 4) {
+                Ability* a = p->abilities->entries[rand() % p->abilities->size];
                 if (a->lifeCost == 0) {
                     MTGPlayer_tap(aiplayer, p);
                     if (MTGPlayer_activateAbility(aiplayer, p,buffer)) {

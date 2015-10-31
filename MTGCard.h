@@ -4,6 +4,8 @@
 #include "List.h"
 #include "Subtypes.h"
 
+struct permanent_struct;
+
 typedef enum {
 	COLORLESS=0, WHITE=1, BLUE=2, BLACK=3, RED=4, GREEN=5
 } Color;
@@ -20,6 +22,7 @@ typedef struct {
     List* manaCost;
     bool needs_tap;
     int lifeCost;
+    bool (*callback)(struct permanent_struct*);
 } Ability;
 
 typedef struct {
@@ -67,4 +70,5 @@ Manacost* B_Mana(int n);
 Manacost* R_Mana(int n);
 Manacost* G_Mana(int n);
 Manacost* X_Mana(int n);
+void DeleteAbility(Ability* a);
 void DeleteMTGCard(MTGCard* card);

@@ -225,7 +225,7 @@ bool Event_onPlay(Permanent* permanent) {
     else
         permanent->controller->hasCastSpell = true;
     
-    if (card == cd.KinsbaileSkirmisher || card == cd.DivineFavor || card == cd.MercurialPretender || card == cd.InvasiveSpecies || card == cd.LivingTotem || card == cd.GatherCourage || card == cd.TitanicGrowth)
+    if (card == cd.KinsbaileSkirmisher || card == cd.DivineFavor || card == cd.MercurialPretender || card == cd.InvasiveSpecies || card == cd.LivingTotem || card == cd.GatherCourage || card == cd.TitanicGrowth || card == cd.BurningAnger)
         chooseTarget(permanent,"creature (+ve)");
     else if (card == cd.PillarofLight || card == cd.CripplingBlight || card == cd.Ulcerate || card==cd.FrostLynx ||
              card == cd.KapshoKitefins || card == cd.TurntoFrog || card == cd.Plummet || card == cd.StabWound || card == cd.FleshtoDust ||
@@ -268,6 +268,8 @@ bool Event_onPlay(Permanent* permanent) {
         chooseCards(permanent,permanent->controller->library,"artifact card from library");
     else if (card == cd.Demolish)
         chooseTarget(permanent,"artifact or land (-ve)");
+    else if (card == cd.CausticTar)
+        chooseTarget(permanent,"land (+ve)");
     else if (card == cd.SigninBlood || card == cd.LavaAxe)
         choosePlayer(permanent);
     else
@@ -288,6 +290,27 @@ bool Event_onPlayAbility(Permanent* permanent) {
     chooseCards = permanent->controller==player1 ? selectCards : AI_selectCards;
     chooseOption = permanent->controller==player1 ? selectOption : AI_selectOption;
     
+    if (permanent->subtypes.is_land) {
+        if (permanent->selectedAbility <= permanent->abilities->size) {
+            RemoveListObject(permanent->owner->lands, permanent);
+            AppendToList(stack, permanent);
+            displayStack(stack);
+            Ability* a = permanent->abilities->entries[permanent->selectedAbility - 1];
+            if (a->callback==CausticTar_callback)
+                choosePlayer(permanent);
+            return true;
+        }
+        int idx = permanent->abilities->size + 1;
+        if (permanent->subtypes.is_plains && permanent->selectedAbility==idx++) permanent->controller->mana[1]++;
+        if (permanent->subtypes.is_island && permanent->selectedAbility==idx++) permanent->controller->mana[2]++;
+        if (permanent->subtypes.is_swamp && permanent->selectedAbility==idx++) permanent->controller->mana[3]++;
+        if (permanent->subtypes.is_mountain && permanent->selectedAbility==idx++) permanent->controller->mana[4]++;
+        if (permanent->subtypes.is_forest && permanent->selectedAbility==idx++) permanent->controller->mana[5]++;        
+        permanent->controller->mana[0]++;
+        return false;
+    }
+    
+    Ability* a = permanent->abilities->entries[permanent->selectedAbility-1];
     if (permanent->subtypes.is_equipment)
         chooseTarget(permanent,"creature (+ve)");
     else if (card == cd.BloodHost || card == cd.WallofMulch || card == cd.SacredArmory ||
@@ -303,7 +326,7 @@ bool Event_onPlayAbility(Permanent* permanent) {
         AppendToList(bufferList, "red");
         AppendToList(bufferList, "green");
         chooseOption(permanent,bufferList);
-    } else if (card == cd.NightfireGiant)
+    } else if (card == cd.NightfireGiant || a->callback==BurningAnger_callback)
         chooseTarget(permanent,"creature or player (-ve)");
     else if (card == cd.TorchFiend)
         chooseTarget(permanent,"artifact");
@@ -313,7 +336,14 @@ bool Event_onPlayAbility(Permanent* permanent) {
 
 bool Event_onResolve(Permanent* permanent) {
     if (permanent->selectedAbility) {
-        return Event_onAbility(permanent);
+        if (permanent->selectedAbility <= permanent->abilities->size) {
+            Ability* a = permanent->abilities->entries[permanent->selectedAbility-1];
+            if (a->callback)
+                return a->callback(permanent);
+            else
+                return Event_onAbility(permanent);
+        } else
+            return Event_onAbility(permanent);
     }
     
     char buffer[128];
@@ -450,9 +480,15 @@ bool Event_onResolve(Permanent* permanent) {
     } else if (permanent->source == cd.MercurialPretender) {
         if (permanent->target && findTarget(permanent->target, &index) && permanent->target->subtypes.is_creature && permanent->target->controller==permanent->controller) {
             permanent->source = permanent->target->source;
-            permanent->power = permanent->sourcePower = permanent->source->power;
-            permanent->toughness = permanent->sourceToughness = permanent->source->toughness;
+            permanent->power = permanent->sourcePower = permanent->target->sourcePower;
+            permanent->toughness = permanent->sourceToughness = permanent->target->sourceToughness;
             permanent->subtypes = permanent->target->subtypes;
+            AppendListToList(permanent->abilities, permanent->target->source->abilities);
+            Ability* a = NewAbility();
+            AppendToList(a->manaCost, colorlessMana(2));
+            AppendToList(a->manaCost, U_Mana(2));
+            AppendToList(permanent->abilities, a);
+            a->callback = MercurialPretender_callback;
             sprintf(buffer,"%s entered the battlefield as %s",permanent->name,permanent->target->name);
             message(buffer);
         } else {
@@ -817,6 +853,16 @@ bool Event_onResolve(Permanent* permanent) {
             sprintf(buffer,"Invalid target for %s",permanent->name);
             message(buffer);
         }
+    } else if (card == cd.BurningAnger) {
+        if (permanent->target && findTarget(permanent->target,&index) && permanent->target->subtypes.is_creature) {
+            Ability* a = NewAbility();
+            a->needs_tap = true;
+            a->callback = BurningAnger_callback;
+            AppendToList(permanent->target->abilities, a);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
     } else if (card == cd.SeraphoftheMasses) {
         AppendToList(castSpellSubscribers, permanent);
         AppendToList(destroySubscribers, permanent);
@@ -1055,6 +1101,19 @@ bool Event_onResolve(Permanent* permanent) {
             sprintf(buffer,"%s becomes a 5/5 creature (%s)",permanent->target->name,permanent->name);
             message(buffer);
             AppendToList(restoreSubscribers, permanent);
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+            if (permanent->target)
+                RemoveListObject(permanent->target->equipment, permanent);
+            permanent->target = NULL;
+        }
+    } else if (permanent->source == cd.CausticTar) {
+        if (permanent->target && findTarget(permanent->target, &index) && permanent->target->subtypes.is_land) {
+            Ability* a = NewAbility();
+            a->needs_tap = true;
+            a->callback = CausticTar_callback;
+            AppendToList(permanent->target->abilities, a);
         } else {
             sprintf(buffer,"Invalid target for %s",permanent->name);
             message(buffer);
@@ -1482,6 +1541,22 @@ void Event_onDestroy(Permanent* p,Destination dest) {
     } else if (card == cd.EnsoulArtifact) {
         p->target->subtypes = p->target->source->subtypes;
         RemoveListObject(restoreSubscribers, p);
+    } else if (card == cd.BurningAnger) {
+        for (unsigned int i=0;i<p->target->abilities->size;i++) {
+            Ability* a = p->target->abilities->entries[i];
+            if (a->callback == BurningAnger_callback) {
+                RemoveListIndex(p->target->abilities, i);
+                DeleteAbility(a);
+            }
+        }
+    } else if (card == cd.CausticTar) {
+        for (unsigned int i=0;i<p->target->abilities->size;i++) {
+            Ability* a = p->target->abilities->entries[i];
+            if (a->callback == CausticTar_callback) {
+                RemoveListIndex(p->target->abilities, i);
+                DeleteAbility(a);
+            }
+        }
     }
 }
 
