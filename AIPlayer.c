@@ -45,7 +45,9 @@ void AI_getBlockers(List* attackerList, List* blockersList){
 bool AI_payMana(List* manaCost) {
     int manaBuffer[6];
     X=0;
-    memcpy(manaBuffer,aiplayer->mana,6*sizeof(int));
+    //memcpy(manaBuffer,aiplayer->mana,6*sizeof(int));
+    for (int i=0;i<6;i++)
+        manaBuffer[i] = aiplayer->mana[i] + aiplayer->convokeMana[i];
     int j;
     for (j=manaCost->size - 1;j>=0;j--) {
         Manacost* cost = manaCost->entries[j];
@@ -85,7 +87,9 @@ bool AI_payMana(List* manaCost) {
         }
     }
     if (j<0) {
-        memcpy(aiplayer->mana, manaBuffer, 6*sizeof(int));
+        //memcpy(aiplayer->mana, manaBuffer, 6*sizeof(int));
+        for (int i=0;i<6;i++)
+            aiplayer->mana[i] = manaBuffer[i] < aiplayer->mana[i] ? manaBuffer[i] : aiplayer->mana[i];
         return true;
     } else return false;
 }
@@ -203,6 +207,93 @@ void AI_selectOption(Permanent* permanent,List* options) {
 
 void AI_selectAbility(Permanent* permanent,List* options) {
     permanent->selectedAbility = rand() % options->size + 1;
+}
+
+void AI_selectConvoke(MTGPlayer* player,int index) {
+    MTGCard* card = player->hand->entries[index];
+    int manaBuffer[6];
+    int manaRequired[6];
+    int numTapped = 0;
+    memcpy(manaBuffer,player->mana,6*sizeof(int));
+    memset(manaRequired,0,6*sizeof(int));
+    for (unsigned int i=0;i<player->battlefield->size;i++) {
+        Permanent* p = player->battlefield->entries[i];
+        if (p->subtypes.is_creature && !p->is_tapped && !p->has_summoning_sickness) {
+            if (p->subtypes.is_white) manaBuffer[1]++;
+            else if (p->subtypes.is_blue) manaBuffer[2]++;
+            else if (p->subtypes.is_black) manaBuffer[3]++;
+            else if (p->subtypes.is_red) manaBuffer[4]++;
+            else if (p->subtypes.is_green) manaBuffer[5]++;
+            manaBuffer[0]++;
+        }
+    }
+    int numColorless = player->mana[0];
+    for (int i=card->manaCost->size-1;i>=0;i--) {
+        Manacost* m = card->manaCost->entries[i];
+        if (m->color1 == COLORLESS) {
+            if (m->num > manaBuffer[0])
+                return;
+            else {
+                manaRequired[0] += m->num - numColorless;
+                manaBuffer[0] -= m->num;
+            }
+        } else {
+            if (m->num > manaBuffer[m->color1])
+                return;
+            else {
+                manaRequired[m->color1] += m->num - player->mana[m->color1];
+                manaBuffer[m->color1] -= m->num;
+                manaBuffer[0] -= m->num;
+                numColorless -= m->num;
+            }
+        }
+    }
+    for (unsigned int i=0;i<player->battlefield->size;i++) {
+        Permanent* p = player->battlefield->entries[i];
+        if (p->subtypes.is_creature && !p->is_tapped && !p->has_summoning_sickness) {
+            if (p->subtypes.is_white && manaRequired[1]>0) {
+                player->convokeMana[1]++;
+                player->convokeMana[0]++;
+                p->is_tapped = true;
+                manaRequired[1]--;
+                numTapped++;
+            } else if (p->subtypes.is_blue && manaRequired[2]>0) {
+                player->convokeMana[2]++;
+                player->convokeMana[0]++;
+                p->is_tapped = true;
+                manaRequired[2]--;
+                numTapped++;
+            } else if (p->subtypes.is_black && manaRequired[3]>0) {
+                player->convokeMana[3]++;
+                player->convokeMana[0]++;
+                p->is_tapped = true;
+                manaRequired[3]--;
+                numTapped++;
+            } else if (p->subtypes.is_red && manaRequired[4]>0) {
+                player->convokeMana[4]++;
+                player->convokeMana[0]++;
+                p->is_tapped = true;
+                manaRequired[4]--;
+                numTapped++;
+            } else if (p->subtypes.is_green && manaRequired[5]>0) {
+                player->convokeMana[5]++;
+                player->convokeMana[0]++;
+                p->is_tapped = true;
+                manaRequired[5]--;
+                numTapped++;
+            } else if (manaRequired[0]>0) {
+                player->convokeMana[0]++;
+                p->is_tapped = true;
+                manaRequired[0]--;
+                numTapped++;
+            }
+        }
+    }
+    if (numTapped>0) {
+        char buffer[128];
+        sprintf(buffer,"Opponent tapped %d creatures (convoke)",numTapped);
+        message(buffer);
+    }
 }
 
 void AI_getAction() {

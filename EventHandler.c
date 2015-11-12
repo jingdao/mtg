@@ -316,7 +316,7 @@ bool Event_onPlayAbility(Permanent* permanent) {
     else if (card == cd.BloodHost || card == cd.WallofMulch || card == cd.SacredArmory ||
              (card==cd.AjaniSteadfast && permanent->selectedAbility==1))
         chooseTarget(permanent,"creature (+ve)");
-    else if (card == cd.TyrantsMachine)
+    else if (card == cd.TyrantsMachine || card == cd.AkroanJailer)
         chooseTarget(permanent,"creature (-ve)");
     else if (card == cd.Meteorite) {
         bufferList->size = 0;
@@ -1401,6 +1401,19 @@ bool Event_onAbility(Permanent* permanent) {
             sprintf(buffer,"All %s creatures/planeswalkers get +1/+1 (%s)",permanent->controller==player1?"your":"opponents",permanent->name);
             message(buffer);
         }
+    } else if (permanent->source == cd.AkroanJailer) {
+        if (permanent->target && findTarget(permanent->target, &index) && permanent->target->subtypes.is_creature) {
+            sprintf(buffer,"%s is tapped (%s)",permanent->target->name,permanent->name);
+            message(buffer);
+            permanent->target->is_tapped=true;
+        } else {
+            sprintf(buffer,"Invalid target for %s",permanent->name);
+            message(buffer);
+        }
+    } else if (permanent->source == cd.KytheonHeroofAkros) {
+        permanent->subtypes.is_indestructible = true;
+        sprintf(buffer,"%s gains indestructible",permanent->name);
+        message(buffer);
     }
     permanent->selectedAbility = 0;
     if (!permanent->subtypes.is_aura && !permanent->subtypes.is_equipment) {

@@ -15,6 +15,7 @@ typedef enum {
     DISCARD,
     VIEW,
     MANA,
+    CONVOKE,
     ABILITY,
     ATTACK,
     BLOCK,
@@ -76,6 +77,7 @@ typedef enum {
     @public Permanent* currentEquipment;
     @public char buffer[128];
     @public int manaBuffer[6];
+    @public int baseMana[6];
     @public Mode mode;
     @public int pendingMana;
     @public int paidMana;

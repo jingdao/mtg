@@ -55,9 +55,9 @@ void loadCardDataTable() {
 
 void buildDeck(List* cards,int index) {
 	if (index == 0) {
-        for (int i=0;i<10;i++) AppendToList(cards,cd.WillForgedGolem);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.SiegeWurm);
-        for (int i=0;i<10;i++) AppendToList(cards,cd.DevouringLight);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.ClericoftheForwardOrder);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.ConsulsLieutenant);
+        for (int i=0;i<10;i++) AppendToList(cards,cd.KytheonHeroofAkros);
         for (int i=0;i<15;i++) AppendToList(cards,cd.Plains);
         for (int i=0;i<15;i++) AppendToList(cards,cd.Forest);
 	} else if (index == 1) {
@@ -459,7 +459,7 @@ MTGPlayer* newGame(int deck_index) {
 	player2 = InitMTGPlayer();
     player2->marker->name = "Opponent";
     AI_init(player2);
-	buildDeck(player2->library,1);
+	buildDeck(player2->library,5);
 	shuffleDeck(player2->library);
 
 	MTGPlayer_drawCards(player1,7);

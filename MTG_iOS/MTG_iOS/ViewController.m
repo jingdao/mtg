@@ -34,7 +34,7 @@ extern MTGPlayer* player2;
     self->margin = 5;
     self->topmargin = 27;
     self->numColumn = 6;
-    self->maxColumns = 12;
+    self->maxColumns = 100;
     self->coverWidth = self->coverImage.size.width;
     self->coverHeight = self->coverImage.size.height;
     self->gridHeight = (height-margin-topmargin)/16 * 3;
@@ -277,6 +277,10 @@ extern MTGPlayer* player2;
             confirmButton.enabled = true;
             break;
         case SELECT_CARDS:
+            attackButton.enabled = false;
+            endturnButton.enabled = false;
+            confirmButton.enabled = true;
+        case CONVOKE:
             attackButton.enabled = false;
             endturnButton.enabled = false;
             confirmButton.enabled = true;
@@ -575,6 +579,19 @@ extern MTGPlayer* player2;
                 currentEquipment->target = currentPermanent;
             [self changeMode:STACK];
             [self onConfirm:NULL];
+        } else if (mode == CONVOKE) {
+            if (currentPermanent->subtypes.is_creature && !currentPermanent->is_tapped && !currentPermanent->has_summoning_sickness) {
+                currentPermanent->is_tapped = true;
+                if (currentPermanent->subtypes.is_white) player->convokeMana[1]++;
+                else if (currentPermanent->subtypes.is_blue) player->convokeMana[2]++;
+                else if (currentPermanent->subtypes.is_black) player->convokeMana[3]++;
+                else if (currentPermanent->subtypes.is_red) player->convokeMana[4]++;
+                else if (currentPermanent->subtypes.is_green) player->convokeMana[5]++;
+                player->convokeMana[0]++;
+                displayBattlefield(player->battlefield, self);
+                [self toggleHighlight:selfBattlefield];
+            } else
+                [self displayToastWithMessage:[NSString stringWithFormat:@"%s cannot tap (convoke)!",self->currentPermanent->name]];
         } else if (mode==WAIT || mode==STACK) {
             if (currentPermanent->abilities->size > 0) {
                 if (MTGPlayer_tap(self->player, self->currentPermanent)) {
@@ -791,6 +808,22 @@ extern MTGPlayer* player2;
         displayHand(player->hand);
         mode = STACK;
         return;
+    } else if (mode == CONVOKE) {
+        [self toggleHighlight:selfBattlefield];
+        currentPermanent = MTGPlayer_playCard(self->player, target_index, self->buffer);
+        if (currentPermanent) {
+            displayHand(self->player->hand);
+            displayStats(self->player->hp,self->player->library->size, self->player->hand->size, self->player->graveyard->size,self->player->exile->size,self->player->mana,true);
+            if (pendingMana==0) {
+                if (Event_onPlay(currentPermanent))
+                    [self changeMode:STACK];
+            }
+            return;
+        } else message(buffer);
+        if (currentPlayer != player) {
+            [self changeMode:WAIT];
+            return;
+        }
     } else if (mode == STACK) {
         if ([self continueAction])
             return;
@@ -817,7 +850,9 @@ extern MTGPlayer* player2;
     if (pendingMana < 0)
         currentPermanent->X = paidMana;
     pendingMana = 0;
-    memcpy(viewController->player->mana, manaBuffer, 6*sizeof(int));
+    //memcpy(viewController->player->mana, manaBuffer, 6*sizeof(int));
+    for (int i=0;i<6;i++)
+        player->mana[i] = manaBuffer[i] < player->mana[i] ? manaBuffer[i] : player->mana[i];
     displayStats(player->hp,player->library->size,player->hand->size,player->graveyard->size,player->exile->size,player->mana,true);
     self->mode = NONE;
     [self->manaAlert removeFromSuperview];
@@ -1000,7 +1035,7 @@ extern MTGPlayer* player2;
         mana[index]--;
         mana[0]--;
         paidMana++;
-    } else  if (theStepper.value < old_value && mana[index] < player->mana[index]) { //decrement
+    } else  if (theStepper.value < old_value && mana[index] < baseMana[index]) { //decrement
         mana[index]++;
         mana[0]++;
         paidMana--;
@@ -1265,7 +1300,9 @@ void selectMana(int* mana,int amount) {
     viewController->pendingMana = amount;
     viewController->paidMana = 0;
     viewController->manaButton.enabled = amount < 0;
-    memcpy(viewController->manaBuffer, viewController->player->mana, 6*sizeof(int));
+    //memcpy(viewController->manaBuffer, viewController->player->mana, 6*sizeof(int));
+    memcpy(viewController->manaBuffer,mana,6*sizeof(int));
+    memcpy(viewController->baseMana,mana,6*sizeof(int));
     viewController->manaLabel.text = [NSString stringWithFormat:@"Select mana\n(%d/%d)\nW: %d\nU: %d\nB: %d\nR: %d\nG: %d",viewController->paidMana,viewController->pendingMana,mana[1],mana[2],mana[3],mana[4],mana[5] ];
     viewController->mode = MANA;
     [viewController.view addSubview:viewController->popupMask];
@@ -1375,6 +1412,12 @@ void selectOption(Permanent* source,List* options) {
         });
     };
     [viewController->commandQueue addObject:blockcommand];
+}
+
+void selectConvoke(MTGPlayer* player,int index) {
+    viewController->target_index = index;
+    [viewController changeMode:CONVOKE];
+    [viewController toggleHighlight:viewController->selfBattlefield];
 }
 
 void triggerSelect(char* msg) {

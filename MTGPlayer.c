@@ -65,7 +65,9 @@ MTGPlayer* InitMTGPlayer() {
     p->lands=InitList();
     p->battlefield=InitList();
     p->playedLand = false;
+    p->canConvoke = true;
     memset(p->mana,0,6 * sizeof(int));
+    memset(p->convokeMana, 0, 6*sizeof(int));
     p->hp=80;
 	return p;
 }
@@ -86,11 +88,29 @@ Permanent* MTGPlayer_playCard(MTGPlayer* player,int cardIndex, char* err) {
         sprintf(err, "Can play IllusoryAngel only if you have casted another spell");
         return NULL;
     }
+    if (card->subtypes.is_convoke) {
+        if (player->canConvoke) {
+            if (player == player1) {
+                memset(player->convokeMana, 0, 6*sizeof(int));
+                selectConvoke(player,cardIndex);
+                player->canConvoke = !player->canConvoke;
+                sprintf(err,"Select creatures to convoke");
+                return NULL;
+            } else {
+                AI_selectConvoke(player, cardIndex);
+            }
+        } else if (player == player1)
+            player->canConvoke = !player->canConvoke;
+    }
     if (player == player1 && !MTGPlayer_payMana(player, card->manaCost)) {
+        memset(player->convokeMana, 0, 6*sizeof(int));
         sprintf(err,"Not enough mana to play %s (%d/%d)",card->name,player->mana[0],card->cmc);
         return NULL;
-    } else if (player == player2 && !AI_payMana(card->manaCost))
+    } else if (player == player2 && !AI_payMana(card->manaCost)) {
+        memset(player->convokeMana, 0, 6*sizeof(int));
         return NULL;
+    }
+    memset(player->convokeMana, 0, 6*sizeof(int));
     if (card->subtypes.is_land && player->playedLand) {
         sprintf(err,"You can only play one Land per turn");
         return NULL;
@@ -267,7 +287,9 @@ bool MTGPlayer_activateAbility(MTGPlayer* player,Permanent* permanent,char* err)
 
 bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
     int manaBuffer[6];
-    memcpy(manaBuffer, player->mana, 6*sizeof(int));
+    //memcpy(manaBuffer, player->mana, 6*sizeof(int));
+    for (int i=0;i<6;i++)
+        manaBuffer[i] = player->mana[i] + player->convokeMana[i];
     int userSelect = 0;
     for (int i=manaCost->size-1;i>=0;i--) {
         Manacost *cost = manaCost->entries[i];
@@ -315,7 +337,9 @@ bool MTGPlayer_payMana(MTGPlayer* player,List* manaCost) {
             manaBuffer[0] -= cost->num;
         }
     }
-    memcpy(player->mana, manaBuffer, 6*sizeof(int));
+    //memcpy(player->mana, manaBuffer, 6*sizeof(int));
+    for (int i=0;i<6;i++)
+        player->mana[i] = manaBuffer[i] < player->mana[i] ? manaBuffer[i] : player->mana[i];
     if (userSelect)
         selectMana(manaBuffer, userSelect);
     return true;

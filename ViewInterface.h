@@ -16,6 +16,7 @@ void selectPlayer(Permanent* source);
 void selectAbility(Permanent* permanent,List* options);
 void selectCards(Permanent* permanent,List* cards,char* allowedTargets);
 void selectOption(Permanent* source,List* options);
+void selectConvoke(MTGPlayer* player,int index);
 void triggerSelect(char* msg);
 void saveDeck(char* name,List* cards);
 void loadDeck(char* name,List* cards);

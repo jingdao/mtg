@@ -30,3 +30,4 @@ void AI_selectPlayer(Permanent* source);
 void AI_selectAbility(Permanent* permanent,List* options);
 void AI_selectCards(Permanent* permanent,List* cards,char* allowedTargets);
 void AI_selectOption(Permanent* permanent,List* options);
+void AI_selectConvoke(MTGPlayer* player,int index);

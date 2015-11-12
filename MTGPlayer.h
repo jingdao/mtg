@@ -19,9 +19,11 @@ typedef struct {
     List* battlefield;
     struct permanent_struct *marker;
     int mana[6]; //combined,white,blue,black,red,green
+    int convokeMana[6];
     int hp;
     bool playedLand;
     bool hasCastSpell;
+    bool canConvoke;
 } MTGPlayer;
 
 struct permanent_struct{
@@ -72,8 +74,10 @@ void DeleteMTGPlayer(MTGPlayer* p);
 
 void selectMana(int* mana,int amount);
 void selectAbility(Permanent* permanent,List* options);
+void selectConvoke(MTGPlayer* player,int index);
 bool AI_payMana(List* manaCost);
 void AI_selectAbility(Permanent* permanent,List* options);
+void AI_selectConvoke(MTGPlayer* player,int index);
 void Event_tapAbility(Permanent* permanent,int index);
 void Event_onDestroy(Permanent* permanent,Destination dest);
 void Event_loseLife(Permanent* source,MTGPlayer* player,int num);
